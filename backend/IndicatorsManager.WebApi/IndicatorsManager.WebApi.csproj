@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IndicatorsManager.Domain\IndicatorsManager.Domain.csproj" />
+    <ProjectReference Include="..\IndicatorsManager.DataAccess.Interface\IndicatorsManager.DataAccess.Interface.csproj" />
+    <ProjectReference Include="..\IndicatorsManager.DataAccess\IndicatorsManager.DataAccess.csproj" />
+    <ProjectReference Include="..\IndicatorsManager.BusinessLogic.Interface\IndicatorsManager.BusinessLogic.Interface.csproj" />
+    <ProjectReference Include="..\IndicatorsManager.BusinessLogic\IndicatorsManager.BusinessLogic.csproj" />
+  </ItemGroup>
+
+</Project>
