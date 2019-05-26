@@ -16,11 +16,11 @@ Ramiro Gonzalez - 167011
 <ul>
 <li>dotnet ef migrations add MyMigration --startup-project="..\IndicatorsManager.WebApi"</li>  
 <li>dotnet ef database update --startup-project="..\IndicatorsManager.WebApi"</li>
-<ul>
+</ul>
 
 ## Frontend
 <ul>
 <li>Node: v10.15.3</li>
 <li>Npm: 6.8.0</li> 
 <li>Angular CLI: 7.3.9</li>
-<ul>
+</ul>

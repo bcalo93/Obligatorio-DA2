@@ -32,6 +32,25 @@ namespace IndicatorsManager.BusinessLogic.Test
         }
 
         [TestMethod]
+        public void EvaluateItemBooleanOkTest()
+        {
+            ItemBoolean numeric = new ItemBoolean { Boolean = true };
+            EvaluateConditionResult result = numeric.Accept(visitor);
+            Assert.IsTrue((bool)result.ConditionResult);
+            Assert.AreEqual("True", result.ConditionToString);
+        }
+
+        [TestMethod]
+        public void EvaluateItemDateOkTest()
+        {
+            DateTime testDate = new DateTime(2015, 3, 15);
+            ItemDate numeric = new ItemDate { Date = testDate };
+            EvaluateConditionResult result = numeric.Accept(visitor);
+            Assert.AreEqual(testDate, (DateTime)result.ConditionResult);
+            Assert.AreEqual(testDate.ToString(), result.ConditionToString);
+        }
+        
+        [TestMethod]
         public void EvaluateItemNumericOkTest()
         {
             ItemNumeric numeric = new ItemNumeric { NumberValue = 232};

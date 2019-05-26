@@ -32,7 +32,7 @@ namespace IndicatorsManager.BusinessLogic.Visitors
             }
             catch(DataAccessException de)
             {
-                throw new EvaluationException(string.Format("La consulta {0} es incorrecta.", query), de);
+                throw new EvaluationException(string.Format("La consulta {0} es incorrecta.", query.QueryTextValue), de);
             }
         }
 
@@ -151,14 +151,18 @@ namespace IndicatorsManager.BusinessLogic.Visitors
         public EvaluateConditionResult VisitMinorEqualsCondition(MinorEqualsCondition minorEqualsCondition)
         {
             bool result = false;
-            IEnumerable<Component> ordered = minorEqualsCondition.Components.OrderBy(c => c.Position);
-            EvaluateConditionResult leftResult = ordered.ElementAt(0).Accept(this);
-            EvaluateConditionResult rightResult = ordered.ElementAt(1).Accept(this);
+            BinaryCondition condition = ConvertToBinaryCondition(minorEqualsCondition);
+            EvaluateConditionResult leftResult = condition.LeftCondition.Accept(this);
+            EvaluateConditionResult rightResult = condition.RightCondition.Accept(this);
             
             if(IsNumber(leftResult.ConditionResult) && IsNumber(rightResult.ConditionResult))
             {
                 result = AsDecimal(leftResult.ConditionResult) <= AsDecimal(rightResult.ConditionResult);
             } 
+            else if(leftResult.ConditionResult.GetType() == typeof(DateTime)) 
+            {
+                result = (DateTime)leftResult.ConditionResult <= (DateTime)rightResult.ConditionResult;
+            }
             else 
             {
                 result = leftResult.ConditionResult.ToString().CompareTo(rightResult.ConditionResult.ToString()) <= 0;
@@ -166,10 +170,20 @@ namespace IndicatorsManager.BusinessLogic.Visitors
             return new EvaluateConditionResult{ ConditionResult = result, ConditionToString = string.Format("({0} <= {1})", 
                 leftResult.ConditionToString, rightResult.ConditionToString ) };
         }
+        
+        public EvaluateConditionResult VisitItemBoolean(ItemBoolean boolean)
+        {
+            return new EvaluateConditionResult { ConditionToString = boolean.Boolean ? "True" : "False" , ConditionResult = boolean.Boolean };
+        }
+
+        public EvaluateConditionResult VisitItemDate(ItemDate date)
+        {
+            return new EvaluateConditionResult { ConditionToString = date.Date.ToString(), ConditionResult = date.Date };
+        }
 
         private bool IsNumber(object obj)
         {
-            return obj.GetType() == typeof(int) || obj.GetType() == typeof(double) || obj.GetType() == typeof(decimal);
+            return obj.GetType() == typeof(int) || obj.GetType() == typeof(double) || obj.GetType() == typeof(decimal) || obj.GetType() == typeof(bool);
         }
 
         private decimal AsDecimal(object obj)
@@ -182,13 +196,33 @@ namespace IndicatorsManager.BusinessLogic.Visitors
             {
                 return (decimal)(double)obj;
             }
-            else if(obj.GetType() == typeof(decimal)) {
+            else if(obj.GetType() == typeof(decimal)) 
+            {
                 return (decimal)obj;
+            }
+            else if(obj.GetType() == typeof(bool))
+            {
+                return (bool)obj ? 1 : 0;
             }
             else
             {
                 throw new EvaluationException("No se puede convertir a decimal");
             }
+        }
+
+        
+        private BinaryCondition ConvertToBinaryCondition(Condition condition)
+        {
+            IEnumerable<Component> ordered = condition.Components.OrderBy(c => c.Position);
+            return new BinaryCondition { LeftCondition = ordered.ElementAt(0), RightCondition = ordered.ElementAt(1) };
+        }
+
+        class BinaryCondition 
+        {
+            public Component LeftCondition { get; set; }
+            public Component RightCondition { get; set; }
+
+            public BinaryCondition() { }
         }
     }
 }

@@ -70,5 +70,14 @@ namespace IndicatorsManager.BusinessLogic.Visitors
             return condition.Components != null && condition.Components.Count == 2 && ValidateCondition(condition);
         }
 
+        public bool VisitItemBoolean(ItemBoolean boolean)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool VisitItemDate(ItemDate date)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

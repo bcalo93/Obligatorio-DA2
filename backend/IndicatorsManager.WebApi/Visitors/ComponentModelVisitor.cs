@@ -77,5 +77,15 @@ namespace IndicatorsManager.WebApi.Visitors
         {
             return model.Components.Select(c => c.Accept(this));
         }
+
+        public ComponentModel VisitItemBoolean(ItemBoolean boolean)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ComponentModel VisitItemDate(ItemDate date)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

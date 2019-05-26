@@ -15,6 +15,9 @@ namespace IndicatorsManager.Domain.Visitors
         T VisitItemQuery(ItemQuery query);
         T VisitItemText(ItemText text);
         T VisitItemNumeric(ItemNumeric numeric);
+
+        T VisitItemBoolean(ItemBoolean boolean);
+        T VisitItemDate(ItemDate date);
         
     }
     
