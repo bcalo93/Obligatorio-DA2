@@ -26,7 +26,8 @@ namespace IndicatorsManager.BusinessLogic.Visitors
 
         public EvaluateConditionResult VisitItemQuery(ItemQuery query)
         {
-            try {
+            try 
+            {
                 var result = queryRunner.RunQuery(query.QueryTextValue);
                 return new EvaluateConditionResult { ConditionToString = result.ToString(), ConditionResult = result };
             }
@@ -161,7 +162,7 @@ namespace IndicatorsManager.BusinessLogic.Visitors
             } 
             else if(leftResult.ConditionResult.GetType() == typeof(DateTime)) 
             {
-                result = (DateTime)leftResult.ConditionResult <= (DateTime)rightResult.ConditionResult;
+                result = (DateTime)leftResult.ConditionResult <= (DateTime)rightResult.ConditionResult;// Incorrecto
             }
             else 
             {
