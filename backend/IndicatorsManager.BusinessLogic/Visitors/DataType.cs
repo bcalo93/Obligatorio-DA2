@@ -50,6 +50,7 @@ namespace IndicatorsManager.BusinessLogic.Visitors
             return this.IsMayor(dataType) || this.IsEquals(dataType);
         }
 
+        public abstract object GetDataValue();
         protected abstract bool IsEqualsImplementation(DataType dataType);
         protected abstract bool IsMinorImplementation(DataType dataType);
         protected abstract bool IsMayorImplementation(DataType dataType);

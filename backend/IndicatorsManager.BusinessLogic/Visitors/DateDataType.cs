@@ -20,6 +20,12 @@ namespace IndicatorsManager.BusinessLogic.Visitors
             return DateTime.Compare(this.DateValue, ((DateDataType)dataType).DateValue) < 0;
         }
 
+
+        public override object GetDataValue()
+        {
+            return this.DateValue;
+        }
+
         public override string ToString()
         {
             return this.DateValue.ToString();

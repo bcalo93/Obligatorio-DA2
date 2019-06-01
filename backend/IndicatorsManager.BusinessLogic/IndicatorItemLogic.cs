@@ -54,14 +54,16 @@ namespace IndicatorsManager.BusinessLogic
                 throw new EntityNotExistException(string.Format("El Item de id {0} no existe.", id));
             }
             this.queryRunner.SetConnectionString(toEvalualte.Indicator.Area.DataSource);
-            EvaluateConditionResult result;
+            string resultAsString = toEvalualte.Condition.Accept(new VisitorComponentToString(this.queryRunner));
+            EvaluateConditionResult result = new EvaluateConditionResult { ConditionToString = resultAsString };
             try
             {
-                result = toEvalualte.Condition.Accept(new VisitorComponentEvaluate(this.queryRunner));    
+                DataType dataType = toEvalualte.Condition.Accept(new VisitorComponentEvaluate(this.queryRunner));
+                result.ConditionResult = dataType.GetDataValue();
             }
             catch(EvaluationException ee)
             {
-                result = new EvaluateConditionResult { ConditionToString = ee.Message };
+                result.ConditionResult = ee.Message;
             }
             return new IndicatorItemResult { IndicatorItem = toEvalualte, Result = result };
         }

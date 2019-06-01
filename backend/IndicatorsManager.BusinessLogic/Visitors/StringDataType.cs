@@ -20,6 +20,11 @@ namespace IndicatorsManager.BusinessLogic.Visitors
             return this.StringValue.CompareTo(dataType.ToString()) < 0;
         }
 
+        public override object GetDataValue()
+        {
+            return this.StringValue;
+        }
+
         public override string ToString()
         {
             return this.StringValue;

@@ -21,6 +21,11 @@ namespace IndicatorsManager.BusinessLogic.Visitors
             throw new EvaluationException("Los booleanos no se pueden comparar con < o <=");
         }
 
+        public override object GetDataValue()
+        {
+            return this.BooleanValue;
+        }
+
         public override string ToString()
         {
             return this.BooleanValue ? "True" : "False";

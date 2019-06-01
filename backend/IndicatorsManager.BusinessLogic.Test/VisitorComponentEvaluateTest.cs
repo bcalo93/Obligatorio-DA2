@@ -16,7 +16,7 @@ namespace IndicatorsManager.BusinessLogic.Test
     public class VisitorComponentEvaluateTest
     {
         private Mock<IQueryRunner> mock;
-        private IVisitorComponent<EvaluateConditionResult> visitor;
+        private IVisitorComponent<DataType> visitor;
 
         [TestInitialize]
         public void InitMock()
@@ -34,47 +34,47 @@ namespace IndicatorsManager.BusinessLogic.Test
         [TestMethod]
         public void EvaluateItemBooleanOkTest()
         {
-            ItemBoolean numeric = new ItemBoolean { Boolean = true };
-            EvaluateConditionResult result = numeric.Accept(visitor);
-            Assert.IsTrue((bool)result.ConditionResult);
-            Assert.AreEqual("True", result.ConditionToString);
+            ItemBoolean boolean = new ItemBoolean { Boolean = true };
+            DataType result = boolean.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
         }
 
         [TestMethod]
         public void EvaluateItemDateOkTest()
         {
             DateTime testDate = new DateTime(2015, 3, 15);
-            ItemDate numeric = new ItemDate { Date = testDate };
-            EvaluateConditionResult result = numeric.Accept(visitor);
-            Assert.AreEqual(testDate, (DateTime)result.ConditionResult);
-            Assert.AreEqual(testDate.ToString(), result.ConditionToString);
+            ItemDate date = new ItemDate { Date = testDate };
+            DataType result = date.Accept(visitor);
+            DateDataType asDate = result as DateDataType;
+            Assert.AreEqual(testDate, asDate.DateValue);
         }
         
         [TestMethod]
         public void EvaluateItemNumericOkTest()
         {
             ItemNumeric numeric = new ItemNumeric { NumberValue = 232};
-            EvaluateConditionResult result = numeric.Accept(visitor);
-            Assert.AreEqual(232, result.ConditionResult);
-            Assert.AreEqual("232", result.ConditionToString);
+            DataType result = numeric.Accept(visitor);
+            DecimalDataType asDecimal = result as DecimalDataType;
+            Assert.AreEqual(232m, asDecimal.DecimalValue);
         }
         
         [TestMethod]
         public void EvaluateItemTextOkTest()
         {
             ItemText text = new ItemText { TextValue = "Test String" };
-            EvaluateConditionResult result = text.Accept(visitor);
-            Assert.AreEqual("Test String", result.ConditionResult);
-            Assert.AreEqual("Test String", result.ConditionToString);
+            DataType result = text.Accept(visitor);
+            StringDataType asString = result as StringDataType;
+            Assert.AreEqual("Test String", asString.StringValue);
         }
 
         [TestMethod]
         public void EvaluateItemTextNullTest()
         {
             ItemText text = new ItemText { TextValue = "" };
-            EvaluateConditionResult result = text.Accept(visitor);
-            Assert.AreEqual("", result.ConditionResult);
-            Assert.AreEqual("", result.ConditionToString);
+            DataType result = text.Accept(visitor);
+            StringDataType asString = result as StringDataType;
+            Assert.AreEqual("", asString.StringValue);
         }
 
         [TestMethod]
@@ -83,9 +83,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             string queryString = "SELECT Name FROM TABLE LIMIT 1";
             mock.Setup(m => m.RunQuery(queryString)).Returns("Test Name");
             ItemQuery query = new ItemQuery { QueryTextValue = queryString};
-            EvaluateConditionResult result = query.Accept(visitor);
-            Assert.AreEqual("Test Name", result.ConditionResult);
-            Assert.AreEqual("Test Name", result.ConditionToString);
+            DataType result = query.Accept(visitor);
+            StringDataType asString = result as StringDataType;
+            Assert.AreEqual("Test Name", asString.StringValue);
         }
 
         [TestMethod]
@@ -94,9 +94,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             string queryString = "SELECT COUNT() FROM TABLE";
             mock.Setup(m => m.RunQuery(queryString)).Returns(20);
             ItemQuery query = new ItemQuery { QueryTextValue = queryString};
-            EvaluateConditionResult result = query.Accept(visitor);
-            Assert.AreEqual(20, result.ConditionResult);
-            Assert.AreEqual("20", result.ConditionToString);
+            DataType result = query.Accept(visitor);
+            DecimalDataType asDecimal = result as DecimalDataType;
+            Assert.AreEqual(20m, asDecimal.DecimalValue);
         }
 
         [TestMethod]
@@ -106,7 +106,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             string queryString = "SELECT * FROM TABLE";
             mock.Setup(m => m.RunQuery(queryString)).Throws(new DataAccessException(""));
             ItemQuery query = new ItemQuery { QueryTextValue = queryString};
-            EvaluateConditionResult result = query.Accept(visitor);
+            DataType result = query.Accept(visitor);
         }
 
         [TestMethod]
@@ -118,9 +118,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemNumeric number = new ItemNumeric { Position = 2, NumberValue = 19 };
             MayorCondition mayor = new MayorCondition { Components = new List<Component>{number, query }};
 
-            EvaluateConditionResult result = mayor.Accept(visitor);
-            Assert.IsTrue((bool)result.ConditionResult);
-            Assert.AreEqual("(20 > 19)", result.ConditionToString);
+            DataType result = mayor.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -132,9 +132,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemNumeric number = new ItemNumeric { Position = 2, NumberValue = 30 };
             MayorCondition mayor = new MayorCondition { Components = new List<Component>{number, query }};
 
-            EvaluateConditionResult result = mayor.Accept(visitor);
-            Assert.IsFalse((bool)result.ConditionResult);
-            Assert.AreEqual("(30 > 30)", result.ConditionToString);
+            DataType result = mayor.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -147,9 +147,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 1, TextValue = "Venus" };
             MayorCondition mayor = new MayorCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = mayor.Accept(visitor);
-            Assert.IsTrue((bool)result.ConditionResult);
-            Assert.AreEqual("(Venus > Jupiter)", result.ConditionToString);
+            DataType result = mayor.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -162,9 +162,50 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "Jupiter" };
             MayorCondition mayor = new MayorCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = mayor.Accept(visitor);
-            Assert.IsFalse((bool)result.ConditionResult);
-            Assert.AreEqual("(Jupiter > Jupiter)", result.ConditionToString);
+            DataType result = mayor.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        public void EvaluateMayorConditionCompareDatesOkTest_1()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns(new DateTime(2018, 10, 5));
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemDate date = new ItemDate { Position = 2, Date = new DateTime(2018, 10, 4) };
+            MayorCondition mayor = new MayorCondition { Components = new List<Component>{date, query }};
+
+            DataType result = mayor.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        public void EvaluateMayorConditionCompareDatesOkTest_2()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns(new DateTime(2018, 10, 1));
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemDate date = new ItemDate { Position = 2, Date = new DateTime(2018, 10, 4) };
+            MayorCondition mayor = new MayorCondition { Components = new List<Component>{date, query }};
+
+            DataType result = mayor.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EvaluationException))]
+        public void EvaluateMayorConditionCompareBooleanOkTest()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns(true);
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemBoolean boolean = new ItemBoolean { Position = 2, Boolean = false };
+            MayorCondition mayor = new MayorCondition { Components = new List<Component>{boolean, query }};
+
+            DataType result = mayor.Accept(visitor);
         }
 
         [TestMethod]
@@ -177,9 +218,37 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "Venus" };
             MayorCondition mayor = new MayorCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = mayor.Accept(visitor);
-            Assert.IsFalse((bool)result.ConditionResult);
-            Assert.AreEqual("(100 > Venus)", result.ConditionToString);
+            DataType result = mayor.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        public void EvaluateMayorStringDatesOkTest()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns("Test String");
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemDate date = new ItemDate { Position = 2, Date = new DateTime(2018, 10, 4) };
+            MayorCondition mayor = new MayorCondition { Components = new List<Component>{date, query }};
+
+            DataType result = mayor.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        public void EvaluateMayorBooleanStringOkTest()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns("Holidays");
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemBoolean date = new ItemBoolean { Position = 2, Boolean = false };
+            MayorCondition mayor = new MayorCondition { Components = new List<Component>{date, query }};
+
+            DataType result = mayor.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -192,7 +261,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "Venus" };
             MayorCondition mayor = new MayorCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = mayor.Accept(visitor);
+            DataType result = mayor.Accept(visitor);
         }
         
 
@@ -205,9 +274,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemNumeric number = new ItemNumeric { Position = 2, NumberValue = 100 };
             MayorEqualsCondition mayorEquals = new MayorEqualsCondition { Components = new List<Component>{number, query }};
 
-            EvaluateConditionResult result = mayorEquals.Accept(visitor);
-            Assert.IsTrue((bool)result.ConditionResult);
-            Assert.AreEqual("(101 >= 100)", result.ConditionToString);
+            DataType result = mayorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -219,9 +288,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemNumeric number = new ItemNumeric { Position = 2, NumberValue = 20 };
             MayorEqualsCondition mayorEquals = new MayorEqualsCondition { Components = new List<Component>{number, query }};
 
-            EvaluateConditionResult result = mayorEquals.Accept(visitor);
-            Assert.IsTrue((bool)result.ConditionResult);
-            Assert.AreEqual("(20 >= 20)", result.ConditionToString);
+            DataType result = mayorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -233,9 +302,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemNumeric number = new ItemNumeric { Position = 2, NumberValue = 300 };
             MayorEqualsCondition mayorEquals = new MayorEqualsCondition { Components = new List<Component>{number, query }};
 
-            EvaluateConditionResult result = mayorEquals.Accept(visitor);
-            Assert.IsFalse((bool)result.ConditionResult);
-            Assert.AreEqual("(20 >= 300)", result.ConditionToString);
+            DataType result = mayorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -248,9 +317,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "Bleach" };
             MayorEqualsCondition mayorEquals = new MayorEqualsCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = mayorEquals.Accept(visitor);
-            Assert.IsFalse((bool)result.ConditionResult);
-            Assert.AreEqual("(Beach >= Bleach)", result.ConditionToString);
+            DataType result = mayorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -263,9 +332,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "SameWord" };
             MayorEqualsCondition mayorEquals = new MayorEqualsCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = mayorEquals.Accept(visitor);
-            Assert.IsTrue((bool)result.ConditionResult);
-            Assert.AreEqual("(SameWord >= SameWord)", result.ConditionToString);
+            DataType result = mayorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -278,11 +347,52 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "Alphabet" };
             MayorEqualsCondition mayorEquals = new MayorEqualsCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = mayorEquals.Accept(visitor);
-            Assert.IsTrue((bool)result.ConditionResult);
-            Assert.AreEqual("(Last >= Alphabet)", result.ConditionToString);
+            DataType result = mayorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
         }
 
+        [TestMethod]
+        public void EvaluateMayorEqualsConditionCompareDatesOkTest_1()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns(new DateTime(2018, 10, 4));
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemDate date = new ItemDate { Position = 2, Date = new DateTime(2018, 10, 4) };
+            MayorEqualsCondition mayorEquals = new MayorEqualsCondition { Components = new List<Component>{date, query }};
+
+            DataType result = mayorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        public void EvaluateMayorEqualsConditionCompareDatesOkTest_2()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns(new DateTime(2018, 9, 1));
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemDate date = new ItemDate { Position = 2, Date = new DateTime(2018, 9, 4) };
+            MayorEqualsCondition mayorEquals = new MayorEqualsCondition { Components = new List<Component>{date, query }};
+
+            DataType result = mayorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EvaluationException))]
+        public void EvaluateMayorEqualsConditionCompareBooleanOkTest()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns(true);
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemBoolean boolean = new ItemBoolean { Position = 2, Boolean = true };
+            MayorEqualsCondition mayorEquals = new MayorEqualsCondition { Components = new List<Component>{boolean, query }};
+
+            DataType result = mayorEquals.Accept(visitor);
+        }
+        
         [TestMethod]
         public void EvaluateMayorEqualsStringIntTest()
         {
@@ -293,9 +403,37 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "Others" };
             MayorEqualsCondition mayorEquals = new MayorEqualsCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = mayorEquals.Accept(visitor);
-            Assert.IsFalse((bool)result.ConditionResult);
-            Assert.AreEqual("(20 >= Others)", result.ConditionToString);
+            DataType result = mayorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        public void EvaluateMayorEqualsStringDatesOkTest()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns("Test String");
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemDate date = new ItemDate { Position = 2, Date = new DateTime(2018, 10, 4) };
+            MayorEqualsCondition mayorEquals = new MayorEqualsCondition { Components = new List<Component>{date, query }};
+
+            DataType result = mayorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        public void EvaluateMayorEqualsBooleanStringOkTest()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns("False");
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemBoolean date = new ItemBoolean { Position = 2, Boolean = false };
+            MayorEqualsCondition mayorEquals = new MayorEqualsCondition { Components = new List<Component>{date, query }};
+
+            DataType result = mayorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -308,7 +446,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "Venus" };
             MayorEqualsCondition mayorEquals = new MayorEqualsCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = mayorEquals.Accept(visitor);
+            DataType result = mayorEquals.Accept(visitor);
         }
 
         [TestMethod]
@@ -320,9 +458,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemNumeric number = new ItemNumeric { Position = 2, NumberValue = 60 };
             MinorCondition minor = new MinorCondition { Components = new List<Component>{number, query }};
 
-            EvaluateConditionResult result = minor.Accept(visitor);
-            Assert.IsTrue((bool)result.ConditionResult);
-            Assert.AreEqual("(50 < 60)", result.ConditionToString);
+            DataType result = minor.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -334,9 +472,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemNumeric number = new ItemNumeric { Position = 2, NumberValue = 300 };
             MinorCondition minor = new MinorCondition { Components = new List<Component>{number, query }};
 
-            EvaluateConditionResult result = minor.Accept(visitor);
-            Assert.IsFalse((bool)result.ConditionResult);
-            Assert.AreEqual("(300 < 300)", result.ConditionToString);
+            DataType result = minor.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -349,9 +487,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "Bleach" };
             MinorCondition minor = new MinorCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = minor.Accept(visitor);
-            Assert.IsTrue((bool)result.ConditionResult);
-            Assert.AreEqual("(Beach < Bleach)", result.ConditionToString);
+            DataType result = minor.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -364,9 +502,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "SameWord" };
             MinorCondition minor = new MinorCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = minor.Accept(visitor);
-            Assert.IsFalse((bool)result.ConditionResult);
-            Assert.AreEqual("(SameWord < SameWord)", result.ConditionToString);
+            DataType result = minor.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -379,9 +517,50 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "Alphabet" };
             MinorCondition minor = new MinorCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = minor.Accept(visitor);
-            Assert.IsFalse((bool)result.ConditionResult);
-            Assert.AreEqual("(Last < Alphabet)", result.ConditionToString);
+            DataType result = minor.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        public void EvaluateMinorConditionCompareDatesOkTest_1()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns(new DateTime(2019, 3, 4));
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemDate date = new ItemDate { Position = 2, Date = new DateTime(2019, 3, 7) };
+            MinorCondition minor = new MinorCondition { Components = new List<Component>{date, query }};
+
+            DataType result = minor.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        public void EvaluateMinorConditionCompareDatesOkTest_2()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns(new DateTime(2019, 2, 3));
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemDate date = new ItemDate { Position = 2, Date = new DateTime(2019, 2, 3) };
+            MinorCondition minor = new MinorCondition { Components = new List<Component>{date, query }};
+
+            DataType result = minor.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EvaluationException))]
+        public void EvaluateMinorConditionCompareBooleanOkTest()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns(true);
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemBoolean boolean = new ItemBoolean { Position = 2, Boolean = true };
+            MinorCondition minor = new MinorCondition { Components = new List<Component>{boolean, query }};
+
+            DataType result = minor.Accept(visitor);
         }
 
         [TestMethod]
@@ -394,9 +573,37 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "Others" };
             MinorCondition minor = new MinorCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = minor.Accept(visitor);
-            Assert.IsTrue((bool)result.ConditionResult);
-            Assert.AreEqual("(20 < Others)", result.ConditionToString);
+            DataType result = minor.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        public void EvaluateMinorStringDatesOkTest()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns("Test String");
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemDate date = new ItemDate { Position = 2, Date = new DateTime(2018, 10, 4) };
+            MinorCondition minor = new MinorCondition { Components = new List<Component>{date, query }};
+
+            DataType result = minor.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        public void EvaluateMinorBooleanStringOkTest()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns("False");
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemBoolean date = new ItemBoolean { Position = 2, Boolean = false };
+            MinorCondition minor = new MinorCondition { Components = new List<Component>{date, query }};
+
+            DataType result = minor.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -409,7 +616,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "Venus" };
             MinorCondition minor = new MinorCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = minor.Accept(visitor);
+            DataType result = minor.Accept(visitor);
         }
 
         [TestMethod]
@@ -421,9 +628,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemNumeric number = new ItemNumeric { Position = 2, NumberValue = 45 };
             MinorEqualsCondition mayorEquals = new MinorEqualsCondition { Components = new List<Component>{number, query }};
 
-            EvaluateConditionResult result = mayorEquals.Accept(visitor);
-            Assert.IsTrue((bool)result.ConditionResult);
-            Assert.AreEqual("(30 <= 45)", result.ConditionToString);
+            DataType result = mayorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -435,9 +642,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemNumeric number = new ItemNumeric { Position = 2, NumberValue = 30 };
             MinorEqualsCondition minorEquals = new MinorEqualsCondition { Components = new List<Component>{number, query }};
 
-            EvaluateConditionResult result = minorEquals.Accept(visitor);
-            Assert.IsTrue((bool)result.ConditionResult);
-            Assert.AreEqual("(30 <= 30)", result.ConditionToString);
+            DataType result = minorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -449,9 +656,10 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemNumeric number = new ItemNumeric { Position = 2, NumberValue = 300 };
             MinorEqualsCondition minorEquals = new MinorEqualsCondition { Components = new List<Component>{number, query }};
 
-            EvaluateConditionResult result = minorEquals.Accept(visitor);
-            Assert.IsFalse((bool)result.ConditionResult);
-            Assert.AreEqual("(400 <= 300)", result.ConditionToString);
+            DataType result = minorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
+            //Assert.AreEqual("(400 <= 300)", result.ConditionToString);
         }
 
         [TestMethod]
@@ -464,9 +672,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "Secundary" };
             MinorEqualsCondition minorEquals = new MinorEqualsCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = minorEquals.Accept(visitor);
-            Assert.IsTrue((bool)result.ConditionResult);
-            Assert.AreEqual("(Primary <= Secundary)", result.ConditionToString);
+            DataType result = minorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -479,9 +687,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "SameWord" };
             MinorEqualsCondition minorEquals = new MinorEqualsCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = minorEquals.Accept(visitor);
-            Assert.IsTrue((bool)result.ConditionResult);
-            Assert.AreEqual("(SameWord <= SameWord)", result.ConditionToString);
+            DataType result = minorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -494,9 +702,50 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "Alphabet" };
             MinorEqualsCondition minorEquals = new MinorEqualsCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = minorEquals.Accept(visitor);
-            Assert.IsFalse((bool)result.ConditionResult);
-            Assert.AreEqual("(Last <= Alphabet)", result.ConditionToString);
+            DataType result = minorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        public void EvaluateMinorEqualsConditionCompareDatesOkTest_1()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns(new DateTime(2019, 3, 7));
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemDate date = new ItemDate { Position = 2, Date = new DateTime(2019, 3, 7) };
+            MinorEqualsCondition minorEquals = new MinorEqualsCondition { Components = new List<Component>{date, query }};
+
+            DataType result = minorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        public void EvaluateMinorEqualsConditionCompareDatesOkTest_2()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns(new DateTime(2019, 2, 4));
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemDate date = new ItemDate { Position = 2, Date = new DateTime(2019, 2, 3) };
+            MinorEqualsCondition minorEquals = new MinorEqualsCondition { Components = new List<Component>{date, query }};
+
+            DataType result = minorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EvaluationException))]
+        public void EvaluateMinorEqualsConditionCompareBooleanOkTest()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns(false);
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemBoolean boolean = new ItemBoolean { Position = 2, Boolean = true };
+            MinorEqualsCondition minorEquals = new MinorEqualsCondition { Components = new List<Component>{boolean, query }};
+
+            DataType result = minorEquals.Accept(visitor);
         }
 
         [TestMethod]
@@ -509,9 +758,37 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "20" };
             MinorEqualsCondition minorEquals = new MinorEqualsCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = minorEquals.Accept(visitor);
-            Assert.IsTrue((bool)result.ConditionResult);
-            Assert.AreEqual("(20 <= 20)", result.ConditionToString);
+            DataType result = minorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        public void EvaluateMinorEqualsStringDatesOkTest()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns("Test String");
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemDate date = new ItemDate { Position = 2, Date = new DateTime(2018, 10, 4) };
+            MinorEqualsCondition minorEquals = new MinorEqualsCondition { Components = new List<Component>{date, query }};
+
+            DataType result = minorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        public void EvaluateMinorEqualsBooleanStringOkTest()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns("True");
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemBoolean date = new ItemBoolean { Position = 2, Boolean = true };
+            MinorEqualsCondition minorEquals = new MinorEqualsCondition { Components = new List<Component>{date, query }};
+
+            DataType result = minorEquals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -524,7 +801,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "Venus" };
             MinorEqualsCondition minorEquals = new MinorEqualsCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = minorEquals.Accept(visitor);
+            DataType result = minorEquals.Accept(visitor);
         }
 
         [TestMethod]
@@ -536,9 +813,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemNumeric number = new ItemNumeric { Position = 2, NumberValue = 45 };
             EqualsCondition equals = new EqualsCondition { Components = new List<Component>{number, query }};
 
-            EvaluateConditionResult result = equals.Accept(visitor);
-            Assert.IsTrue((bool)result.ConditionResult);
-            Assert.AreEqual("(45 = 45)", result.ConditionToString);
+            DataType result = equals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -550,9 +827,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemNumeric number = new ItemNumeric { Position = 2, NumberValue = 31 };
             EqualsCondition equals = new EqualsCondition { Components = new List<Component>{number, query }};
 
-            EvaluateConditionResult result = equals.Accept(visitor);
-            Assert.IsFalse((bool)result.ConditionResult);
-            Assert.AreEqual("(30 = 31)", result.ConditionToString);
+            DataType result = equals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -565,9 +842,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "Door" };
             EqualsCondition equals = new EqualsCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = equals.Accept(visitor);
-            Assert.IsTrue((bool)result.ConditionResult);
-            Assert.AreEqual("(Door = Door)", result.ConditionToString);
+            DataType result = equals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -580,9 +857,65 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "Close" };
             EqualsCondition equals = new EqualsCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = equals.Accept(visitor);
-            Assert.IsFalse((bool)result.ConditionResult);
-            Assert.AreEqual("(Open = Close)", result.ConditionToString);
+            DataType result = equals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        public void EvaluateEqualsConditionCompareDatesOkTest_1()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns(new DateTime(2019, 5, 7));
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemDate date = new ItemDate { Position = 2, Date = new DateTime(2019, 5, 7) };
+            EqualsCondition equals = new EqualsCondition { Components = new List<Component>{ date, query }};
+
+            DataType result = equals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        public void EvaluateEqualsConditionCompareDatesOkTest_2()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns(new DateTime(2019, 2, 4));
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemDate date = new ItemDate { Position = 2, Date = new DateTime(2019, 2, 3) };
+            EqualsCondition equals = new EqualsCondition { Components = new List<Component>{ date, query }};
+
+            DataType result = equals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        public void EvaluateEqualsConditionCompareBooleanOkTest_1()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns(false);
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemBoolean boolean = new ItemBoolean { Position = 2, Boolean = false };
+            EqualsCondition equals = new EqualsCondition { Components = new List<Component>{ boolean, query }};
+
+            DataType result = equals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        public void EvaluateEqualsConditionCompareBooleanOkTest_2()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns(true);
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemBoolean boolean = new ItemBoolean { Position = 2, Boolean = false };
+            EqualsCondition equals = new EqualsCondition { Components = new List<Component>{ boolean, query }};
+
+            DataType result = equals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -595,9 +928,37 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "20" };
             EqualsCondition equals = new EqualsCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = equals.Accept(visitor);
-            Assert.IsTrue((bool)result.ConditionResult);
-            Assert.AreEqual("(20 = 20)", result.ConditionToString);
+            DataType result = equals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        public void EvaluateEqualsStringDatesOkTest()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns("Test String");
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemDate date = new ItemDate { Position = 2, Date = new DateTime(2018, 10, 4) };
+            EqualsCondition equals = new EqualsCondition { Components = new List<Component>{date, query }};
+
+            DataType result = equals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
+        }
+
+        [TestMethod]
+        public void EvaluateEqualsBooleanStringOkTest()
+        {
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+            mock.Setup(m => m.RunQuery(queryString)).Returns("True");
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemBoolean date = new ItemBoolean { Position = 2, Boolean = true };
+            EqualsCondition equals = new EqualsCondition { Components = new List<Component>{date, query }};
+
+            DataType result = equals.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -610,7 +971,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "Venus" };
             EqualsCondition equals = new EqualsCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = equals.Accept(visitor);
+            DataType result = equals.Accept(visitor);
         }
 
         [TestMethod]
@@ -631,9 +992,9 @@ namespace IndicatorsManager.BusinessLogic.Test
 
             AndCondition condition = new AndCondition { Components = new List<Component> {equals, mayor }};
 
-            EvaluateConditionResult result = condition.Accept(visitor);
-            Assert.IsTrue((bool)result.ConditionResult);
-            Assert.AreEqual("(String = String) And (56 > 45)", result.ConditionToString);
+            DataType result = condition.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -654,9 +1015,9 @@ namespace IndicatorsManager.BusinessLogic.Test
 
             AndCondition condition = new AndCondition { Components = new List<Component> {equals, mayor }};
 
-            EvaluateConditionResult result = condition.Accept(visitor);
-            Assert.IsFalse((bool)result.ConditionResult);
-            Assert.AreEqual("(OtherString = String) And (56 > 45)", result.ConditionToString);
+            DataType result = condition.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -670,7 +1031,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "20" };
             AndCondition condition = new AndCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = condition.Accept(visitor);
+            DataType result = condition.Accept(visitor);
         }
 
         [TestMethod]
@@ -691,9 +1052,9 @@ namespace IndicatorsManager.BusinessLogic.Test
 
             OrCondition condition = new OrCondition { Components = new List<Component> {equals, minor }};
 
-            EvaluateConditionResult result = condition.Accept(visitor);
-            Assert.IsTrue((bool)result.ConditionResult);
-            Assert.AreEqual("(Test = Test) Or (56 <= 45)", result.ConditionToString);
+            DataType result = condition.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsTrue(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -714,9 +1075,9 @@ namespace IndicatorsManager.BusinessLogic.Test
 
             OrCondition condition = new OrCondition { Components = new List<Component> {equals, minor }};
 
-            EvaluateConditionResult result = condition.Accept(visitor);
-            Assert.IsFalse((bool)result.ConditionResult);
-            Assert.AreEqual("(OtherString = Test) Or (56 <= 45)", result.ConditionToString);
+            DataType result = condition.Accept(visitor);
+            BooleanDataType asBoolean = result as BooleanDataType;
+            Assert.IsFalse(asBoolean.BooleanValue);
         }
 
         [TestMethod]
@@ -730,7 +1091,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemText text = new ItemText { Position = 2, TextValue = "20" };
             OrCondition condtion = new OrCondition { Components = new List<Component>{ query, text }};
             
-            EvaluateConditionResult result = condtion.Accept(visitor);
+            DataType result = condtion.Accept(visitor);
         }
     }
 }

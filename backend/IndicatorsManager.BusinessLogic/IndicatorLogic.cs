@@ -55,14 +55,16 @@ namespace IndicatorsManager.BusinessLogic
             this.queryRunner.SetConnectionString(toEvalualte.Area.DataSource);
             foreach (IndicatorItem item in toEvalualte.IndicatorItems)
             {
-                EvaluateConditionResult result;
+                string condAsString = item.Condition.Accept(new VisitorComponentToString(this.queryRunner));
+                EvaluateConditionResult result = new EvaluateConditionResult { ConditionToString = condAsString };
                 try
                 {
-                    result = item.Condition.Accept(new VisitorComponentEvaluate(this.queryRunner));
+                    DataType dataType = item.Condition.Accept(new VisitorComponentEvaluate(this.queryRunner));
+                    result.ConditionResult = dataType.GetDataValue();
                 }
                 catch(EvaluationException ee)
                 {
-                    result = new EvaluateConditionResult { ConditionToString = ee.Message };
+                    result.ConditionResult = ee.Message;
                 }
                 itemResults.Add(new IndicatorItemResult { IndicatorItem = item, Result = result });
             }

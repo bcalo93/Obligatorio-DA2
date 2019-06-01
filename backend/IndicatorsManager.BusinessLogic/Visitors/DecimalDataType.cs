@@ -20,6 +20,11 @@ namespace IndicatorsManager.BusinessLogic.Visitors
             return this.DecimalValue < ((DecimalDataType)dataType).DecimalValue;
         }
 
+        public override object GetDataValue()
+        {
+            return this.DecimalValue;
+        }
+
         public override string ToString()
         {
             return this.DecimalValue.ToString();
