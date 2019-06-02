@@ -149,7 +149,8 @@ namespace IndicatorsManager.BusinessLogic
         private bool IsValidIndicator(Indicator indicator)
         {
             return this.ValidName(indicator.Name) && indicator.IndicatorItems.Count <= 3 && indicator.IndicatorItems.All(ii => ValidName(ii.Name) && 
-                ii.Condition != null && ii.Condition.Accept(new VisitorComponentValidation()));
+               indicator.IndicatorItems.GroupBy(c => c.Name).All(c => c.Count() == 1) && ii.Condition != null && 
+               ii.Condition.Accept(new VisitorComponentValidation()));
         }
 
         private bool ValidName(string name)

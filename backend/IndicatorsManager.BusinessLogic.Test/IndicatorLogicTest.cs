@@ -123,6 +123,24 @@ namespace IndicatorsManager.BusinessLogic.Test
 
         [TestMethod]
         [ExpectedException(typeof(InvalidEntityException))]
+        public void CreateIndicatorWithRepeatedIndicatorItemsTest()
+        {
+            Guid areaId = Guid.NewGuid();
+            Area expectedArea = new Area { Id = areaId, Name = "Test Area" };
+
+            Indicator create = new Indicator{  Name = "Test Indicator with many IndicatorItems" };
+            create.IndicatorItems.Add(new IndicatorItem { Id = Guid.NewGuid(), Name = "Red", Condition = new AndCondition{ 
+                Components = CreateConditionTestList() } });
+            create.IndicatorItems.Add(new IndicatorItem { Id = Guid.NewGuid(), Name = "Yellow", Condition = new AndCondition{ 
+                Components = CreateConditionTestList() } });
+            create.IndicatorItems.Add(new IndicatorItem { Id = Guid.NewGuid(), Name = "Yellow", Condition = new AndCondition{ 
+                Components = CreateConditionTestList() } });
+
+            Indicator result = logic.Create(areaId, create);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidEntityException))]
         public void CreateIndicatorIndicatorItemWithEmptyStringTest()
         {
             Guid areaId = Guid.NewGuid();
@@ -252,6 +270,78 @@ namespace IndicatorsManager.BusinessLogic.Test
             mockArea.Setup(m => m.Get(areaId)).Returns<IEnumerable<Area>>(null);
 
             Indicator result = logic.Create(areaId, create);
+        }
+
+        [TestMethod]
+        public void GetIndicatorResultOkTest()
+        {
+            Guid indicatorId  = Guid.NewGuid();
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+
+            //Data Init
+            Area area = new Area{ Name = "Test Area", DataSource = "DataSource" }; 
+
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemNumeric number = new ItemNumeric { Position = 2, NumberValue = 30 };
+            MayorCondition mayor = new MayorCondition { Components = new List<Component> { number, query } };
+            
+            Indicator toGet = new Indicator { Name = "Indicator Test" };
+            toGet.Area = area;
+            toGet.IndicatorItems.Add(new IndicatorItem { Name = "Red", Condition = mayor } );
+
+            mockIndicator.Setup(m => m.Get(indicatorId)).Returns(toGet);
+            mockRunner.Setup(m => m.SetConnectionString(It.IsAny<string>()));
+            mockRunner.Setup(m => m.RunQuery(queryString)).Returns(31);
+
+            IndicatorResult result = logic.Get(indicatorId);
+            Assert.AreEqual("Indicator Test", result.Indicator.Name);
+            Assert.AreEqual(1, result.ItemsResults.Count());
+            IndicatorItemResult itemResult = result.ItemsResults.First();
+            Assert.AreEqual("Red", itemResult.IndicatorItem.Name);
+            Assert.IsTrue((bool)itemResult.Result.ConditionResult);
+            Assert.AreEqual("(31 > 30)", itemResult.Result.ConditionToString);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EvaluationException))]
+        public void GetIndicatorResultEvaluationExceptionTest()
+        {
+            Guid indicatorId  = Guid.NewGuid();
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+
+            //Data Init
+            Area area = new Area{ Name = "Test Area", DataSource = "DataSource" }; 
+
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemNumeric number = new ItemNumeric { Position = 2, NumberValue = 200 };
+            MayorCondition mayor = new MayorCondition { Components = new List<Component> { number, query } };
+            
+            Indicator toGet = new Indicator { Name = "Indicator Test" };
+            toGet.Area = area;
+            toGet.IndicatorItems.Add(new IndicatorItem { Name = "Red", Condition = mayor } );
+
+            mockIndicator.Setup(m => m.Get(indicatorId)).Returns(toGet);
+            mockRunner.Setup(m => m.SetConnectionString(It.IsAny<string>()));
+            mockRunner.Setup(m => m.RunQuery(queryString)).Throws(new EvaluationException("An exception has occurred."));
+
+            IndicatorResult result = logic.Get(indicatorId);
+            Assert.AreEqual("Indicator Test", result.Indicator.Name);
+            Assert.AreEqual(1, result.ItemsResults.Count());
+            IndicatorItemResult itemResult = result.ItemsResults.First();
+            Assert.AreEqual("Red", itemResult.IndicatorItem.Name);
+            Assert.AreEqual("An exception has occurred.", (string)itemResult.Result.ConditionResult);
+            Assert.AreEqual("(La consulta SELECT COUNT(*) FROM TABLE es incorrecta. > 200)", itemResult.Result.ConditionToString);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EntityNotExistException))]
+        public void GetIndicatorResutIndicatorNotExistTest()
+        {
+            Guid indicatorId  = Guid.NewGuid();
+
+            mockIndicator.Setup(m => m.Get(indicatorId)).Returns<Indicator>(null);
+
+            IndicatorResult result = logic.Get(indicatorId);
         }
 
         [TestMethod]
