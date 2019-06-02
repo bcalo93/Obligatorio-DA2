@@ -34,7 +34,7 @@ namespace IndicatorsManager.WebApi.Test
             StringItemModel model = result as StringItemModel;
             Assert.AreEqual(3, model.Position);
             Assert.AreEqual("Test text item", model.Value);
-            Assert.AreEqual("Text", model.Type);
+            Assert.AreEqual(StringType.Text, model.Type);
         }
 
         [TestMethod]
@@ -47,9 +47,33 @@ namespace IndicatorsManager.WebApi.Test
             StringItemModel model = result as StringItemModel;
             Assert.AreEqual(2, model.Position);
             Assert.AreEqual("SELECT FROM TABLE", model.Value);
-            Assert.AreEqual("Sql", model.Type);
+            Assert.AreEqual(StringType.Sql, model.Type);
         }
         
+        [TestMethod]
+        public void ConvertItemBooleanModelOkTest()
+        {
+            ItemBoolean boolean = new ItemBoolean{ Position = 3, Boolean = false };
+
+            ComponentModel result = boolean.Accept(new ComponentModelVisitor());
+
+            BooleanItemModel model = result as BooleanItemModel;
+            Assert.AreEqual(3, model.Position);
+            Assert.IsFalse(model.BooleanValue);
+        }
+
+        [TestMethod]
+        public void ConvertItemDateModelOkTest()
+        {
+            DateTime expectedDate = new DateTime(2017, 5, 30);
+            ItemDate query = new ItemDate{ Position = 2, Date = expectedDate };
+
+            ComponentModel result = query.Accept(new ComponentModelVisitor());
+
+            DateItemModel model = result as DateItemModel;
+            Assert.AreEqual(2, model.Position);
+            Assert.AreEqual(expectedDate, model.DateValue);
+        }
 
         [TestMethod]
         public void ConvertAndConditionModelOkTest()
@@ -61,17 +85,17 @@ namespace IndicatorsManager.WebApi.Test
             ComponentModel result = condition.Accept(new ComponentModelVisitor());
 
             ConditionModel model = result as ConditionModel;
-            Assert.AreEqual("And", model.ConditionType);
+            Assert.AreEqual(ConditionType.And, model.ConditionType);
             Assert.AreEqual(1, model.Position);
             Assert.AreEqual(2, model.Components.Count());
 
             StringItemModel part1 = model.Components.Single(s => s.Position == 1) as StringItemModel;
             Assert.AreEqual("SELECT FROM TABLEA", part1.Value);
-            Assert.AreEqual("Sql", part1.Type);
+            Assert.AreEqual(StringType.Sql, part1.Type);
 
             StringItemModel part2 = model.Components.Single(s => s.Position == 2) as StringItemModel;
             Assert.AreEqual("SELECT FROM TABLEB", part2.Value);
-            Assert.AreEqual("Sql", part2.Type);
+            Assert.AreEqual(StringType.Sql, part2.Type);
         }
 
         [TestMethod]
@@ -84,17 +108,17 @@ namespace IndicatorsManager.WebApi.Test
             ComponentModel result = condition.Accept(new ComponentModelVisitor());
 
             ConditionModel model = result as ConditionModel;
-            Assert.AreEqual("Or", model.ConditionType);
+            Assert.AreEqual(ConditionType.Or, model.ConditionType);
             Assert.AreEqual(2, model.Position);
             Assert.AreEqual(2, model.Components.Count());
 
             StringItemModel part1 = model.Components.Single(s => s.Position == 1) as StringItemModel;
             Assert.AreEqual("SELECT FROM TABLEB", part1.Value);
-            Assert.AreEqual("Sql", part1.Type);
+            Assert.AreEqual(StringType.Sql, part1.Type);
 
             StringItemModel part2 = model.Components.Single(s => s.Position == 2) as StringItemModel;
             Assert.AreEqual("Text test", part2.Value);
-            Assert.AreEqual("Text", part2.Type);
+            Assert.AreEqual(StringType.Text, part2.Type);
         }
 
         [TestMethod]
@@ -107,13 +131,13 @@ namespace IndicatorsManager.WebApi.Test
             ComponentModel result = condition.Accept(new ComponentModelVisitor());
 
             ConditionModel model = result as ConditionModel;
-            Assert.AreEqual("Mayor", model.ConditionType);
+            Assert.AreEqual(ConditionType.Mayor, model.ConditionType);
             Assert.AreEqual(3, model.Position);
             Assert.AreEqual(2, model.Components.Count());
 
             StringItemModel part1 = model.Components.Single(s => s.Position == 1) as StringItemModel;
             Assert.AreEqual("SELECT FROM TABLE", part1.Value);
-            Assert.AreEqual("Sql", part1.Type);
+            Assert.AreEqual(StringType.Sql, part1.Type);
 
             IntItemModel part2 = model.Components.Single(s => s.Position == 3) as IntItemModel;
             Assert.AreEqual(20, part2.Value);
@@ -129,7 +153,7 @@ namespace IndicatorsManager.WebApi.Test
             ComponentModel result = condition.Accept(new ComponentModelVisitor());
 
             ConditionModel model = result as ConditionModel;
-            Assert.AreEqual("MayorEquals", model.ConditionType);
+            Assert.AreEqual(ConditionType.MayorEquals, model.ConditionType);
             Assert.AreEqual(1, model.Position);
             Assert.AreEqual(2, model.Components.Count());
 
@@ -138,7 +162,7 @@ namespace IndicatorsManager.WebApi.Test
 
             StringItemModel part2 = model.Components.Single(s => s.Position == 2) as StringItemModel;
             Assert.AreEqual("SELECT FROM TABLE", part2.Value);
-            Assert.AreEqual("Sql", part2.Type);
+            Assert.AreEqual(StringType.Sql, part2.Type);
         }
 
         [TestMethod]
@@ -151,17 +175,17 @@ namespace IndicatorsManager.WebApi.Test
             ComponentModel result = condition.Accept(new ComponentModelVisitor());
 
             ConditionModel model = result as ConditionModel;
-            Assert.AreEqual("Minor", model.ConditionType);
+            Assert.AreEqual(ConditionType.Minor, model.ConditionType);
             Assert.AreEqual(3, model.Position);
             Assert.AreEqual(2, model.Components.Count());
 
             StringItemModel part1 = model.Components.Single(s => s.Position == 1) as StringItemModel;
             Assert.AreEqual("Test", part1.Value);
-            Assert.AreEqual("Text", part1.Type);
+            Assert.AreEqual(StringType.Text, part1.Type);
 
             StringItemModel part2 = model.Components.Single(s => s.Position == 2) as StringItemModel;
             Assert.AreEqual("SELECT FROM TABLE", part2.Value);
-            Assert.AreEqual("Sql", part2.Type);
+            Assert.AreEqual(StringType.Sql, part2.Type);
         }
 
         [TestMethod]
@@ -174,17 +198,17 @@ namespace IndicatorsManager.WebApi.Test
             ComponentModel result = condition.Accept(new ComponentModelVisitor());
 
             ConditionModel model = result as ConditionModel;
-            Assert.AreEqual("MinorEquals", model.ConditionType);
+            Assert.AreEqual(ConditionType.MinorEquals, model.ConditionType);
             Assert.AreEqual(30, model.Position);
             Assert.AreEqual(2, model.Components.Count());
 
             StringItemModel part1 = model.Components.Single(s => s.Position == 1) as StringItemModel;
             Assert.AreEqual("Test Minor Equals", part1.Value);
-            Assert.AreEqual("Text", part1.Type);
+            Assert.AreEqual(StringType.Text, part1.Type);
 
             StringItemModel part2 = model.Components.Single(s => s.Position == 2) as StringItemModel;
             Assert.AreEqual("SELECT FROM MinorEquals", part2.Value);
-            Assert.AreEqual("Sql", part2.Type);
+            Assert.AreEqual(StringType.Sql, part2.Type);
         }
 
         [TestMethod]
@@ -197,17 +221,17 @@ namespace IndicatorsManager.WebApi.Test
             ComponentModel result = condition.Accept(new ComponentModelVisitor());
 
             ConditionModel model = result as ConditionModel;
-            Assert.AreEqual("Equals", model.ConditionType);
+            Assert.AreEqual(ConditionType.Equals, model.ConditionType);
             Assert.AreEqual(20, model.Position);
             Assert.AreEqual(2, model.Components.Count());
 
             StringItemModel part1 = model.Components.Single(s => s.Position == 1) as StringItemModel;
             Assert.AreEqual("Test Equals", part1.Value);
-            Assert.AreEqual("Text", part1.Type);
+            Assert.AreEqual(StringType.Text, part1.Type);
 
             StringItemModel part2 = model.Components.Single(s => s.Position == 2) as StringItemModel;
             Assert.AreEqual("SELECT FROM Equals", part2.Value);
-            Assert.AreEqual("Sql", part2.Type);
+            Assert.AreEqual(StringType.Sql, part2.Type);
         }
 
         [TestMethod]
@@ -226,13 +250,13 @@ namespace IndicatorsManager.WebApi.Test
             ComponentModel result = condition.Accept(new ComponentModelVisitor());
 
             ConditionModel model = result as ConditionModel;
-            Assert.AreEqual("Or", model.ConditionType);
+            Assert.AreEqual(ConditionType.Or, model.ConditionType);
             Assert.AreEqual(2, model.Position);
             Assert.AreEqual(2, model.Components.Count());
 
             // Part 1
             ConditionModel part1 = model.Components.Single(c => c.Position == 1) as ConditionModel;
-            Assert.AreEqual("Equals", part1.ConditionType);
+            Assert.AreEqual(ConditionType.Equals, part1.ConditionType);
             Assert.AreEqual(2, part1.Components.Count());
 
             IntItemModel part11 = part1.Components.Single(s => s.Position == 1) as IntItemModel;
@@ -240,19 +264,20 @@ namespace IndicatorsManager.WebApi.Test
 
             StringItemModel part12 = part1.Components.Single(s => s.Position == 2) as StringItemModel;
             Assert.AreEqual("SELECT FROM Equals", part12.Value);
-            Assert.AreEqual("Sql", part12.Type);
+            Assert.AreEqual(StringType.Sql, part12.Type);
 
             // Part 2
             ConditionModel part2 = model.Components.Single(c => c.Position == 2) as ConditionModel;
-            Assert.AreEqual("MayorEquals", part2.ConditionType);
+            Assert.AreEqual(ConditionType.MayorEquals, part2.ConditionType);
             Assert.AreEqual(2, part2.Components.Count());
 
             StringItemModel part21 = part2.Components.Single(s => s.Position == 1) as StringItemModel;
             Assert.AreEqual("Test Equals", part21.Value);
+            Assert.AreEqual(StringType.Text, part21.Type);
 
             StringItemModel part22 = part2.Components.Single(s => s.Position == 2) as StringItemModel;
             Assert.AreEqual("SELECT FROM MayorEquals", part22.Value);
-            Assert.AreEqual("Sql", part22.Type);
+            Assert.AreEqual(StringType.Sql, part22.Type);
         }
     }
     

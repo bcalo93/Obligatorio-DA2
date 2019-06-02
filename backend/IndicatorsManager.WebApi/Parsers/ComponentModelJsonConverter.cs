@@ -21,6 +21,14 @@ namespace IndicatorsManager.WebApi.Parsers
             {
                 return new StringItemModel();
             }
+            if(jObject["dateValue"] != null)
+            {
+                return new DateItemModel();
+            }
+            if(jObject["booleanValue"] != null)
+            {
+                return new BooleanItemModel();
+            }
             if(jObject["value"] != null)
             {
                 return new IntItemModel();

@@ -42,6 +42,8 @@ namespace IndicatorsManager.DataAccess
             modelBuilder.Entity<ItemNumeric>();
             modelBuilder.Entity<ItemQuery>();
             modelBuilder.Entity<ItemText>();
+            modelBuilder.Entity<ItemBoolean>();
+            modelBuilder.Entity<ItemDate>();
             modelBuilder.Entity<OrCondition>();
             modelBuilder.Entity<AndCondition>();
             modelBuilder.Entity<EqualsCondition>();

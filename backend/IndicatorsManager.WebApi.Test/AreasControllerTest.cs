@@ -387,7 +387,7 @@ namespace IndicatorsManager.WebApi.Test
         }
         
         [TestMethod]
-        public void AddIndicatorOkTest()
+        public void AddIndicatorOkTest_1()
         {
             Guid areaId = Guid.NewGuid();
 
@@ -429,10 +429,10 @@ namespace IndicatorsManager.WebApi.Test
                         Condition = new ConditionModel 
                         {
                             Position = 1,
-                            ConditionType = "Mayor",
+                            ConditionType = ConditionType.Mayor,
                             Components = new List<ComponentModel>
                             {
-                                new StringItemModel { Position = 1, Value = "Test" , Type = "Sql" },
+                                new StringItemModel { Position = 1, Value = "Test" , Type = StringType.Sql },
                                 new IntItemModel { Position = 2, Value = 20 }
                             }
                         }
@@ -450,51 +450,83 @@ namespace IndicatorsManager.WebApi.Test
             Assert.AreEqual("Red", item.Name);
             ConditionModel condition = item.Condition as ConditionModel;
             Assert.AreEqual(1, condition.Position);
-            Assert.AreEqual("Mayor", condition.ConditionType);
+            Assert.AreEqual(ConditionType.Mayor, condition.ConditionType);
             StringItemModel query = condition.Components.Single(c => c.Position == 1) as StringItemModel;
             Assert.AreEqual("Test", query.Value);
-            Assert.AreEqual("Sql", query.Type);
+            Assert.AreEqual(StringType.Sql, query.Type);
             IntItemModel number = condition.Components.Single(c => c.Position == 2) as IntItemModel;
             Assert.AreEqual(20, number.Value);
+        }
+
+        [TestMethod]
+        public void AddIndicatorOkTest_2()
+        {
+            Guid areaId = Guid.NewGuid();
+            DateTime expectedDate = new DateTime(2019, 2, 23);
+            Indicator createResult = new Indicator
+            {
+                Id = Guid.NewGuid(),
+                Name = "Test Indicator",
+                IndicatorItems = new List<IndicatorItem>
+                { 
+                    new IndicatorItem
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Red",
+                        Condition = new MayorCondition
+                        { 
+                            Id = Guid.NewGuid(),
+                            Position = 1,
+                            Components = new List<Component> 
+                            { 
+                                new ItemBoolean{ Id = Guid.NewGuid(), Position = 1, Boolean = true },
+                                new ItemDate { Id = Guid.NewGuid(), Position = 2, Date = expectedDate }
+                            }
+                        }
+                    } 
+                }
+            };
             
-        }
+            mockIndicator.Setup(m => m.Create(areaId, It.IsAny<Indicator>())).Returns(createResult);
 
-        [TestMethod]
-        public void AddIndicatorInvalidConditionModelTest()
-        {
-            Guid areaId = Guid.NewGuid();
-            IndicatorCreateModel requestBody = new IndicatorCreateModel
-            {
-                Items = new List<IndicatorItemPersistModel> 
+            // Request Body
+            IndicatorCreateModel requestBody = new IndicatorCreateModel 
+            { 
+                Name = "Test Indicator", 
+                Items = new List<IndicatorItemPersistModel>
                 {
                     new IndicatorItemPersistModel 
                     { 
-                        Name = "Yellow", Condition = new ConditionModel { Position = 2, ConditionType = "Wrong" }
+                        Name = "Red", 
+                        Condition = new ConditionModel 
+                        {
+                            Position = 1,
+                            ConditionType = ConditionType.Mayor,
+                            Components = new List<ComponentModel>
+                            {
+                                new BooleanItemModel { Position = 1, BooleanValue = true },
+                                new DateItemModel { Position = 2, DateValue = expectedDate }
+                            }
+                        }
                     }
                 }
             };
-            var result = controller.AddIndicator(areaId, requestBody);
-            var createResponse = result as BadRequestObjectResult;
-            Assert.AreEqual("conditionType debe ser And, Or, Equals, Mayor, MayorEquals, Minor o MinorEquals.", createResponse.Value);
-        }
 
-        [TestMethod]
-        public void AddIndicatorInvalidStringItemModelTest()
-        {
-            Guid areaId = Guid.NewGuid();
-            IndicatorCreateModel requestBody = new IndicatorCreateModel
-            {
-                Items = new List<IndicatorItemPersistModel> 
-                {
-                    new IndicatorItemPersistModel 
-                    { 
-                        Name = "Yellow", Condition = new StringItemModel { Position = 1, Type = "Wrong", Value = "Test" }
-                    }
-                }
-            };
             var result = controller.AddIndicator(areaId, requestBody);
-            var createResponse = result as BadRequestObjectResult;
-            Assert.AreEqual("type debe ser Sql o Text.", createResponse.Value);
+            var createResponse = result as OkObjectResult;
+            IndicatorGetModel model = createResponse.Value as IndicatorGetModel;
+            Assert.AreEqual(createResult.Id, model.Id);
+            Assert.AreEqual("Test Indicator", model.Name);
+            IndicatorItemGetModel item = model.Items.Single();
+            Assert.AreNotEqual(Guid.Empty, item.Id);
+            Assert.AreEqual("Red", item.Name);
+            ConditionModel condition = item.Condition as ConditionModel;
+            Assert.AreEqual(1, condition.Position);
+            Assert.AreEqual(ConditionType.Mayor, condition.ConditionType);
+            BooleanItemModel boolean = condition.Components.Single(c => c.Position == 1) as BooleanItemModel;
+            Assert.IsTrue( boolean.BooleanValue);
+            DateItemModel date = condition.Components.Single(c => c.Position == 2) as DateItemModel;
+            Assert.AreEqual(expectedDate, date.DateValue);
         }
 
         [TestMethod]
