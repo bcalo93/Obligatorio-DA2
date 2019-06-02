@@ -15,6 +15,7 @@ using IndicatorsManager.DataAccess.Interface;
 using IndicatorsManager.BusinessLogic;
 using IndicatorsManager.BusinessLogic.Interface;
 using IndicatorsManager.Domain;
+using Newtonsoft.Json.Converters;
 
 namespace IndicatorsManager.WebApi
 {
@@ -31,6 +32,11 @@ namespace IndicatorsManager.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().AddJsonOptions(options => 
+            {
+                options.SerializerSettings.Converters.Add(new StringEnumConverter());
+                options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+            });
             services.AddDbContext<DbContext, DomainContext>(
                 o => o.UseSqlServer(Configuration.GetConnectionString("IndicatorsManagerDb"))
             );
