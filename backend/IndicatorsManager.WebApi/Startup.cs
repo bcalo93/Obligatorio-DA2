@@ -15,6 +15,7 @@ using IndicatorsManager.DataAccess.Interface;
 using IndicatorsManager.BusinessLogic;
 using IndicatorsManager.BusinessLogic.Interface;
 using IndicatorsManager.Domain;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace IndicatorsManager.WebApi
 {
@@ -31,6 +32,16 @@ namespace IndicatorsManager.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info 
+                { 
+                    Title = "My API",
+                    Version = "v1" 
+                });
+            });
+            
             services.AddDbContext<DbContext, DomainContext>(
                 o => o.UseSqlServer(Configuration.GetConnectionString("IndicatorsManagerDb"))
             );
@@ -69,6 +80,18 @@ namespace IndicatorsManager.WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
+
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseMvc();
         }
