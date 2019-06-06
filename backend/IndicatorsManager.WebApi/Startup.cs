@@ -43,7 +43,7 @@ namespace IndicatorsManager.WebApi
             });
             
             services.AddDbContext<DbContext, DomainContext>(
-                o => o.UseSqlServer(Configuration.GetConnectionString("IndicatorsManagerDb"))
+                o => o.UseSqlServer(Configuration.GetConnectionString("IndicatorsManagerDbMac"))
             );
 
             services.AddScoped<ILogic<User>, UserLogic>();
@@ -71,6 +71,16 @@ namespace IndicatorsManager.WebApi
             services.AddScoped<IReportLogic, ReportLogic>();
             services.AddScoped<ILogQuery, LogRepository>();
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllHeaders", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -92,6 +102,10 @@ namespace IndicatorsManager.WebApi
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
                 c.RoutePrefix = string.Empty;
             });
+
+            app.UseCors("AllowAllHeaders");
+            app.UseHttpsRedirection();
+            app.UseAuthentication();
 
             app.UseMvc();
         }
