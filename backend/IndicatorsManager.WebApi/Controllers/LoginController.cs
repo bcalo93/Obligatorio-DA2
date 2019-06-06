@@ -16,6 +16,7 @@ namespace IndicatorsManager.WebApi.Controllers
     public class LoginController : ControllerBase
     {
         private ISessionLogic session;
+        
 
         public LoginController(ISessionLogic session) : base()
         {
@@ -24,12 +25,12 @@ namespace IndicatorsManager.WebApi.Controllers
 
         [HttpPost]
         public IActionResult Login([FromBody] LoginModel model) {
-            var token = session.CreateToken(model.Username, model.Password);
-            if (token == null) 
+            var authenticationToken = session.CreateToken(model.Username, model.Password);
+            if (authenticationToken == null) 
             {
                 return BadRequest("Usuario/contraseña inválidos");
             }
-            return Ok(token.Token);
+            return Ok(new LoginModelOut(authenticationToken));
         }
     }
 
