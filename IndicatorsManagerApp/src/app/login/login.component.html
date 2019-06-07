@@ -1,0 +1,19 @@
+<h1>Login</h1>
+
+<form class="example-form" #loginForm="ngForm" (ngSubmit)="login(loginForm)">
+  <input
+    placeholder="username"
+    [(ngModel)]="Username"
+    name="username"
+    required
+  />
+  <input
+    placeholder="password"
+    [(ngModel)]="Password"
+    type="password"
+    name="password"
+    required
+  />
+
+  <button type="submit" color="primary">Login</button>
+</form>

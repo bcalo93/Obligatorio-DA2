@@ -1,0 +1,21 @@
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+.example-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.example-container > * {
+  width: 100%;
+}
+
+div.login {
+  width: 30%;
+  margin: 0 auto;
+}
+
+div div {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}

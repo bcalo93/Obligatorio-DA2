@@ -1,0 +1,19 @@
+<div class="login">
+    <h1>Login</h1>
+    <div>
+        <mat-form-field>
+          <input matInput placeholder="Username" [formControl]="username">
+          <mat-error *ngIf="username.invalid">{{getUsernameErrorMessage()}}</mat-error>
+        </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field>
+          <input matInput placeholder="Password" [formControl]="password">
+          <mat-error *ngIf="password.invalid">{{getPasswordErrorMessage()}}</mat-error>
+        </mat-form-field>
+    </div>
+    <div>
+      <button mat-button (click)="login()">Login</button>
+    </div>
+</div>
+  
