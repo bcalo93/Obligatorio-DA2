@@ -18,11 +18,11 @@ namespace IndicatorsManager.WebApi.Controllers
     {
         private ILogic<User> userLogic;
         private IIndicatorLogic indicatorLogic;
-        private ISessionLogic sessionLogic;
 
-        public UsersController(ILogic<User> userLogic) : base()
+        public UsersController(ILogic<User> userLogic, IIndicatorLogic indicatorLogic) : base()
         {
             this.userLogic = userLogic;
+            this.indicatorLogic = indicatorLogic;
         }
         
         [ProtectFilter(Role.Admin)]

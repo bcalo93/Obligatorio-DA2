@@ -51,7 +51,7 @@ namespace IndicatorsManager.WebApi.Filters
             string[] path = context.HttpContext.Request.Path.Value.Split('/');
             Guid indicatorId;
             bool validIndicatorId = Guid.TryParse(path[path.Length -1], out indicatorId);
-            if(validIndicatorId && user.Role == Role.Manager && !indicatorsLogic.GetManagerIndicators(user.Id).Any(i => i.Id == indicatorId))
+            if(validIndicatorId && user.Role == Role.Manager && !indicatorsLogic.GetManagerIndicators(tokenId).Any(i => i.Id == indicatorId))
             {
                 context.Result = new ContentResult()
                 {
