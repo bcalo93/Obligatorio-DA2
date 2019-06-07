@@ -17,6 +17,8 @@ namespace IndicatorsManager.WebApi.Controllers
     public class UsersController : ControllerBase
     {
         private ILogic<User> userLogic;
+        private IIndicatorLogic indicatorLogic;
+        private ISessionLogic sessionLogic;
 
         public UsersController(ILogic<User> userLogic) : base()
         {
@@ -119,6 +121,60 @@ namespace IndicatorsManager.WebApi.Controllers
             {
                 return StatusCode(503, "El servicio no esta disponible.");
             }
+        }
+
+        [HttpGet("indicators")]
+        public IActionResult GetManagerIndicators()
+        {
+            try 
+            {
+                Guid token;
+                bool isValid = Guid.TryParse(HttpContext.Request.Headers["Authorization"], out token);
+                if(!isValid)
+                {
+                    return Unauthorized("El token es invalido.");
+                }
+                
+                return Ok(this.indicatorLogic.GetManagerIndicators(token)
+                    .Select(i => new IndicatorConfigModel(i)).OrderByDescending(i => i.Position.HasValue).ThenBy(i => i.Position));
+            }
+            catch(UnauthorizedException ue)
+            {
+                return Unauthorized(ue.Message);
+            }
+            catch(DataAccessException)
+            {
+                return StatusCode(503, "El servicio no esta disponible");
+            }
+        }
+
+        [HttpGet("activeindicators")]
+        public IActionResult GetManagerActiveIndicators()
+        {
+            try 
+            {
+                Guid token = this.ParseAuthorizationHeader();
+                return Ok(this.indicatorLogic.GetManagerActiveIndicators(token).Select(i => new ActiveIndicatorModel(i)));
+            }
+            catch(UnauthorizedException ue) 
+            {
+                return Unauthorized(ue.Message);
+            }
+            catch(DataAccessException)
+            {
+                return StatusCode(503, "El servicio no esta disponible");
+            }
+        }
+
+        private Guid ParseAuthorizationHeader()
+        {
+            Guid token;
+            bool isValid = Guid.TryParse(HttpContext.Request.Headers["Authorization"], out token);
+            if(!isValid)
+            {
+                throw new UnauthorizedException("El formato del token es invalido.");
+            }
+            return token;
         }
     }
 }

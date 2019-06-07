@@ -15,16 +15,18 @@ namespace IndicatorsManager.BusinessLogic
         private IRepository<Area> areaRepository;
         private IRepository<User> userRepository;
         private IIndicatorQuery indicatorQuery;
-        private  IQueryRunner queryRunner;
+        private IQueryRunner queryRunner;
+        private ITokenRepository tokenRepository;
 
         public IndicatorLogic(IRepository<Indicator> indicatorRepository, IRepository<Area> areaRepository, IRepository<User> userRepository,
-            IIndicatorQuery indicatorQuery, IQueryRunner queryRunner)
+            IIndicatorQuery indicatorQuery, IQueryRunner queryRunner, ITokenRepository tokenRepository)
         {
             this.indicatorRepository = indicatorRepository;
             this.areaRepository = areaRepository;
             this.userRepository = userRepository;
             this.indicatorQuery = indicatorQuery;
             this.queryRunner = queryRunner;
+            this.tokenRepository = tokenRepository;
         }
         
         public Indicator Create(Guid areaId, Indicator indicator)
@@ -81,9 +83,39 @@ namespace IndicatorsManager.BusinessLogic
             return area.Indicators;
         }
 
-        public IEnumerable<Indicator> GetManagerIndicators(Guid userId)
+        public IEnumerable<Indicator> GetManagerIndicators(Guid token)
         {
-            return this.indicatorQuery.GetManagerIndicators(userId);
+            User authUser = GetUserByToken(token);
+            return this.indicatorQuery.GetManagerIndicators(authUser.Id);
+        }
+
+        public IEnumerable<ActiveIndicator> GetManagerActiveIndicators(Guid token)
+        {
+            User authUser = GetUserByToken(token);
+            List<ActiveIndicator> result = new List<ActiveIndicator>();
+            IEnumerable<Indicator> indicators = this.indicatorQuery.GetManagerIndicators(authUser.Id);
+            foreach (Indicator indicator in indicators)
+            {
+                this.queryRunner.SetConnectionString(indicator.Area.DataSource);
+                List<IndicatorItem> turnOn = new List<IndicatorItem>();
+                foreach (IndicatorItem item in indicator.IndicatorItems)
+                {
+                    try
+                    {
+                        DataType dataResult = item.Condition.Accept(new VisitorComponentEvaluate(this.queryRunner));
+                        if(dataResult.GetType() == typeof(BooleanDataType) && ((BooleanDataType)dataResult).BooleanValue)
+                        {
+                            turnOn.Add(item);
+                        }
+                    }
+                    catch(EvaluationException) { }
+                }
+                if(turnOn.Count > 0)
+                {
+                    result.Add(new ActiveIndicator { Indicator = indicator, ActiveItems = turnOn });
+                }
+            }
+            return result;
         }
 
         public void Remove(Guid id)
@@ -156,6 +188,16 @@ namespace IndicatorsManager.BusinessLogic
         private bool ValidName(string name)
         {
             return !String.IsNullOrEmpty(name) && name.Trim() != "";
+        }
+
+        private User GetUserByToken(Guid authToken)
+        {
+            AuthenticationToken token = this.tokenRepository.GetByToken(authToken);
+            if(token == null || token.User == null)
+            {
+                throw new UnauthorizedException("El token es invalido.");
+            }
+            return token.User;
         }
     }
 }

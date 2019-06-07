@@ -27,32 +27,6 @@ namespace IndicatorsManager.WebApi.Controllers
             this.sessionLogic = sessionLogic;
             this.itemLogic = itemLogic;
         }
-        
-        [HttpGet]
-        public IActionResult Get()
-        {
-            try 
-            {
-                Guid token;
-                bool isValid = Guid.TryParse(HttpContext.Request.Headers["Authorization"], out token);
-                if(!isValid)
-                {
-                    return Unauthorized("El token es invalido");
-                }
-                User user = this.sessionLogic.GetUser(token);
-                if(user == null || user.Role != Role.Manager)
-                {
-                    return NotFound("El usuario no existe");
-                }
-                
-                return Ok(this.indicatorLogic.GetManagerIndicators(user.Id)
-                    .Select(i => new IndicatorConfigModel(i, user.Id)).OrderByDescending(i => i.Position.HasValue).ThenBy(i => i.Position));
-            }
-            catch(DataAccessException)
-            {
-                return StatusCode(503, "El servicio no esta disponible");
-            }
-        }
 
         [IndicatorFilter()]
         [HttpGet("{id}")]

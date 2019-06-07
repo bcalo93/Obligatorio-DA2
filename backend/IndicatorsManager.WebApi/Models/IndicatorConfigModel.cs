@@ -11,9 +11,9 @@ namespace IndicatorsManager.WebApi.Models
         public bool IsVisible { get; set; }
         public IndicatorConfigModel() : base() { }
 
-        public IndicatorConfigModel(Indicator indicator, Guid userId) : base(indicator)
+        public IndicatorConfigModel(Indicator indicator) : base(indicator)
         {
-            UserIndicator config = indicator.UserIndicators.FirstOrDefault(u => u.UserId == userId);
+            UserIndicator config = indicator.UserIndicators.FirstOrDefault();
             if(config != null)
             {
                 Position = config.Position;
