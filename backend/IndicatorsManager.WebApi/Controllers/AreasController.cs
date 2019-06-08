@@ -133,7 +133,8 @@ namespace IndicatorsManager.WebApi.Controllers
             try
             {
                 this.uaLogic.AddAreaManager(id, userId);
-                return Ok();
+                Area area = this.areaLogic.Get(id);
+                return Ok(new AreaModel(area));
             }
             catch(InvalidEntityException ie)
             {
