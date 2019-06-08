@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { User, Indicator } from '../models';
 import { environment } from '../environments/environment';
 import { Observable } from 'rxjs';
-import { UtilsService } from '.';
+import { UtilsService } from './utils.service';
 
 @Injectable({
   providedIn: 'root'
