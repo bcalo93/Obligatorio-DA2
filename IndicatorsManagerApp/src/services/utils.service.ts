@@ -12,7 +12,7 @@ export class UtilsService {
   getOptions() {
     const token = this.authService.getToken();
     let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Authorization', 'Bearer ' + token);
+    headers = headers.append('Authorization', token);
     headers = headers.append('Content-Type', 'application/json');
     return { headers };
   }
