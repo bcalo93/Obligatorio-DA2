@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using IndicatorsManager.Domain;
+using IndicatorsManager.BusinessLogic.Interface;
 
 namespace IndicatorsManager.WebApi.Models
 {
@@ -9,20 +10,13 @@ namespace IndicatorsManager.WebApi.Models
     {
         public int? Position { get; set; }
         public bool IsVisible { get; set; }
+        
         public IndicatorConfigModel() : base() { }
 
-        public IndicatorConfigModel(Indicator indicator) : base(indicator)
+        public IndicatorConfigModel(IndicatorConfiguration configuration) : base(configuration.Indicator)
         {
-            UserIndicator config = indicator.UserIndicators.FirstOrDefault();
-            if(config != null)
-            {
-                Position = config.Position;
-                IsVisible = config.IsVisible;
-            }
-            else
-            {
-                IsVisible = true;
-            }
+            this.Position = configuration.Position;
+            this.IsVisible = configuration.IsVisible;
         }
     }
 }

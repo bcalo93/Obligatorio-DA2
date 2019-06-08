@@ -4,9 +4,8 @@ using IndicatorsManager.Domain;
 
 namespace IndicatorsManager.BusinessLogic.Interface
 {
-    public class ActiveIndicator 
+    public class ActiveIndicator : IndicatorConfiguration
     {
-        public Indicator Indicator { get; set; }
         public IEnumerable<IndicatorItem> ActiveItems { get; set; }
 
         public ActiveIndicator() { }

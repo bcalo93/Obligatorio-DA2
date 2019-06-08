@@ -136,7 +136,7 @@ namespace IndicatorsManager.WebApi.Controllers
                 }
                 
                 return Ok(this.indicatorLogic.GetManagerIndicators(token)
-                    .Select(i => new IndicatorConfigModel(i)).OrderByDescending(i => i.Position.HasValue).ThenBy(i => i.Position));
+                    .Select(i => new IndicatorConfigModel(i)));
             }
             catch(UnauthorizedException ue)
             {
@@ -154,7 +154,8 @@ namespace IndicatorsManager.WebApi.Controllers
             try 
             {
                 Guid token = this.ParseAuthorizationHeader();
-                return Ok(this.indicatorLogic.GetManagerActiveIndicators(token).Select(i => new ActiveIndicatorModel(i)));
+                return Ok(this.indicatorLogic.GetManagerActiveIndicators(token)
+                    .Select(i => new ActiveIndicatorModel(i)));
             }
             catch(UnauthorizedException ue) 
             {

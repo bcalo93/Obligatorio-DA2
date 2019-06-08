@@ -509,23 +509,64 @@ namespace IndicatorsManager.BusinessLogic.Test
         }
 
         [TestMethod]
-        public void GetManagerIndicatorsOkTest()
+        public void GetManagerIndicatorsWithConfigurationOkTest()
         {
             Guid userId = Guid.NewGuid();
             List<Indicator> getResult = new List<Indicator>();
             for (int i = 0; i < 10; i++)
             {
-                getResult.Add(new Indicator{ Id = Guid.NewGuid(), Name = "Test Get Indicator " + i });
+                getResult.Add(new Indicator
+                { 
+                    Id = Guid.NewGuid(), 
+                    Name = "Test Get Indicator " + i,
+                    UserIndicators = new List<UserIndicator> 
+                    {
+                        new UserIndicator { UserId = userId, Position = i, IsVisible = false } 
+                    } 
+                });
             }
             mockToken.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(
                 new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId }});
             mockQuery.Setup(m => m.GetManagerIndicators(userId)).Returns(getResult);
             
-            IEnumerable<Indicator> result = logic.GetManagerIndicators(userId);
+            IEnumerable<IndicatorConfiguration> result = logic.GetManagerIndicators(userId);
             
-            foreach (Indicator indicator in result)
+            int currentPosition = 0;
+            foreach (IndicatorConfiguration config in result)
             {
-                Assert.IsTrue(getResult.Any(i => i.Id == indicator.Id && i.Name == indicator.Name));
+                Assert.IsTrue(getResult.Any(i => i.Id == config.Indicator.Id && 
+                    i.Name == config.Indicator.Name && i.UserIndicators.Single().Position == config.Position));
+                Assert.AreEqual(currentPosition, config.Position);
+                Assert.IsFalse(config.IsVisible);
+                currentPosition++;
+            }
+        }
+
+        [TestMethod]
+        public void GetManagerIndicatorsWithoutConfigurationOkTest()
+        {
+            Guid userId = Guid.NewGuid();
+            List<Indicator> getResult = new List<Indicator>();
+            for (int i = 0; i < 10; i++)
+            {
+                getResult.Add(new Indicator
+                { 
+                    Id = Guid.NewGuid(), 
+                    Name = "Test Get Indicator " + i
+                });
+            }
+            mockToken.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(
+                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId }});
+            mockQuery.Setup(m => m.GetManagerIndicators(userId)).Returns(getResult);
+            
+            IEnumerable<IndicatorConfiguration> result = logic.GetManagerIndicators(userId);
+            
+            foreach (IndicatorConfiguration config in result)
+            {
+                Assert.IsTrue(getResult.Any(i => i.Id == config.Indicator.Id && 
+                    i.Name == config.Indicator.Name));
+                Assert.IsNull(config.Position);
+                Assert.IsTrue(config.IsVisible);
             }
         }
 
@@ -568,12 +609,16 @@ namespace IndicatorsManager.BusinessLogic.Test
             Assert.AreEqual("Test Indicator 0", indicator1.Indicator.Name);
             Assert.AreEqual(1, indicator1.ActiveItems.Count());
             Assert.IsTrue(indicator1.ActiveItems.Any(i => i.Name == "Yellow"));
+            Assert.IsNull(indicator1.Position);
+            Assert.IsTrue(indicator1.IsVisible);
 
             ActiveIndicator indicator2 = result.ElementAt(1);
             Assert.AreEqual("Test Indicator 1", indicator2.Indicator.Name);
             Assert.AreEqual(2, indicator2.ActiveItems.Count());
             Assert.IsTrue(indicator2.ActiveItems.Any(i => i.Name == "Red"));
             Assert.IsTrue(indicator2.ActiveItems.Any(i => i.Name == "Green"));
+            Assert.IsNull(indicator1.Position);
+            Assert.IsTrue(indicator1.IsVisible);
         }
 
         [TestMethod]
@@ -593,10 +638,12 @@ namespace IndicatorsManager.BusinessLogic.Test
 
             IEnumerable<ActiveIndicator> result = logic.GetManagerActiveIndicators(userId);
             Assert.AreEqual(1, result.Count());
-            ActiveIndicator indicator1 = result.Single();
-            Assert.AreEqual("Test Indicator 0", indicator1.Indicator.Name);
-            Assert.AreEqual(1, indicator1.ActiveItems.Count());
-            Assert.IsTrue(indicator1.ActiveItems.Any(i => i.Name == "Green"));
+            ActiveIndicator indicator = result.Single();
+            Assert.AreEqual("Test Indicator 0", indicator.Indicator.Name);
+            Assert.AreEqual(1, indicator.ActiveItems.Count());
+            Assert.IsTrue(indicator.ActiveItems.Any(i => i.Name == "Green"));
+            Assert.IsNull(indicator.Position);
+            Assert.IsTrue(indicator.IsVisible);
         }
         
         [TestMethod]

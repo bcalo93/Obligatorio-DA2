@@ -5,20 +5,18 @@ using IndicatorsManager.BusinessLogic.Interface;
 
 namespace IndicatorsManager.WebApi.Models
 {
-    public class ActiveIndicatorModel
+    public class ActiveIndicatorModel : IndicatorConfigModel
     {
-        public IndicatorGetModel Indicator { get; set; }
-        public IEnumerable<IndicatorItemGetModel> Items { get; set; }
+        public IEnumerable<string> ActiveItems { get; set; }
 
         public ActiveIndicatorModel()
         {
-            this.Items = new List<IndicatorItemGetModel>();
+            this.ActiveItems = new List<string>();
         }
 
-        public ActiveIndicatorModel(ActiveIndicator activeIndicator)
+        public ActiveIndicatorModel(ActiveIndicator activeIndicator) : base(activeIndicator)
         {
-            this.Indicator = new IndicatorGetModel(activeIndicator.Indicator);
-            this.Items = activeIndicator.ActiveItems.Select(i => new IndicatorItemGetModel(i));
+            this.ActiveItems = activeIndicator.ActiveItems.Select(i => i.Name);
         }
     }
 }

@@ -83,10 +83,12 @@ namespace IndicatorsManager.BusinessLogic
             return area.Indicators;
         }
 
-        public IEnumerable<Indicator> GetManagerIndicators(Guid token)
+        public IEnumerable<IndicatorConfiguration> GetManagerIndicators(Guid token)
         {
             User authUser = GetUserByToken(token);
-            return this.indicatorQuery.GetManagerIndicators(authUser.Id);
+            return this.indicatorQuery.GetManagerIndicators(authUser.Id)
+                .Select(i => ConvertToIndicatorConfiguration(i, authUser.Id))
+                .OrderByDescending(i => i.Position.HasValue).ThenBy(i => i.Position);
         }
 
         public IEnumerable<ActiveIndicator> GetManagerActiveIndicators(Guid token)
@@ -112,10 +114,10 @@ namespace IndicatorsManager.BusinessLogic
                 }
                 if(turnOn.Count > 0)
                 {
-                    result.Add(new ActiveIndicator { Indicator = indicator, ActiveItems = turnOn });
+                    result.Add(ConvertToActiveIndicator(indicator, authUser.Id, turnOn));
                 }
             }
-            return result;
+            return result.OrderByDescending(i => i.Position.HasValue).ThenBy(i => i.Position);
         }
 
         public void Remove(Guid id)
@@ -198,6 +200,34 @@ namespace IndicatorsManager.BusinessLogic
                 throw new UnauthorizedException("El token es invalido.");
             }
             return token.User;
+        }
+
+        private IndicatorConfiguration ConvertToIndicatorConfiguration(Indicator indicator, Guid userId)
+        {
+            UserIndicator userIndicator = indicator.UserIndicators.FirstOrDefault(ui => ui.UserId == userId);
+            int? position = null;
+            if(userIndicator != null)
+            {
+                position = userIndicator.Position;
+            }
+            return new IndicatorConfiguration
+            {
+                Indicator = indicator,
+                IsVisible = userIndicator == null || userIndicator.IsVisible,
+                Position = position
+            };
+        }
+
+        private ActiveIndicator ConvertToActiveIndicator(Indicator indicator, Guid userId, IEnumerable<IndicatorItem> activeItems)
+        {
+            IndicatorConfiguration config = ConvertToIndicatorConfiguration(indicator, userId);
+            return new ActiveIndicator
+            {
+                Indicator = indicator,
+                Position = config.Position,
+                IsVisible = config.IsVisible,
+                ActiveItems = activeItems
+            };
         }
     }
 }
