@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -15,7 +14,6 @@ export class UtilsService {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Authorization', 'Bearer ' + token);
     headers = headers.append('Content-Type', 'application/json');
-
     return { headers };
   }
 }

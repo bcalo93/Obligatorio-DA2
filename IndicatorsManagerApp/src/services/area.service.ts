@@ -1,13 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
-import { Area } from '../models';
+import { Area, Indicator } from '../models';
 import { environment } from '../environments/environment';
-import { map, tap, catchError} from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { UtilsService } from './utils.service';
-
-
 
 @Injectable({
   providedIn: 'root'
@@ -19,31 +16,58 @@ export class AreaService {
 
   getAllAreas(): Observable<Array<Area>> {
     const url = `${environment.apiEndpoint}/areas`;
-    return this.http.get<Array<Area>>(url);
+    const options = this.utilsService.getOptions();
+    return this.http.get<Array<Area>>(url, options);
   }
 
-  getArea(id: number): Observable<Area> {
-    const url = `${environment.apiEndpoint}/areas/${id}`;
-    return this.http.get<Area>(url);
+  getArea(areaId: string): Observable<Area> {
+    const url = `${environment.apiEndpoint}/areas/${areaId}`;
+    const options = this.utilsService.getOptions();
+    return this.http.get<Area>(url, options);
   }
 
   addArea(area: Area): Observable<Area> {
+      const url = `${environment.apiEndpoint}/areas`;
       const options = this.utilsService.getOptions();
-      return this.http.post<Area>(`${environment.apiEndpoint}/area`, area, options);
+      return this.http.post<Area>(url, area, options);
   }
 
   updateArea(area: Area): Observable<Area> {
     const url = `${environment.apiEndpoint}/areas/${area.id}`;
     const body = JSON.stringify(area);
     const options = this.utilsService.getOptions();
-
     return this.http.put<Area>(url, body, options);
   }
 
-  deleteArea(id: number): Observable<any> {
-    const url = `${environment.apiEndpoint}/area/${id}`;
+  deleteArea(areaId: string): Observable<any> {
+    const url = `${environment.apiEndpoint}/areas/${areaId}`;
     const options = this.utilsService.getOptions();
-
     return this.http.delete(url, options);
+  }
+
+  addManagerToArea(areaId: string): Observable<Area> {
+    const url = `${environment.apiEndpoint}/areas/${areaId}/userarea`;
+    const body = JSON.stringify(areaId);
+    const options = this.utilsService.getOptions();
+    return this.http.post<Area>(url, body, options);
+  }
+
+  deleteManagerFromArea(areaId: string, userId: string): Observable<any> {
+    const url = `${environment.apiEndpoint}/areas/${areaId}/userarea/${userId}`;
+    const options = this.utilsService.getOptions();
+    return this.http.delete(url, options);
+  }
+
+  addIndicators(areaId: string): Observable<Indicator> {
+    const url = `${environment.apiEndpoint}/areas/${areaId}/indicators`;
+    const body = JSON.stringify(areaId);
+    const options = this.utilsService.getOptions();
+    return this.http.post<Indicator>(url, body, options);
+  }
+
+  getIndicators(areaId: string): Observable<Indicator> {
+    const url = `${environment.apiEndpoint}/areas/${areaId}/indicators`;
+    const options = this.utilsService.getOptions();
+    return this.http.get<Indicator>(url, options);
   }
 }
