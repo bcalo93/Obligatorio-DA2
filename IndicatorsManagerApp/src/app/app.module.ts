@@ -5,8 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HomeManagerComponent } from './home-manager/home-manager.component';
-import { LoginComponent } from './login/login.component';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import {
@@ -18,14 +17,14 @@ import {
   MatSelectModule,
 } from '@angular/material';
 
-import { LoginCustomComponent } from './login-custom/login-custom.component';
+import { HomeManagerComponent } from './home-manager/home-manager.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeManagerComponent,
     LoginComponent,
-    LoginCustomComponent,
   ],
   imports: [
     BrowserModule,
