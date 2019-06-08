@@ -3,13 +3,13 @@
     <div class="login-container">
       <div class="wapper">
           <mat-form-field>
-            <input matInput placeholder="Username" [formControl]="username">
+            <input matInput placeholder="Username" [formControl]="username" (keyup.enter)="isFormInvalid() ? null : login()">
             <mat-error *ngIf="username.invalid">{{getUsernameErrorMessage()}}</mat-error>
           </mat-form-field>
       </div>
       <div class="wapper">
         <mat-form-field>
-            <input matInput placeholder="Password" [formControl]="password">
+            <input matInput placeholder="Password" [formControl]="password" (keyup.enter)="isFormInvalid() ? null : login()">
             <mat-error *ngIf="password.invalid">{{getPasswordErrorMessage()}}</mat-error>
           </mat-form-field>
       </div>
