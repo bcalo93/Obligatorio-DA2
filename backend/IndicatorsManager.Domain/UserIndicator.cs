@@ -8,6 +8,7 @@ namespace IndicatorsManager.Domain
         public virtual Indicator Indicator { get; set; }
         public Guid UserId { get; set; }
         public virtual User User { get; set; }
+        public string Alias { get; set; }
         public int Position { get; set; }
         public bool IsVisible { get; set; }
 

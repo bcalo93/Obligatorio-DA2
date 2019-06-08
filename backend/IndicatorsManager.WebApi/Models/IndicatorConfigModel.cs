@@ -10,6 +10,7 @@ namespace IndicatorsManager.WebApi.Models
     {
         public int? Position { get; set; }
         public bool IsVisible { get; set; }
+        public string Alias { get; set; }
         
         public IndicatorConfigModel() : base() { }
 
@@ -17,6 +18,7 @@ namespace IndicatorsManager.WebApi.Models
         {
             this.Position = configuration.Position;
             this.IsVisible = configuration.IsVisible;
+            this.Alias = configuration.Alias;
         }
     }
 }

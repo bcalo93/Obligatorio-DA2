@@ -15,6 +15,27 @@ namespace IndicatorsManager.BusinessLogic.Test
     [TestClass]
     public class SessionLogicTest 
     {
+        private Mock<IRepository<Log>> mockLogger;
+        private Mock<IRepository<User>> mockUserRepo;
+        private Mock<ITokenRepository> mockTokenRepo;
+        private ISessionLogic session;
+
+        [TestInitialize]
+        public void InitMocks()
+        {
+            mockLogger = new Mock<IRepository<Log>>(MockBehavior.Strict);
+            mockUserRepo = new Mock<IRepository<User>>(MockBehavior.Strict);
+            mockTokenRepo = new Mock<ITokenRepository>(MockBehavior.Strict);
+            session = new SessionLogic(mockTokenRepo.Object, mockUserRepo.Object, mockLogger.Object);
+        }
+
+        [TestCleanup]
+        public void VerifyAll()
+        {
+            mockLogger.VerifyAll();
+            mockUserRepo.VerifyAll();
+            mockTokenRepo.VerifyAll();
+        }
 
         [TestMethod]
         public void CreateNewAuthenticationTokenOkTest()
@@ -22,23 +43,16 @@ namespace IndicatorsManager.BusinessLogic.Test
             var users = CreateUsers(10);
             var user = users.ElementAt(5);
 
-            var mockLogger = new Mock<IRepository<Log>>(MockBehavior.Strict);
             mockLogger.Setup(m => m.Add(It.IsAny<Log>()));
             mockLogger.Setup(m => m.Save());
-            
-            var mockUserRepo = new Mock<IRepository<User>>(MockBehavior.Strict);            
+                    
             mockUserRepo.Setup(m => m.GetAll()).Returns(users);
 
-            var mockTokenRepo = new Mock<ITokenRepository>(MockBehavior.Strict);
             mockTokenRepo.Setup(m => m.GetByUser(It.IsAny<User>())).Returns<IEnumerable<AuthenticationToken>>(null);
             mockTokenRepo.Setup(m => m.Add(It.IsAny<AuthenticationToken>()));
             mockTokenRepo.Setup(m => m.Save());
             
-            SessionLogic session = new SessionLogic(mockTokenRepo.Object, mockUserRepo.Object, mockLogger.Object);
             AuthenticationToken result = session.CreateToken(user.Username, user.Password);
-
-            mockUserRepo.VerifyAll();
-            mockTokenRepo.VerifyAll();
 
             Assert.AreEqual(user.Id, result.User.Id);
         }
@@ -58,23 +72,16 @@ namespace IndicatorsManager.BusinessLogic.Test
                 User = user
             };
             
-            var mockLogger = new Mock<IRepository<Log>>(MockBehavior.Strict);
             mockLogger.Setup(m => m.Add(It.IsAny<Log>()));
             mockLogger.Setup(m => m.Save());
-            
-            var mockUserRepo = new Mock<IRepository<User>>(MockBehavior.Strict);            
+                      
             mockUserRepo.Setup(m => m.GetAll()).Returns(users);            
 
-            var mockTokenRepo = new Mock<ITokenRepository>(MockBehavior.Strict);
             mockTokenRepo.Setup(m => m.GetByUser(It.IsAny<User>())).Returns(authToken);
             mockTokenRepo.Setup(m => m.Update(It.IsAny<AuthenticationToken>()));
             mockTokenRepo.Setup(m => m.Save());
             
-            SessionLogic session = new SessionLogic(mockTokenRepo.Object, mockUserRepo.Object, mockLogger.Object);
             AuthenticationToken result = session.CreateToken(user.Username, user.Password);
-
-            mockUserRepo.VerifyAll();
-            mockTokenRepo.VerifyAll();
 
             Assert.AreNotEqual(token, result.Token);
             Assert.AreEqual(id, result.Id);
@@ -85,18 +92,9 @@ namespace IndicatorsManager.BusinessLogic.Test
         {
             var users = CreateUsers(10);
             
-            var mockLogger = new Mock<IRepository<Log>>(MockBehavior.Strict);
-            
-            var mockUserRepo = new Mock<IRepository<User>>(MockBehavior.Strict);            
             mockUserRepo.Setup(m => m.GetAll()).Returns(users);
-
-            var mockTokenRepo = new Mock<ITokenRepository>(MockBehavior.Strict);
             
-            SessionLogic session = new SessionLogic(mockTokenRepo.Object, mockUserRepo.Object, mockLogger.Object);
             AuthenticationToken result = session.CreateToken("invalid username", "invalid password");
-
-            mockUserRepo.VerifyAll();
-            mockTokenRepo.VerifyAll();
             
             Assert.IsNull(result);
         }
@@ -107,40 +105,54 @@ namespace IndicatorsManager.BusinessLogic.Test
             AuthenticationToken authToken = new AuthenticationToken
             {
                 Token = Guid.NewGuid(),
-                User = CreateUser(Guid.NewGuid())
+                User = CreateUser(Guid.NewGuid(), false)
             };
             
-            var mockLogger = new Mock<IRepository<Log>>(MockBehavior.Strict);
-            
-            var mockUserRepo = new Mock<IRepository<User>>(MockBehavior.Strict);            
-            
-            var mockTokenRepo = new Mock<ITokenRepository>(MockBehavior.Strict);
             mockTokenRepo.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(authToken);
             
-            SessionLogic session = new SessionLogic(mockTokenRepo.Object, mockUserRepo.Object, mockLogger.Object);
             bool result = session.IsValidToken(authToken.Token);
-
-            mockUserRepo.VerifyAll();
-            mockTokenRepo.VerifyAll();
 
             Assert.IsTrue(result);
         }
 
         [TestMethod]
+        public void IsValidTokenUserDeletedOkTest()
+        {
+            AuthenticationToken authToken = new AuthenticationToken
+            {
+                Token = Guid.NewGuid(),
+                User = CreateUser(Guid.NewGuid(), true)
+            };
+            
+            mockTokenRepo.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(authToken);
+            
+            bool result = session.IsValidToken(authToken.Token);
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void IsValidTokenUserNullOkTest()
+        {
+            AuthenticationToken authToken = new AuthenticationToken
+            {
+                Token = Guid.NewGuid()
+            };
+            
+            mockTokenRepo.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(authToken);
+            
+            bool result = session.IsValidToken(authToken.Token);
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
         public void IsNotValidTokenOkTest()
         {
-            var mockLogger = new Mock<IRepository<Log>>(MockBehavior.Strict);
-            
-            var mockUserRepo = new Mock<IRepository<User>>(MockBehavior.Strict);            
-            
-            var mockTokenRepo = new Mock<ITokenRepository>(MockBehavior.Strict);
             mockTokenRepo.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns<IEnumerable<AuthenticationToken>>(null);
             
             SessionLogic session = new SessionLogic(mockTokenRepo.Object, mockUserRepo.Object, mockLogger.Object);
             bool result = session.IsValidToken(Guid.NewGuid());
-
-            mockUserRepo.VerifyAll();
-            mockTokenRepo.VerifyAll();
 
             Assert.IsFalse(result);
         }
@@ -148,7 +160,7 @@ namespace IndicatorsManager.BusinessLogic.Test
         [TestMethod]
         public void GetUserOkTest()
         {
-            User user = CreateUser(Guid.NewGuid());
+            User user = CreateUser(Guid.NewGuid(), false);
 
             AuthenticationToken authToken = new AuthenticationToken
             {
@@ -157,19 +169,12 @@ namespace IndicatorsManager.BusinessLogic.Test
                 User = user
             };
 
-            var mockLogger = new Mock<IRepository<Log>>(MockBehavior.Strict);
-            
-            var mockUserRepo = new Mock<IRepository<User>>(MockBehavior.Strict);  
             mockUserRepo.Setup(m => m.Get(It.IsAny<Guid>())).Returns(user);
 
-            var mockTokenRepo = new Mock<ITokenRepository>(MockBehavior.Strict);
             mockTokenRepo.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(authToken);
             
             SessionLogic session = new SessionLogic(mockTokenRepo.Object, mockUserRepo.Object, mockLogger.Object);
             User result = session.GetUser(authToken.Token);
-
-            mockUserRepo.VerifyAll();
-            mockTokenRepo.VerifyAll();
 
             Assert.AreEqual(user.Id, result.Id);
         }
@@ -177,18 +182,9 @@ namespace IndicatorsManager.BusinessLogic.Test
         [TestMethod]
         public void GetUserAuthTokenNotValidTest()
         {
-            var mockLogger = new Mock<IRepository<Log>>(MockBehavior.Strict);
-            
-            var mockUserRepo = new Mock<IRepository<User>>(MockBehavior.Strict);  
-
-            var mockTokenRepo = new Mock<ITokenRepository>(MockBehavior.Strict);
             mockTokenRepo.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns<IEnumerable<AuthenticationToken>>(null);
             
-            SessionLogic session = new SessionLogic(mockTokenRepo.Object, mockUserRepo.Object, mockLogger.Object);
             User result = session.GetUser(Guid.NewGuid());
-
-            mockUserRepo.VerifyAll();
-            mockTokenRepo.VerifyAll();
 
             Assert.IsNull(result);
         }
@@ -196,7 +192,7 @@ namespace IndicatorsManager.BusinessLogic.Test
         [TestMethod]
         public void HasLevelOkTest()
         {
-            User user = CreateUser(Guid.NewGuid());
+            User user = CreateUser(Guid.NewGuid(), false);
 
             AuthenticationToken authToken = new AuthenticationToken
             {
@@ -205,19 +201,11 @@ namespace IndicatorsManager.BusinessLogic.Test
                 User = user
             };
 
-            var mockLogger = new Mock<IRepository<Log>>(MockBehavior.Strict);
-            
-            var mockUserRepo = new Mock<IRepository<User>>(MockBehavior.Strict);  
             mockUserRepo.Setup(m => m.Get(It.IsAny<Guid>())).Returns(user);
 
-            var mockTokenRepo = new Mock<ITokenRepository>(MockBehavior.Strict);
             mockTokenRepo.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(authToken);
             
-            SessionLogic session = new SessionLogic(mockTokenRepo.Object, mockUserRepo.Object, mockLogger.Object);
             bool result = session.HasLevel(authToken.Token, Role.Manager);
-
-            mockUserRepo.VerifyAll();
-            mockTokenRepo.VerifyAll();
 
             Assert.IsTrue(result);
         }
@@ -225,7 +213,7 @@ namespace IndicatorsManager.BusinessLogic.Test
         [TestMethod]
         public void HasLevelNotValidUserTest()
         {
-            User user = CreateUser(Guid.NewGuid());
+            User user = CreateUser(Guid.NewGuid(), false);
 
             AuthenticationToken authToken = new AuthenticationToken
             {
@@ -234,27 +222,15 @@ namespace IndicatorsManager.BusinessLogic.Test
                 User = user
             };
 
-            var mockLogger = new Mock<IRepository<Log>>(MockBehavior.Strict);
-            
-            var mockUserRepo = new Mock<IRepository<User>>(MockBehavior.Strict);  
             mockUserRepo.Setup(m => m.Get(It.IsAny<Guid>())).Returns<IEnumerable<User>>(null);
 
-            var mockTokenRepo = new Mock<ITokenRepository>(MockBehavior.Strict);
             mockTokenRepo.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(authToken);
             
-            SessionLogic session = new SessionLogic(mockTokenRepo.Object, mockUserRepo.Object, mockLogger.Object);
             bool result = session.HasLevel(authToken.Token, Role.Manager);
-
-            mockUserRepo.VerifyAll();
-            mockTokenRepo.VerifyAll();
 
             Assert.IsFalse(result);
         }
         
-
-
-
-
         private IEnumerable<AuthenticationToken> CreateAuthenticationTokenData(ITokenRepository repository, int amount)
         {
             List<AuthenticationToken> result = new List<AuthenticationToken>();
@@ -264,7 +240,7 @@ namespace IndicatorsManager.BusinessLogic.Test
                 {
                     Id = Guid.NewGuid(),
                     Token = Guid.NewGuid(),
-                    User = CreateUser(Guid.NewGuid())
+                    User = CreateUser(Guid.NewGuid(), false)
                 };
                 repository.Add(authToken);
                 result.Add(authToken);
@@ -293,7 +269,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             return result;
         }
 
-        private User CreateUser(Guid id) 
+        private User CreateUser(Guid id, bool isDeleted) 
         {
             User create = new User
             {
@@ -304,7 +280,7 @@ namespace IndicatorsManager.BusinessLogic.Test
                 Password = "Password",
                 Email = "user@email.com",
                 Role = Role.Manager,
-                IsDeleted = false
+                IsDeleted = isDeleted
             };
             return create;
         }

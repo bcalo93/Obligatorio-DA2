@@ -95,7 +95,9 @@ namespace IndicatorsManager.BusinessLogic
         {
             User authUser = GetUserByToken(token);
             List<ActiveIndicator> result = new List<ActiveIndicator>();
-            IEnumerable<Indicator> indicators = this.indicatorQuery.GetManagerIndicators(authUser.Id);
+            IEnumerable<Indicator> indicators = this.indicatorQuery.GetManagerIndicators(authUser.Id)
+                .Where(i => i.UserIndicators.Count(u => u.UserId == authUser.Id) == 0 || 
+                i.UserIndicators.Any(u => u.UserId == authUser.Id && u.IsVisible));
             foreach (Indicator indicator in indicators)
             {
                 this.queryRunner.SetConnectionString(indicator.Area.DataSource);
@@ -195,7 +197,7 @@ namespace IndicatorsManager.BusinessLogic
         private User GetUserByToken(Guid authToken)
         {
             AuthenticationToken token = this.tokenRepository.GetByToken(authToken);
-            if(token == null || token.User == null)
+            if(token == null || token.User == null || token.User.IsDeleted)
             {
                 throw new UnauthorizedException("El token es invalido.");
             }
@@ -206,15 +208,18 @@ namespace IndicatorsManager.BusinessLogic
         {
             UserIndicator userIndicator = indicator.UserIndicators.FirstOrDefault(ui => ui.UserId == userId);
             int? position = null;
+            string alias = null;
             if(userIndicator != null)
             {
                 position = userIndicator.Position;
+                alias = userIndicator.Alias;
             }
             return new IndicatorConfiguration
             {
                 Indicator = indicator,
                 IsVisible = userIndicator == null || userIndicator.IsVisible,
-                Position = position
+                Position = position,
+                Alias = alias
             };
         }
 
@@ -226,6 +231,7 @@ namespace IndicatorsManager.BusinessLogic
                 Indicator = indicator,
                 Position = config.Position,
                 IsVisible = config.IsVisible,
+                Alias = config.Alias,
                 ActiveItems = activeItems
             };
         }
