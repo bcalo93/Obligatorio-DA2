@@ -1,19 +1,25 @@
-<h1>Login</h1>
-
-<form class="example-form" #loginForm="ngForm" (ngSubmit)="login(loginForm)">
-  <input
-    placeholder="username"
-    [(ngModel)]="Username"
-    name="username"
-    required
-  />
-  <input
-    placeholder="password"
-    [(ngModel)]="Password"
-    type="password"
-    name="password"
-    required
-  />
-
-  <button type="submit" color="primary">Login</button>
-</form>
+<div class="login">
+    <h2>Login</h2>
+    <div class="login-container">
+      <div class="wapper">
+          <mat-form-field>
+            <input matInput placeholder="Username" [formControl]="username" (keyup.enter)="isFormInvalid() ? null : login()">
+            <mat-error *ngIf="username.invalid">{{getUsernameErrorMessage()}}</mat-error>
+          </mat-form-field>
+      </div>
+      <div class="wapper">
+        <mat-form-field>
+            <input matInput placeholder="Password" [formControl]="password" (keyup.enter)="isFormInvalid() ? null : login()">
+            <mat-error *ngIf="password.invalid">{{getPasswordErrorMessage()}}</mat-error>
+          </mat-form-field>
+      </div>
+      <div class="wrapper error-msg">
+          <mat-error color="warn" *ngIf="errorMessage">{{errorMessage}}</mat-error>
+      </div>
+      <div class="wapper">
+        <button mat-raised-button color="primary" 
+          [disabled]="isFormInvalid()" (click)="login()">Login</button>
+      </div>
+    </div>
+</div>
+  
