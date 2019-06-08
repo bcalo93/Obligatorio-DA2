@@ -526,10 +526,10 @@ namespace IndicatorsManager.BusinessLogic.Test
                 });
             }
             mockToken.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(
-                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId }});
+                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId, Role = Role.Manager }});
             mockQuery.Setup(m => m.GetManagerIndicators(userId)).Returns(getResult);
             
-            IEnumerable<IndicatorConfiguration> result = logic.GetManagerIndicators(userId);
+            IEnumerable<IndicatorConfiguration> result = logic.GetManagerIndicators(Guid.NewGuid());
             
             int currentPosition = 0;
             foreach (IndicatorConfiguration config in result)
@@ -556,10 +556,10 @@ namespace IndicatorsManager.BusinessLogic.Test
                 });
             }
             mockToken.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(
-                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId }});
+                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId, Role = Role.Manager }});
             mockQuery.Setup(m => m.GetManagerIndicators(userId)).Returns(getResult);
             
-            IEnumerable<IndicatorConfiguration> result = logic.GetManagerIndicators(userId);
+            IEnumerable<IndicatorConfiguration> result = logic.GetManagerIndicators(Guid.NewGuid());
             
             foreach (IndicatorConfiguration config in result)
             {
@@ -576,7 +576,7 @@ namespace IndicatorsManager.BusinessLogic.Test
         {
             Guid userId = Guid.NewGuid();
             mockToken.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(
-                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId }});
+                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId, Role = Role.Manager }});
             mockQuery.Setup(m => m.GetManagerIndicators(userId)).Throws(new DataAccessException(""));
 
             logic.GetManagerIndicators(userId);
@@ -589,7 +589,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             
             // Data Init
             mockToken.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(
-                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId }});
+                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId, Role = Role.Manager }});
             mockQuery.Setup(m => m.GetManagerIndicators(userId))
                 .Returns(CreateSimpleIndicatorData(userId, 3, true));
             mockRunner.Setup(m => m.SetConnectionString(It.IsAny<string>()));
@@ -604,7 +604,7 @@ namespace IndicatorsManager.BusinessLogic.Test
                 .Returns("Test")
                 .Returns(true);
 
-            IEnumerable<ActiveIndicator> result = logic.GetManagerActiveIndicators(userId);
+            IEnumerable<ActiveIndicator> result = logic.GetManagerActiveIndicators(Guid.NewGuid());
             Assert.AreEqual(2, result.Count());
             ActiveIndicator indicator1 = result.ElementAt(0);
             Assert.AreEqual("Test Indicator 0", indicator1.Indicator.Name);
@@ -629,7 +629,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             
             // Data Init
             mockToken.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(
-                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId }});
+                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId, Role = Role.Manager }});
             mockQuery.Setup(m => m.GetManagerIndicators(userId))
                 .Returns(CreateSimpleIndicatorData(userId, 1, true));
             mockRunner.Setup(m => m.SetConnectionString(It.IsAny<string>()));
@@ -638,7 +638,7 @@ namespace IndicatorsManager.BusinessLogic.Test
                 .Returns(10)
                 .Returns(5);
 
-            IEnumerable<ActiveIndicator> result = logic.GetManagerActiveIndicators(userId);
+            IEnumerable<ActiveIndicator> result = logic.GetManagerActiveIndicators(Guid.NewGuid());
             Assert.AreEqual(1, result.Count());
             ActiveIndicator indicator = result.Single();
             Assert.AreEqual("Test Indicator 0", indicator.Indicator.Name);
@@ -655,7 +655,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             
             // Data Init
             mockToken.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(
-                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId }});
+                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId, Role = Role.Manager }});
             mockQuery.Setup(m => m.GetManagerIndicators(userId))
                 .Returns(CreateSimpleIndicatorData(1));
             mockRunner.Setup(m => m.SetConnectionString(It.IsAny<string>()));
@@ -664,7 +664,7 @@ namespace IndicatorsManager.BusinessLogic.Test
                 .Returns(10)
                 .Returns(5);
 
-            IEnumerable<ActiveIndicator> result = logic.GetManagerActiveIndicators(userId);
+            IEnumerable<ActiveIndicator> result = logic.GetManagerActiveIndicators(Guid.NewGuid());
             Assert.AreEqual(1, result.Count());
             ActiveIndicator indicator = result.Single();
             Assert.AreEqual("Test Indicator 0", indicator.Indicator.Name);
@@ -679,36 +679,15 @@ namespace IndicatorsManager.BusinessLogic.Test
         {
             Guid userId = Guid.NewGuid();
             
-            // Data Init
             mockToken.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(
-                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId }});
+                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId, Role = Role.Manager }});
             mockQuery.Setup(m => m.GetManagerIndicators(userId))
                 .Returns(CreateSimpleIndicatorData(userId, 3, false));
 
-            IEnumerable<ActiveIndicator> result = logic.GetManagerActiveIndicators(userId);
+            IEnumerable<ActiveIndicator> result = logic.GetManagerActiveIndicators(Guid.NewGuid());
             Assert.AreEqual(0, result.Count());
         }
         
-        [TestMethod]
-        [ExpectedException(typeof(InvalidEntityException))]
-        public void AddUserIndicatorInvalidEntityTest()
-        {
-            Guid indicatorId = Guid.NewGuid();
-
-            User user = CreateUser(Guid.NewGuid(), 0);
-            Guid userId = user.Id;
-           
-            mockUser.Setup(m => m.Get(It.IsAny<Guid>())).Returns(user);
-            
-            mockIndicator.Setup(m => m.Get(It.IsAny<Guid>())).Returns<IEnumerable<Indicator>>(null);
-            
-            var mockUserQuery = new Mock<IUserQuery>(MockBehavior.Strict);
-            ILogic<User> uLogic = new UserLogic(mockUser.Object, mockUserQuery.Object);
-            
-            logic.AddUserIndicator(indicatorId, userId);
-        }
-        
-
         private List<Component> CreateConditionTestList()
         {
             ItemNumeric numeric = new ItemNumeric{ Id = Guid.NewGuid(), Position = 1, NumberValue = 5 };
@@ -783,7 +762,5 @@ namespace IndicatorsManager.BusinessLogic.Test
             };
             return create;
         }
-
     }
-    
 }

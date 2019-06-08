@@ -23,18 +23,5 @@ namespace IndicatorsManager.Domain
             this.Name = indicator.Name;
             return this;
         }
-
-        public void RemoveUser(UserIndicator userIndicator)
-        {
-            UserIndicator ui = UserIndicators
-                    .Where(u => u.IndicatorId == userIndicator.IndicatorId && u.UserId == userIndicator.UserId).FirstOrDefault();
-            this.UserIndicators.Remove(ui);
-        }
-
-        public void AddUser(UserIndicator userIndicator)
-        {
-            this.UserIndicators.Add(userIndicator);
-        }
-
     }
 }

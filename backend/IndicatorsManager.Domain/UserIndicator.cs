@@ -21,6 +21,14 @@ namespace IndicatorsManager.Domain
             this.IndicatorId = indicator.Id;
             this.Indicator = indicator;
         }
+
+        public UserIndicator Update(UserIndicator config)
+        {
+            this.Position = config.Position;
+            this.IsVisible = config.IsVisible;
+            this.Alias = config.Alias;
+            return this;
+        }
     }
     
 }

@@ -85,7 +85,7 @@ namespace IndicatorsManager.BusinessLogic
 
         public IEnumerable<IndicatorConfiguration> GetManagerIndicators(Guid token)
         {
-            User authUser = GetUserByToken(token);
+            User authUser = GetUserByToken(token, Role.Manager);
             return this.indicatorQuery.GetManagerIndicators(authUser.Id)
                 .Select(i => ConvertToIndicatorConfiguration(i, authUser.Id))
                 .OrderByDescending(i => i.Position.HasValue).ThenBy(i => i.Position);
@@ -93,7 +93,7 @@ namespace IndicatorsManager.BusinessLogic
 
         public IEnumerable<ActiveIndicator> GetManagerActiveIndicators(Guid token)
         {
-            User authUser = GetUserByToken(token);
+            User authUser = GetUserByToken(token, Role.Manager);
             List<ActiveIndicator> result = new List<ActiveIndicator>();
             IEnumerable<Indicator> indicators = this.indicatorQuery.GetManagerIndicators(authUser.Id)
                 .Where(i => i.UserIndicators.Count(u => u.UserId == authUser.Id) == 0 || 
@@ -150,37 +150,26 @@ namespace IndicatorsManager.BusinessLogic
              return original;
         }
 
-        public void AddUserIndicator(Guid indicatorId, Guid userId)
+        public void AddIndicatorConfiguration(IEnumerable<UserIndicator> userIndicators, Guid token)
         {
-            User user = this.userRepository.Get(userId);
-            if (user == null || user.IsDeleted || user.Role != Role.Manager)
+            User user = GetUserByToken(token, Role.Manager);
+            CheckIfAnyIndicatorDoesNotExist(userIndicators);
+            foreach (UserIndicator config in userIndicators)
             {
-                throw new InvalidEntityException("El usuario no existe/ no es válido");
+                Indicator indicator = this.indicatorRepository.Get(config.IndicatorId);
+                UserIndicator foundConfig = indicator.UserIndicators.FirstOrDefault(ui => ui.UserId == user.Id);
+                if(foundConfig == null)
+                {
+                    config.User = user;
+                    indicator.UserIndicators.Add(config);
+                }
+                else
+                {
+                    foundConfig.Update(config);
+                }
             }
-            Indicator indicator = this.indicatorRepository.Get(indicatorId);
-            if (indicator == null)
-            {
-                throw new InvalidEntityException("El indicator no existe");
-            }
-            UserIndicator userIndicator = new UserIndicator(user, indicator);
-            indicator.AddUser(userIndicator);
             indicatorRepository.Save();
         }
-
-        public void RemoveUserIndicator(Guid indicatorId, Guid userId)
-        {
-            User user = this.userRepository.Get(userId);
-            Indicator indicator = this.indicatorRepository.Get(indicatorId);
-
-            UserIndicator userIndicator = new UserIndicator(user, indicator);
-            indicator.RemoveUser(userIndicator);
-            user.RemoveIndicator(userIndicator);
-            indicatorRepository.Update(indicator);
-            userRepository.Update(user);
-            indicatorRepository.Save();
-            userRepository.Save();
-        }
-        
 
         private bool IsValidIndicator(Indicator indicator)
         {
@@ -194,12 +183,16 @@ namespace IndicatorsManager.BusinessLogic
             return !String.IsNullOrEmpty(name) && name.Trim() != "";
         }
 
-        private User GetUserByToken(Guid authToken)
+        private User GetUserByToken(Guid authToken, Role aRole)
         {
             AuthenticationToken token = this.tokenRepository.GetByToken(authToken);
             if(token == null || token.User == null || token.User.IsDeleted)
             {
                 throw new UnauthorizedException("El token es invalido.");
+            }
+            if(token.User.Role != aRole)
+            {
+                throw new UnauthorizedException(string.Format("El usuario no es {0}", aRole.ToString()));
             }
             return token.User;
         }
@@ -234,6 +227,18 @@ namespace IndicatorsManager.BusinessLogic
                 Alias = config.Alias,
                 ActiveItems = activeItems
             };
+        }
+
+        private void CheckIfAnyIndicatorDoesNotExist(IEnumerable<UserIndicator> configurations)
+        {
+            IEnumerable<Indicator> allIndicators = this.indicatorRepository.GetAll();
+            foreach (UserIndicator config in configurations)
+            {
+                if(!allIndicators.Any(i => i.Id == config.IndicatorId))
+                {
+                    throw new EntityNotExistException("Uno de los Indicadores no existe.");
+                }
+            }
         }
     }
 }

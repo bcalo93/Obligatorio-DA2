@@ -167,6 +167,29 @@ namespace IndicatorsManager.WebApi.Controllers
             }
         }
 
+        [ProtectFilter(Role.Manager)]
+        [HttpPost("{id}/userindicator")]
+        public IActionResult Post(Guid id)
+        {
+            // string token = HttpContext.Request.Headers["Authorization"];
+            // Guid guidToken = Guid.Parse(token);
+            // User user = sessionLogic.GetUser(guidToken);
+            // try
+            // {
+            //     this.indicatorLogic.AddUserIndicator(id, user.Id);
+            //     return Ok();
+            // }
+            // catch(InvalidEntityException ie)
+            // {
+            //     return BadRequest(ie.Message);
+            // }
+            // catch(DataAccessException)
+            // {
+            //     return StatusCode(503, "El servicio no está disponible.");
+            // }
+            throw new NotImplementedException();
+        }
+
         private Guid ParseAuthorizationHeader()
         {
             Guid token;

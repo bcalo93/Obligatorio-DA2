@@ -12,8 +12,7 @@ namespace IndicatorsManager.BusinessLogic.Interface
         IEnumerable<Indicator> GetAll(Guid parentId);
         IEnumerable<IndicatorConfiguration> GetManagerIndicators(Guid token);
         IEnumerable<ActiveIndicator> GetManagerActiveIndicators(Guid token);
-        void AddUserIndicator(Guid indicatorId, Guid userId);
-        void RemoveUserIndicator(Guid indicatorId, Guid userId);
+        void AddIndicatorConfiguration(IEnumerable<UserIndicator> userIndicators, Guid token);
         IndicatorResult Get(Guid indicatorId);
         
     }
