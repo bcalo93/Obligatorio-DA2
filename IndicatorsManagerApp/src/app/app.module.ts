@@ -19,12 +19,14 @@ import {
 
 import { HomeManagerComponent } from './home-manager/home-manager.component';
 import { LoginComponent } from './login/login.component';
+import { UserEditComponent } from './user-edit/user-edit.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeManagerComponent,
     LoginComponent,
+    UserEditComponent
   ],
   imports: [
     BrowserModule,
