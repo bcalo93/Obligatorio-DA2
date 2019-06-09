@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/services/auth.service';
+import { UserRole } from 'src/enums';
 
 @Component({
   selector: 'app-root',
@@ -11,11 +12,15 @@ export class AppComponent {
 
   constructor(private auth: AuthService) {}
 
-  isUserLoggedIn() {
-    return this.auth.getToken() !== null;
+  isManagerLoggedIn() {
+    return this.auth.isManagerLoggedIn();
   }
 
-  logout() {
-    return this.auth.logout();
+  isAdminLoggedIn() {
+    return this.auth.isAdminLoggedIn();
+  }
+
+  isUserLoggedIn() {
+    return this.auth.getToken() !== null;
   }
 }
