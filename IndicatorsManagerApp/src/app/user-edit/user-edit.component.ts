@@ -4,6 +4,8 @@ import { Location } from '@angular/common';
 import { UserService } from '../../services';
 import { User } from 'src/models';
 import { FormControl, Validators } from '@angular/forms';
+import { UserRole } from 'src/enums';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-user-edit',
@@ -11,30 +13,45 @@ import { FormControl, Validators } from '@angular/forms';
   styleUrls: ['./user-edit.component.css']
 })
 export class UserEditComponent implements OnInit {
-
+  title: string;
   user: User;
   currentUserName: string;
 
-  name = new FormControl('', [Validators.required]);
+  name =  new FormControl('', [Validators.required]);
   lastName = new FormControl('', [Validators.required]);
   username = new FormControl('', [Validators.required]);
   email = new FormControl('', [Validators.required, Validators.email]);
   password = new FormControl('', [Validators.required]);
-  roles = ['Admin', 'Manager'];
-  selectedRole: string;
+
+  roles = [UserRole.ADMIN, UserRole.MANAGER];
+  selectedRole: UserRole;
   errorMessage: string;
 
   constructor(
     private userService: UserService,
-    private location: Location) { }
+    private location: Location,
+    private currentRoute: ActivatedRoute) {}
+
 
   ngOnInit() {
+    const id = this.currentRoute.snapshot.paramMap.get('id');
+    if (id) {
+      this.loadCurrentUserDetails(id);
+      this.title = 'Edit User Details';
+    } else {
+      this.title = 'Create New User';
+    }
+  }
+
+  loadCurrentUserDetails(id: string) {
     this.userService.getAllUsers()
       .subscribe(users => {
-        this.user = users[0];
-        console.log(this.user);
-        this.currentUserName = this.user.name;
-      });
+        this.user = users.find(x => x.id === id);
+        this.name.setValue(this.user.name);
+        this.lastName.setValue(this.user.lastName);
+        this.username.setValue(this.user.username);
+        this.email.setValue(this.user.email);
+    });
   }
 
   save() {
