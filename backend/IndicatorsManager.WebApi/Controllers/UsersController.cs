@@ -167,27 +167,32 @@ namespace IndicatorsManager.WebApi.Controllers
             }
         }
 
-        [ProtectFilter(Role.Manager)]
-        [HttpPost("{id}/userindicator")]
-        public IActionResult Post(Guid id)
+        [HttpPost("indicatorconfig")]
+        public IActionResult Post(Guid id, [FromBody] IEnumerable<IndicatorConfigPersistModel> config)
         {
-            // string token = HttpContext.Request.Headers["Authorization"];
-            // Guid guidToken = Guid.Parse(token);
-            // User user = sessionLogic.GetUser(guidToken);
-            // try
-            // {
-            //     this.indicatorLogic.AddUserIndicator(id, user.Id);
-            //     return Ok();
-            // }
-            // catch(InvalidEntityException ie)
-            // {
-            //     return BadRequest(ie.Message);
-            // }
-            // catch(DataAccessException)
-            // {
-            //     return StatusCode(503, "El servicio no está disponible.");
-            // }
-            throw new NotImplementedException();
+            try
+            {
+                Guid token;
+                bool isValid = Guid.TryParse(HttpContext.Request.Headers["Authorization"], out token);
+                if(!isValid)
+                {
+                    return Unauthorized("El token es invalido.");
+                }
+                this.indicatorLogic.AddIndicatorConfiguration(config.Select(c => c.ToEntity()), token);
+                return Ok();
+            }
+            catch(UnauthorizedException ue)
+            {
+                return Unauthorized(ue.Message);
+            }
+            catch(EntityNotExistException ee)
+            {
+                return NotFound(ee.Message);
+            }
+            catch(DataAccessException)
+            {
+                return StatusCode(503, "El servicio no esta disponible");
+            }
         }
 
         private Guid ParseAuthorizationHeader()
