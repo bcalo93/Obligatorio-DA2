@@ -58,6 +58,28 @@ namespace IndicatorsManager.DataAccess.Test
         }
 
         [TestMethod]
+        public void RunQueryDateResultTest()
+        {
+            DateTime expected = new DateTime(1998, 5, 6);
+            IQueryRunner runner = new QueryRunner();
+            runner.SetConnectionString(CONNECTION_STRING);
+            object result = runner.RunQuery("SELECT MAX(OrderDate) FROM ORDERS");
+            Assert.IsInstanceOfType(result, typeof(DateTime));
+            DateTime asDate = (DateTime)result;
+            Assert.AreEqual(expected, asDate);
+        }
+
+        [TestMethod]
+        public void RunQueryBooleanResultTest()
+        {
+            IQueryRunner runner = new QueryRunner();
+            runner.SetConnectionString(CONNECTION_STRING);
+            object result = runner.RunQuery("SELECT CASE WHEN EXISTS (SELECT 1 FROM ORDERS WHERE OrderId = 18) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END");
+            Assert.IsInstanceOfType(result, typeof(bool));
+            Assert.IsTrue((bool)result);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(DataAccessException))]
         public void RunQueryTableNotExistTest()
         {

@@ -16,6 +16,25 @@ namespace IndicatorsManager.WebApi.Test
     [TestClass]
     public class UsersControllerTest
     {
+        private Mock<ILogic<User>> mockUser;
+        private Mock<IIndicatorLogic> mockIndicator;
+        private UsersController controller;
+
+        [TestInitialize]
+        public void InitMock()
+        {
+            mockUser = new Mock<ILogic<User>>(MockBehavior.Strict);
+            mockIndicator = new Mock<IIndicatorLogic>(MockBehavior.Strict);
+            controller = new UsersController(mockUser.Object, mockIndicator.Object);
+        }
+
+        [TestCleanup]
+        public void VerifyAll()
+        {
+            mockUser.VerifyAll();
+            mockIndicator.VerifyAll();
+        }
+
         [TestMethod]
         public void PostOkTest()
         {
@@ -40,13 +59,10 @@ namespace IndicatorsManager.WebApi.Test
                 Role = Role.Manager
             };
 
-            var mock = new Mock<ILogic<User>>(MockBehavior.Strict);
-            mock.Setup(m => m.Create(It.IsAny<User>())).Returns(createResult);
+            mockUser.Setup(m => m.Create(It.IsAny<User>())).Returns(createResult);
 
-            UsersController controller = new UsersController(mock.Object);
             var result = controller.Post(requestBody);
             
-            mock.VerifyAll();
             var createResponse = result as CreatedAtRouteResult;
             UserGetModel model = createResponse.Value as UserGetModel;
             AssertUsers(createResult, model);
@@ -66,14 +82,10 @@ namespace IndicatorsManager.WebApi.Test
                 Role = Role.Manager
             };
             
+            mockUser.Setup(m => m.Create(It.IsAny<User>())).Throws(new InvalidEntityException("Los datos del usuario son invalidos."));
 
-            var mock = new Mock<ILogic<User>>(MockBehavior.Strict);
-            mock.Setup(m => m.Create(It.IsAny<User>())).Throws(new InvalidEntityException("Los datos del usuario son invalidos."));
-
-            UsersController controller = new UsersController(mock.Object);
             var result = controller.Post(requestBody);
             
-            mock.VerifyAll();
             var response = result as BadRequestObjectResult;
             Assert.AreEqual("Los datos del usuario son invalidos.", response.Value);
             
@@ -94,12 +106,10 @@ namespace IndicatorsManager.WebApi.Test
             
 
             var mock = new Mock<ILogic<User>>(MockBehavior.Strict);
-            mock.Setup(m => m.Create(It.IsAny<User>())).Throws(new EntityExistException("El nombre de usuario que esta intentando crear ya existe."));
+            mockUser.Setup(m => m.Create(It.IsAny<User>())).Throws(new EntityExistException("El nombre de usuario que esta intentando crear ya existe."));
 
-            UsersController controller = new UsersController(mock.Object);
             var result = controller.Post(requestBody);
             
-            mock.VerifyAll();
             var response = result as ConflictObjectResult;
             Assert.AreEqual("El nombre de usuario que esta intentando crear ya existe.", response.Value);
         }
@@ -117,14 +127,10 @@ namespace IndicatorsManager.WebApi.Test
                 Role = Role.Manager
             };
             
+            mockUser.Setup(m => m.Create(It.IsAny<User>())).Throws(new DataAccessException(""));
 
-            var mock = new Mock<ILogic<User>>(MockBehavior.Strict);
-            mock.Setup(m => m.Create(It.IsAny<User>())).Throws(new DataAccessException(""));
-
-            UsersController controller = new UsersController(mock.Object);
             var result = controller.Post(requestBody);
 
-            mock.VerifyAll();
             var response = result as ObjectResult;
             Assert.AreEqual(503, response.StatusCode);
             Assert.AreEqual("El servicio no esta disponible.", response.Value);
@@ -145,13 +151,10 @@ namespace IndicatorsManager.WebApi.Test
                 Role = Role.Manager
             };
 
-            var mock = new Mock<ILogic<User>>(MockBehavior.Strict);
-            mock.Setup(m => m.Get(expectedId)).Returns(getResult);
+            mockUser.Setup(m => m.Get(expectedId)).Returns(getResult);
 
-            UsersController controller = new UsersController(mock.Object);
             var result = controller.Get(expectedId);
 
-            mock.VerifyAll();
             var response = result as OkObjectResult;
             UserGetModel model = response.Value as UserGetModel;
             AssertUsers(getResult, model);
@@ -160,13 +163,10 @@ namespace IndicatorsManager.WebApi.Test
         [TestMethod]
         public void GetUserNotFoundTest()
         {
-            var mock = new Mock<ILogic<User>>(MockBehavior.Strict);
-            mock.Setup(m => m.Get(It.IsAny<Guid>())).Returns<IEnumerable<User>>(null);
+            mockUser.Setup(m => m.Get(It.IsAny<Guid>())).Returns<IEnumerable<User>>(null);
 
-            UsersController controller = new UsersController(mock.Object);
             var result = controller.Get(Guid.NewGuid());
 
-            mock.VerifyAll();
             var response = result as NotFoundObjectResult;
             Assert.AreEqual("El usuario no existe.", response.Value);
         }
@@ -174,14 +174,10 @@ namespace IndicatorsManager.WebApi.Test
         [TestMethod]
         public void GetUserDataAccessExceptionTest()
         {
+            mockUser.Setup(m => m.Get(It.IsAny<Guid>())).Throws(new DataAccessException(""));
 
-            var mock = new Mock<ILogic<User>>(MockBehavior.Strict);
-            mock.Setup(m => m.Get(It.IsAny<Guid>())).Throws(new DataAccessException(""));
-
-            UsersController controller = new UsersController(mock.Object);
             var result = controller.Get(Guid.NewGuid());
 
-            mock.VerifyAll();
             var response = result as ObjectResult;
             Assert.AreEqual(503, response.StatusCode);
             Assert.AreEqual("El servicio no esta disponible.", response.Value);
@@ -191,13 +187,10 @@ namespace IndicatorsManager.WebApi.Test
         public void GetAllUserOkTest()
         {
             IEnumerable<User> getAllResult = CreateUsers(20);
-            var mock = new Mock<ILogic<User>>(MockBehavior.Strict);
-            mock.Setup(m => m.GetAll()).Returns(getAllResult);
+            mockUser.Setup(m => m.GetAll()).Returns(getAllResult);
 
-            UsersController controller = new UsersController(mock.Object);
             var result = controller.Get();
 
-            mock.VerifyAll();
             var response = result as OkObjectResult;
             IEnumerable<UserGetModel> model = response.Value as IEnumerable<UserGetModel>;
             Assert.AreEqual(20, model.Count());
@@ -217,13 +210,10 @@ namespace IndicatorsManager.WebApi.Test
         [TestMethod]
         public void GetAllUserDataAccessExceptionTest()
         {
-            var mock = new Mock<ILogic<User>>(MockBehavior.Strict);
-            mock.Setup(m => m.GetAll()).Throws(new DataAccessException(""));
+            mockUser.Setup(m => m.GetAll()).Throws(new DataAccessException(""));
 
-            UsersController controller = new UsersController(mock.Object);
             var result = controller.Get();
 
-            mock.VerifyAll();
             var response = result as ObjectResult;
             Assert.AreEqual(503, response.StatusCode);
             Assert.AreEqual("El servicio no esta disponible.", response.Value);
@@ -255,13 +245,10 @@ namespace IndicatorsManager.WebApi.Test
                 Role = Role.Admin
             };
 
-            var mock = new Mock<ILogic<User>>(MockBehavior.Strict);
-            mock.Setup(m => m.Update(expectedId, It.IsAny<User>())).Returns(updateResult);
+            mockUser.Setup(m => m.Update(expectedId, It.IsAny<User>())).Returns(updateResult);
 
-            UsersController controller = new UsersController(mock.Object);
             var result = controller.Put(expectedId, requestBody);
 
-            mock.VerifyAll();
             var response = result as OkObjectResult;
             UserGetModel model = response.Value as UserGetModel;
             AssertUsers(updateResult, model);
@@ -280,13 +267,10 @@ namespace IndicatorsManager.WebApi.Test
                 Role = Role.Manager
             };
 
-            var mock = new Mock<ILogic<User>>(MockBehavior.Strict);
-            mock.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<User>())).Returns<IEnumerable<User>>(null);
+            mockUser.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<User>())).Returns<IEnumerable<User>>(null);
 
-            UsersController controller = new UsersController(mock.Object);
             var result = controller.Put(Guid.NewGuid(), requestBody);
             
-            mock.VerifyAll();
             var response = result as NotFoundObjectResult;
             Assert.AreEqual("El Usuario Username Put no existe.", response.Value);
         }
@@ -304,13 +288,10 @@ namespace IndicatorsManager.WebApi.Test
                 Role = Role.Manager
             };
 
-            var mock = new Mock<ILogic<User>>(MockBehavior.Strict);
-            mock.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<User>())).Throws(new InvalidEntityException("Los datos del usuario son invalidos."));
+            mockUser.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<User>())).Throws(new InvalidEntityException("Los datos del usuario son invalidos."));
 
-            UsersController controller = new UsersController(mock.Object);
             var result = controller.Put(Guid.NewGuid(), requestBody);
             
-            mock.VerifyAll();
             var response = result as BadRequestObjectResult;
             Assert.AreEqual("Los datos del usuario son invalidos.", response.Value);
             
@@ -329,14 +310,10 @@ namespace IndicatorsManager.WebApi.Test
                 Role = Role.Manager
             };
             
+            mockUser.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<User>())).Throws(new EntityExistException("El nombre de usuario que esta intentando crear ya existe."));
 
-            var mock = new Mock<ILogic<User>>(MockBehavior.Strict);
-            mock.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<User>())).Throws(new EntityExistException("El nombre de usuario que esta intentando crear ya existe."));
-
-            UsersController controller = new UsersController(mock.Object);
             var result = controller.Put(Guid.NewGuid(), requestBody);
             
-            mock.VerifyAll();
             var response = result as ConflictObjectResult;
             Assert.AreEqual("El nombre de usuario que esta intentando crear ya existe.", response.Value);
         }
@@ -354,13 +331,10 @@ namespace IndicatorsManager.WebApi.Test
                 Role = Role.Manager
             };
 
-            var mock = new Mock<ILogic<User>>(MockBehavior.Strict);
-            mock.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<User>())).Throws(new DataAccessException(""));
+            mockUser.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<User>())).Throws(new DataAccessException(""));
 
-            UsersController controller = new UsersController(mock.Object);
             var result = controller.Put(Guid.NewGuid(), requestBody);
 
-            mock.VerifyAll();
             var response = result as ObjectResult;
             Assert.AreEqual(503, response.StatusCode);
             Assert.AreEqual("El servicio no esta disponible.", response.Value);
@@ -369,26 +343,20 @@ namespace IndicatorsManager.WebApi.Test
         [TestMethod]
         public void DeleteOkTest()
         {
-            var mock = new Mock<ILogic<User>>(MockBehavior.Strict);
-            mock.Setup(m => m.Remove(It.IsAny<Guid>()));
+            mockUser.Setup(m => m.Remove(It.IsAny<Guid>()));
 
-            UsersController controller = new UsersController(mock.Object);
             var result = controller.Delete(Guid.NewGuid());
 
-            mock.VerifyAll();
             Assert.IsInstanceOfType(result, typeof(NoContentResult));
         }
 
         [TestMethod]
         public void DeleteDataAccessExceptionTest()
         {
-            var mock = new Mock<ILogic<User>>(MockBehavior.Strict);
-            mock.Setup(m => m.Remove(It.IsAny<Guid>())).Throws(new DataAccessException(""));
+            mockUser.Setup(m => m.Remove(It.IsAny<Guid>())).Throws(new DataAccessException(""));
 
-            UsersController controller = new UsersController(mock.Object);
             var result = controller.Delete(Guid.NewGuid());
 
-            mock.VerifyAll();
             var response = result as ObjectResult;
             Assert.AreEqual(503, response.StatusCode);
             Assert.AreEqual("El servicio no esta disponible.", response.Value);

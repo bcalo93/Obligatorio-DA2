@@ -72,6 +72,24 @@ namespace IndicatorsManager.BusinessLogic.Test
 
             Assert.IsFalse(result);
         }
+
+        [TestMethod]
+        public void ValidateItemBooleanOkTest()
+        {
+            ItemBoolean boolean = new ItemBoolean();
+            bool result = boolean.Accept(new VisitorComponentValidation());
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ValidateItemDateOkTest()
+        {
+            ItemDate date = new ItemDate();
+            bool result = date.Accept(new VisitorComponentValidation());
+
+            Assert.IsTrue(result);
+        }
         
         [TestMethod]
         public void ValidateAndConditionOkTest()
@@ -107,6 +125,17 @@ namespace IndicatorsManager.BusinessLogic.Test
         }
 
         [TestMethod]
+        public void ValidateAndConditionAcceptBooleansTest()
+        {
+            ItemNumeric numeric = new ItemNumeric { Position = 1, NumberValue = 2 };
+            ItemBoolean boolean = new ItemBoolean { Position = 2, Boolean = true };
+            AndCondition condition = new AndCondition{ Components = new List<Component> { numeric, boolean } };
+
+            bool result = condition.Accept(new VisitorComponentValidation());
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
         public void ValidateOrConditionOkTest()
         {
             ItemNumeric numeric = new ItemNumeric { Position = 1, NumberValue = 20 };
@@ -137,6 +166,17 @@ namespace IndicatorsManager.BusinessLogic.Test
 
             bool result = condition.Accept(new VisitorComponentValidation());
             Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void ValidateOrConditionAcceptBooleansTest()
+        {
+            ItemNumeric numeric = new ItemNumeric { Position = 1, NumberValue = 2 };
+            ItemBoolean boolean = new ItemBoolean { Position = 2, Boolean = true };
+            OrCondition condition = new OrCondition{ Components = new List<Component> { numeric, boolean } };
+
+            bool result = condition.Accept(new VisitorComponentValidation());
+            Assert.IsTrue(result);
         }
 
         [TestMethod]
@@ -178,6 +218,17 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemNumeric numeric1 = new ItemNumeric { Position = 1, NumberValue = 2 };
             ItemNumeric numeric2 = new ItemNumeric { Position = 1, NumberValue = 3 };
             MayorCondition condition = new MayorCondition{ Components = new List<Component> { numeric1, numeric2 } };
+
+            bool result = condition.Accept(new VisitorComponentValidation());
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void ValidateMayorConditionNotAcceptBooleansTest()
+        {
+            ItemNumeric numeric = new ItemNumeric { Position = 1, NumberValue = 2 };
+            ItemBoolean boolean = new ItemBoolean { Position = 2, Boolean = true };
+            MayorCondition condition = new MayorCondition{ Components = new List<Component> { numeric, boolean } };
 
             bool result = condition.Accept(new VisitorComponentValidation());
             Assert.IsFalse(result);
@@ -228,6 +279,17 @@ namespace IndicatorsManager.BusinessLogic.Test
         }
 
         [TestMethod]
+        public void ValidateMayorEqualsConditionNotAcceptBooleansTest()
+        {
+            ItemNumeric numeric = new ItemNumeric { Position = 1, NumberValue = 2 };
+            ItemBoolean boolean = new ItemBoolean { Position = 2, Boolean = true };
+            MayorEqualsCondition condition = new MayorEqualsCondition{ Components = new List<Component> { numeric, boolean } };
+
+            bool result = condition.Accept(new VisitorComponentValidation());
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
         public void ValidateMinorConditionOkTest()
         {
             ItemNumeric numeric = new ItemNumeric { Position = 1, NumberValue = 20 };
@@ -266,6 +328,17 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemNumeric numeric1 = new ItemNumeric { Position = 1, NumberValue = 2 };
             ItemNumeric numeric2 = new ItemNumeric { Position = 1, NumberValue = 3 };
             MinorCondition condition = new MinorCondition{ Components = new List<Component> { numeric1, numeric2 } };
+
+            bool result = condition.Accept(new VisitorComponentValidation());
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void ValidateMinorConditionNotAcceptBooleansTest()
+        {
+            ItemNumeric numeric = new ItemNumeric { Position = 1, NumberValue = 2 };
+            ItemBoolean boolean = new ItemBoolean { Position = 2, Boolean = true };
+            MinorCondition condition = new MinorCondition{ Components = new List<Component> { numeric, boolean } };
 
             bool result = condition.Accept(new VisitorComponentValidation());
             Assert.IsFalse(result);
@@ -316,6 +389,17 @@ namespace IndicatorsManager.BusinessLogic.Test
         }
 
         [TestMethod]
+        public void ValidateMinorEqualsConditionNotAcceptBooleansTest()
+        {
+            ItemNumeric numeric = new ItemNumeric { Position = 1, NumberValue = 2 };
+            ItemBoolean boolean = new ItemBoolean { Position = 2, Boolean = true };
+            MinorEqualsCondition condition = new MinorEqualsCondition{ Components = new List<Component> { numeric, boolean } };
+
+            bool result = condition.Accept(new VisitorComponentValidation());
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
         public void ValidateEqualsConditionOkTest()
         {
             ItemNumeric numeric = new ItemNumeric { Position = 1, NumberValue = 20 };
@@ -357,6 +441,17 @@ namespace IndicatorsManager.BusinessLogic.Test
 
             bool result = condition.Accept(new VisitorComponentValidation());
             Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void ValidateEqualsConditionAcceptBooleansTest()
+        {
+            ItemNumeric numeric = new ItemNumeric { Position = 1, NumberValue = 2 };
+            ItemBoolean boolean = new ItemBoolean { Position = 2, Boolean = true };
+            EqualsCondition condition = new EqualsCondition{ Components = new List<Component> { numeric, boolean } };
+
+            bool result = condition.Accept(new VisitorComponentValidation());
+            Assert.IsTrue(result);
         }
 
         [TestMethod]

@@ -142,40 +142,6 @@ namespace IndicatorsManager.WebApi.Test
             Assert.AreEqual(503, response.StatusCode);
             Assert.AreEqual("El servicio no esta disponible.", response.Value);
         } 
-        
-        [TestMethod]
-        public void DeleteUserIndicatorOkTest()
-        {
-            indicatorMock.Setup(m => m.RemoveUserIndicator(It.IsAny<Guid>(), It.IsAny<Guid>()));
-            
-            var result = controller.Delete(Guid.NewGuid(), Guid.NewGuid());
-
-            Assert.IsInstanceOfType(result, typeof(NoContentResult));
-        }
-
-        [TestMethod]
-        public void DeleteUserIndicatorInvalidEntityTest()
-        {
-            string msj = "No existe";
-
-            indicatorMock.Setup(m => m.RemoveUserIndicator(It.IsAny<Guid>(), It.IsAny<Guid>())).Throws(new InvalidEntityException(msj));
-
-            var result = controller.Delete(Guid.NewGuid(), Guid.NewGuid());
-
-            var response = result as BadRequestObjectResult;
-            Assert.AreEqual(msj, response.Value);
-        }
-
-        [TestMethod]
-        public void DeleteUserIndicatorDataAccessExceptionTest()
-        {
-            indicatorMock.Setup(m => m.RemoveUserIndicator(It.IsAny<Guid>(), It.IsAny<Guid>())).Throws(new DataAccessException(""));
-
-            var result = controller.Delete(Guid.NewGuid(), Guid.NewGuid());
-
-            var response = result as ObjectResult;
-            Assert.AreEqual(503, response.StatusCode);
-        }
 
         private User CreateUser(Guid id) 
         {

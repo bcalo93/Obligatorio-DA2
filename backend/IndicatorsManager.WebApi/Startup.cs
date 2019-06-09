@@ -15,6 +15,7 @@ using IndicatorsManager.DataAccess.Interface;
 using IndicatorsManager.BusinessLogic;
 using IndicatorsManager.BusinessLogic.Interface;
 using IndicatorsManager.Domain;
+using Newtonsoft.Json.Converters;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace IndicatorsManager.WebApi
@@ -32,6 +33,11 @@ namespace IndicatorsManager.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().AddJsonOptions(options => 
+            {
+                options.SerializerSettings.Converters.Add(new StringEnumConverter());
+                options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+            });
             
             services.AddSwaggerGen(c =>
             {

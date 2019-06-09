@@ -36,7 +36,7 @@ namespace IndicatorsManager.BusinessLogic.Visitors
 
         public bool VisitEqualsCondition(EqualsCondition equalsCondition)
         {
-            return ValidateNumericCondition(equalsCondition);
+            return equalsCondition.Components != null && equalsCondition.Components.Count == 2 && ValidateCondition(equalsCondition);
         }
 
         public bool VisitMayorCondition(MayorCondition mayorCondition)
@@ -59,16 +59,25 @@ namespace IndicatorsManager.BusinessLogic.Visitors
             return ValidateNumericCondition(minorEqualsCondition);
         }
 
+        public bool VisitItemBoolean(ItemBoolean boolean)
+        {
+            return true;
+        }
+
+        public bool VisitItemDate(ItemDate date)
+        {
+            return true;
+        }
+
         private bool ValidateCondition(Condition condition)
         {
             return condition.Components != null && condition.Components.Count > 1 && 
             condition.Components.GroupBy(c => c.Position).All(c => c.Count() == 1) && condition.Components.All(c => c.Accept(this));
         }
-
         private bool ValidateNumericCondition(Condition condition)
         { 
-            return condition.Components != null && condition.Components.Count == 2 && ValidateCondition(condition);
+            return condition.Components != null && condition.Components.Count == 2 && 
+                !condition.Components.Any(c => c.GetType() == typeof(ItemBoolean)) && ValidateCondition(condition);
         }
-
     }
 }

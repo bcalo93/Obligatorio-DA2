@@ -20,6 +20,7 @@ namespace IndicatorsManager.BusinessLogic.Test
         private Mock<IRepository<User>> mockUser;
         private Mock<IRepository<Indicator>> mockIndicator;
         private Mock<IQueryRunner> mockRunner;
+        private Mock<ITokenRepository> mockToken;
         private IIndicatorLogic logic;
 
         [TestInitialize]
@@ -30,8 +31,9 @@ namespace IndicatorsManager.BusinessLogic.Test
             mockUser = new Mock<IRepository<User>>(MockBehavior.Strict);
             mockIndicator = new Mock<IRepository<Indicator>>(MockBehavior.Strict);
             mockRunner = new Mock<IQueryRunner>(MockBehavior.Strict);
+            mockToken = new Mock<ITokenRepository>(MockBehavior.Strict);
             logic = new IndicatorLogic(mockIndicator.Object, mockArea.Object, mockUser.Object, mockQuery.Object,
-                mockRunner.Object); 
+                mockRunner.Object, mockToken.Object); 
         }
 
         [TestCleanup]
@@ -40,6 +42,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             mockQuery.VerifyAll();
             mockArea.VerifyAll();
             mockIndicator.VerifyAll();
+            mockToken.VerifyAll();
         }
         
         [TestMethod]
@@ -116,6 +119,24 @@ namespace IndicatorsManager.BusinessLogic.Test
             create.IndicatorItems.Add(new IndicatorItem { Id = Guid.NewGuid(), Name = "Green", Condition = new OrCondition{ 
                 Components = CreateConditionTestList() } });
             create.IndicatorItems.Add(new IndicatorItem { Id = Guid.NewGuid(), Name = "Violet", Condition = new AndCondition{ 
+                Components = CreateConditionTestList() } });
+
+            Indicator result = logic.Create(areaId, create);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidEntityException))]
+        public void CreateIndicatorWithRepeatedIndicatorItemsTest()
+        {
+            Guid areaId = Guid.NewGuid();
+            Area expectedArea = new Area { Id = areaId, Name = "Test Area" };
+
+            Indicator create = new Indicator{  Name = "Test Indicator with many IndicatorItems" };
+            create.IndicatorItems.Add(new IndicatorItem { Id = Guid.NewGuid(), Name = "Red", Condition = new AndCondition{ 
+                Components = CreateConditionTestList() } });
+            create.IndicatorItems.Add(new IndicatorItem { Id = Guid.NewGuid(), Name = "Yellow", Condition = new AndCondition{ 
+                Components = CreateConditionTestList() } });
+            create.IndicatorItems.Add(new IndicatorItem { Id = Guid.NewGuid(), Name = "Yellow", Condition = new AndCondition{ 
                 Components = CreateConditionTestList() } });
 
             Indicator result = logic.Create(areaId, create);
@@ -252,6 +273,78 @@ namespace IndicatorsManager.BusinessLogic.Test
             mockArea.Setup(m => m.Get(areaId)).Returns<IEnumerable<Area>>(null);
 
             Indicator result = logic.Create(areaId, create);
+        }
+
+        [TestMethod]
+        public void GetIndicatorResultOkTest()
+        {
+            Guid indicatorId  = Guid.NewGuid();
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+
+            //Data Init
+            Area area = new Area{ Name = "Test Area", DataSource = "DataSource" }; 
+
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemNumeric number = new ItemNumeric { Position = 2, NumberValue = 30 };
+            MayorCondition mayor = new MayorCondition { Components = new List<Component> { number, query } };
+            
+            Indicator toGet = new Indicator { Name = "Indicator Test" };
+            toGet.Area = area;
+            toGet.IndicatorItems.Add(new IndicatorItem { Name = "Red", Condition = mayor } );
+
+            mockIndicator.Setup(m => m.Get(indicatorId)).Returns(toGet);
+            mockRunner.Setup(m => m.SetConnectionString(It.IsAny<string>()));
+            mockRunner.Setup(m => m.RunQuery(queryString)).Returns(31);
+
+            IndicatorResult result = logic.Get(indicatorId);
+            Assert.AreEqual("Indicator Test", result.Indicator.Name);
+            Assert.AreEqual(1, result.ItemsResults.Count());
+            IndicatorItemResult itemResult = result.ItemsResults.First();
+            Assert.AreEqual("Red", itemResult.IndicatorItem.Name);
+            Assert.IsTrue((bool)itemResult.Result.ConditionResult);
+            Assert.AreEqual("(31 > 30)", itemResult.Result.ConditionToString);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EvaluationException))]
+        public void GetIndicatorResultEvaluationExceptionTest()
+        {
+            Guid indicatorId  = Guid.NewGuid();
+            string queryString = "SELECT COUNT(*) FROM TABLE";
+
+            //Data Init
+            Area area = new Area{ Name = "Test Area", DataSource = "DataSource" }; 
+
+            ItemQuery query = new ItemQuery { Position = 1, QueryTextValue = queryString};
+            ItemNumeric number = new ItemNumeric { Position = 2, NumberValue = 200 };
+            MayorCondition mayor = new MayorCondition { Components = new List<Component> { number, query } };
+            
+            Indicator toGet = new Indicator { Name = "Indicator Test" };
+            toGet.Area = area;
+            toGet.IndicatorItems.Add(new IndicatorItem { Name = "Red", Condition = mayor } );
+
+            mockIndicator.Setup(m => m.Get(indicatorId)).Returns(toGet);
+            mockRunner.Setup(m => m.SetConnectionString(It.IsAny<string>()));
+            mockRunner.Setup(m => m.RunQuery(queryString)).Throws(new EvaluationException("An exception has occurred."));
+
+            IndicatorResult result = logic.Get(indicatorId);
+            Assert.AreEqual("Indicator Test", result.Indicator.Name);
+            Assert.AreEqual(1, result.ItemsResults.Count());
+            IndicatorItemResult itemResult = result.ItemsResults.First();
+            Assert.AreEqual("Red", itemResult.IndicatorItem.Name);
+            Assert.AreEqual("An exception has occurred.", (string)itemResult.Result.ConditionResult);
+            Assert.AreEqual("(La consulta SELECT COUNT(*) FROM TABLE es incorrecta. > 200)", itemResult.Result.ConditionToString);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EntityNotExistException))]
+        public void GetIndicatorResutIndicatorNotExistTest()
+        {
+            Guid indicatorId  = Guid.NewGuid();
+
+            mockIndicator.Setup(m => m.Get(indicatorId)).Returns<Indicator>(null);
+
+            IndicatorResult result = logic.Get(indicatorId);
         }
 
         [TestMethod]
@@ -416,21 +509,64 @@ namespace IndicatorsManager.BusinessLogic.Test
         }
 
         [TestMethod]
-        public void GetManagerIndicatorsOkTest()
+        public void GetManagerIndicatorsWithConfigurationOkTest()
         {
             Guid userId = Guid.NewGuid();
             List<Indicator> getResult = new List<Indicator>();
             for (int i = 0; i < 10; i++)
             {
-                getResult.Add(new Indicator{ Id = Guid.NewGuid(), Name = "Test Get Indicator " + i });
+                getResult.Add(new Indicator
+                { 
+                    Id = Guid.NewGuid(), 
+                    Name = "Test Get Indicator " + i,
+                    UserIndicators = new List<UserIndicator> 
+                    {
+                        new UserIndicator { UserId = userId, Position = i, IsVisible = false } 
+                    } 
+                });
             }
+            mockToken.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(
+                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId, Role = Role.Manager }});
             mockQuery.Setup(m => m.GetManagerIndicators(userId)).Returns(getResult);
             
-            IEnumerable<Indicator> result = logic.GetManagerIndicators(userId);
+            IEnumerable<IndicatorConfiguration> result = logic.GetManagerIndicators(Guid.NewGuid());
             
-            foreach (Indicator indicator in result)
+            int currentPosition = 0;
+            foreach (IndicatorConfiguration config in result)
             {
-                Assert.IsTrue(getResult.Any(i => i.Id == indicator.Id && i.Name == indicator.Name));
+                Assert.IsTrue(getResult.Any(i => i.Id == config.Indicator.Id && 
+                    i.Name == config.Indicator.Name && i.UserIndicators.Single().Position == config.Position));
+                Assert.AreEqual(currentPosition, config.Position);
+                Assert.IsFalse(config.IsVisible);
+                currentPosition++;
+            }
+        }
+
+        [TestMethod]
+        public void GetManagerIndicatorsWithoutConfigurationOkTest()
+        {
+            Guid userId = Guid.NewGuid();
+            List<Indicator> getResult = new List<Indicator>();
+            for (int i = 0; i < 10; i++)
+            {
+                getResult.Add(new Indicator
+                { 
+                    Id = Guid.NewGuid(), 
+                    Name = "Test Get Indicator " + i
+                });
+            }
+            mockToken.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(
+                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId, Role = Role.Manager }});
+            mockQuery.Setup(m => m.GetManagerIndicators(userId)).Returns(getResult);
+            
+            IEnumerable<IndicatorConfiguration> result = logic.GetManagerIndicators(Guid.NewGuid());
+            
+            foreach (IndicatorConfiguration config in result)
+            {
+                Assert.IsTrue(getResult.Any(i => i.Id == config.Indicator.Id && 
+                    i.Name == config.Indicator.Name));
+                Assert.IsNull(config.Position);
+                Assert.IsTrue(config.IsVisible);
             }
         }
 
@@ -439,31 +575,119 @@ namespace IndicatorsManager.BusinessLogic.Test
         public void GetManagerIndicatorsDataAccessExceptionTest()
         {
             Guid userId = Guid.NewGuid();
+            mockToken.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(
+                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId, Role = Role.Manager }});
             mockQuery.Setup(m => m.GetManagerIndicators(userId)).Throws(new DataAccessException(""));
 
             logic.GetManagerIndicators(userId);
         }
-        
-        [TestMethod]
-        [ExpectedException(typeof(InvalidEntityException))]
-        public void AddUserIndicatorInvalidEntityTest()
-        {
-            Guid indicatorId = Guid.NewGuid();
 
-            User user = CreateUser(0);
-            Guid userId = user.Id;
-           
-            mockUser.Setup(m => m.Get(It.IsAny<Guid>())).Returns(user);
+        [TestMethod]
+        public void GetManagerActiveIndicatorsOkTest()
+        {
+            Guid userId = Guid.NewGuid();
             
-            mockIndicator.Setup(m => m.Get(It.IsAny<Guid>())).Returns<IEnumerable<Indicator>>(null);
+            // Data Init
+            mockToken.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(
+                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId, Role = Role.Manager }});
+            mockQuery.Setup(m => m.GetManagerIndicators(userId))
+                .Returns(CreateSimpleIndicatorData(userId, 3, true));
+            mockRunner.Setup(m => m.SetConnectionString(It.IsAny<string>()));
+            mockRunner.SetupSequence(m => m.RunQuery(It.IsAny<string>()))
+                .Returns(10)
+                .Returns(5)
+                .Returns(3)
+                .Returns(5)
+                .Returns(3)
+                .Returns(5)
+                .Returns(1)
+                .Returns("Test")
+                .Returns(true);
+
+            IEnumerable<ActiveIndicator> result = logic.GetManagerActiveIndicators(Guid.NewGuid());
+            Assert.AreEqual(2, result.Count());
+            ActiveIndicator indicator1 = result.ElementAt(0);
+            Assert.AreEqual("Test Indicator 0", indicator1.Indicator.Name);
+            Assert.AreEqual(1, indicator1.ActiveItems.Count());
+            Assert.IsTrue(indicator1.ActiveItems.Any(i => i.Name == "Yellow"));
+            Assert.IsTrue(indicator1.IsVisible);
+            Assert.AreEqual("Test Alias", indicator1.Alias);
+
+            ActiveIndicator indicator2 = result.ElementAt(1);
+            Assert.AreEqual("Test Indicator 1", indicator2.Indicator.Name);
+            Assert.AreEqual(2, indicator2.ActiveItems.Count());
+            Assert.IsTrue(indicator2.ActiveItems.Any(i => i.Name == "Red"));
+            Assert.IsTrue(indicator2.ActiveItems.Any(i => i.Name == "Green"));
+            Assert.IsTrue(indicator2.IsVisible);
+            Assert.AreEqual("Test Alias", indicator2.Alias);
+        }
+
+        [TestMethod]
+        public void GetManagerActiveIndicatorsEvaluationExceptionTest()
+        {
+            Guid userId = Guid.NewGuid();
             
-            var mockUserQuery = new Mock<IUserQuery>(MockBehavior.Strict);
-            ILogic<User> uLogic = new UserLogic(mockUser.Object, mockUserQuery.Object);
+            // Data Init
+            mockToken.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(
+                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId, Role = Role.Manager }});
+            mockQuery.Setup(m => m.GetManagerIndicators(userId))
+                .Returns(CreateSimpleIndicatorData(userId, 1, true));
+            mockRunner.Setup(m => m.SetConnectionString(It.IsAny<string>()));
+            mockRunner.SetupSequence(m => m.RunQuery(It.IsAny<string>()))
+                .Throws(new EvaluationException(""))
+                .Returns(10)
+                .Returns(5);
+
+            IEnumerable<ActiveIndicator> result = logic.GetManagerActiveIndicators(Guid.NewGuid());
+            Assert.AreEqual(1, result.Count());
+            ActiveIndicator indicator = result.Single();
+            Assert.AreEqual("Test Indicator 0", indicator.Indicator.Name);
+            Assert.AreEqual(1, indicator.ActiveItems.Count());
+            Assert.IsTrue(indicator.ActiveItems.Any(i => i.Name == "Green"));
+            Assert.IsTrue(indicator.IsVisible);
+            Assert.AreEqual("Test Alias", indicator.Alias);
+        }
+
+        [TestMethod]
+        public void GetManagerActiveIndicatorsNoConfigurationTest()
+        {
+            Guid userId = Guid.NewGuid();
             
-            logic.AddUserIndicator(indicatorId, userId);
+            // Data Init
+            mockToken.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(
+                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId, Role = Role.Manager }});
+            mockQuery.Setup(m => m.GetManagerIndicators(userId))
+                .Returns(CreateSimpleIndicatorData(1));
+            mockRunner.Setup(m => m.SetConnectionString(It.IsAny<string>()));
+            mockRunner.SetupSequence(m => m.RunQuery(It.IsAny<string>()))
+                .Returns(6)
+                .Returns(10)
+                .Returns(5);
+
+            IEnumerable<ActiveIndicator> result = logic.GetManagerActiveIndicators(Guid.NewGuid());
+            Assert.AreEqual(1, result.Count());
+            ActiveIndicator indicator = result.Single();
+            Assert.AreEqual("Test Indicator 0", indicator.Indicator.Name);
+            Assert.AreEqual(1, indicator.ActiveItems.Count());
+            Assert.IsTrue(indicator.ActiveItems.Any(i => i.Name == "Green"));
+            Assert.IsNull(indicator.Position);
+            Assert.IsTrue(indicator.IsVisible);
+        }
+
+        [TestMethod]
+        public void GetManagerActiveIndicatorsVisibleFalseTest()
+        {
+            Guid userId = Guid.NewGuid();
+            
+            mockToken.Setup(m => m.GetByToken(It.IsAny<Guid>())).Returns(
+                new AuthenticationToken { Id = Guid.NewGuid(), User = new User{ Id = userId, Role = Role.Manager }});
+            mockQuery.Setup(m => m.GetManagerIndicators(userId))
+                .Returns(CreateSimpleIndicatorData(userId, 3, false));
+
+            IEnumerable<ActiveIndicator> result = logic.GetManagerActiveIndicators(Guid.NewGuid());
+            Assert.AreEqual(0, result.Count());
         }
         
-
         private List<Component> CreateConditionTestList()
         {
             ItemNumeric numeric = new ItemNumeric{ Id = Guid.NewGuid(), Position = 1, NumberValue = 5 };
@@ -480,38 +704,54 @@ namespace IndicatorsManager.BusinessLogic.Test
             return new List<Component> { condition1, condition2, condition3};
         }
 
-        private IEnumerable<Indicator> CreateIndicatorData(int amount, Guid parentAreaId)
+        private IEnumerable<Indicator> CreateSimpleIndicatorData(Guid userId, int amount, bool isVisible)
         {
             List<string> itemNames = new List<string> { "Red", "Yellow", "Green" };
             List<Indicator> result = new List<Indicator>();
             for(int i = 0; i < amount; i++)
             {
                 Indicator indicator = new Indicator{ Name = "Test Indicator " + i, 
-                                                Area = new Area { Id = parentAreaId, Name = "Test Area" + 1, DataSource = "Data Source" } };
-                indicator.UserIndicators.Add(new UserIndicator { User = CreateUser(i) });
-                
+                    Area = new Area { Id = Guid.NewGuid(), Name = "Test Area", DataSource = "Data Source" } };
+                User user = CreateUser(userId, i);
+                indicator.UserIndicators.Add(new UserIndicator { UserId = user.Id, 
+                    User = user, IsVisible = isVisible, Alias = "Test Alias" });
                 foreach (string color in itemNames)
                 {
                     ItemNumeric numeric = new ItemNumeric{ Position = 1, NumberValue = 5 };
                     ItemQuery query1 = new ItemQuery{ Position = 2, QueryTextValue = "SELECT MAX x FROM TABLE" };
-                    Condition condition1 = new EqualsCondition{ Position = 1, Components = new List<Component> { numeric, query1 } };
-                    
-                    ItemQuery query2 = new ItemQuery{ Position = 1, QueryTextValue = "SELECT MIN x FROM TABLE" };
-                    ItemText text = new ItemText{ Position = 2, TextValue = "Test Texto" };
-                    Condition condition2 = new MinorCondition{ Position = 2, Components = new List<Component> { text, query2 } };
-
-                    Condition condition3 = new AndCondition { Components = new List<Component> { condition1,  condition2 } };
-                    indicator.IndicatorItems.Add(new IndicatorItem { Name = color, Condition = condition3 });
+                    Condition condition = new EqualsCondition{ Position = 1, Components = new List<Component> { numeric, query1 } };
+                    indicator.IndicatorItems.Add(new IndicatorItem { Name = color, Condition = condition });
                 }
                 result.Add(indicator);
             }
             return result;
         }
 
-        private User CreateUser(int i) 
+        private IEnumerable<Indicator> CreateSimpleIndicatorData(int amount)
+        {
+            List<string> itemNames = new List<string> { "Red", "Yellow", "Green" };
+            List<Indicator> result = new List<Indicator>();
+            for(int i = 0; i < amount; i++)
+            {
+                Indicator indicator = new Indicator{ Name = "Test Indicator " + i, 
+                    Area = new Area { Id = Guid.NewGuid(), Name = "Test Area", DataSource = "Data Source" } };
+                foreach (string color in itemNames)
+                {
+                    ItemNumeric numeric = new ItemNumeric{ Position = 1, NumberValue = 5 };
+                    ItemQuery query1 = new ItemQuery{ Position = 2, QueryTextValue = "SELECT MAX x FROM TABLE" };
+                    Condition condition = new EqualsCondition{ Position = 1, Components = new List<Component> { numeric, query1 } };
+                    indicator.IndicatorItems.Add(new IndicatorItem { Name = color, Condition = condition });
+                }
+                result.Add(indicator);
+            }
+            return result;
+        }
+
+        private User CreateUser(Guid userId, int i) 
         {
             User create = new User
             {
+                Id = userId,
                 Name = "Name" + i,
                 LastName = "LastName" + i,
                 Username = "Username" + i,
@@ -522,7 +762,5 @@ namespace IndicatorsManager.BusinessLogic.Test
             };
             return create;
         }
-
     }
-    
 }

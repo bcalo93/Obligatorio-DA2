@@ -6,17 +6,22 @@ using IndicatorsManager.WebApi.Exceptions;
 
 namespace IndicatorsManager.WebApi.Models
 {
+    public enum ConditionType
+    {
+        And, Or, Equals, Minor, MinorEquals, Mayor, MayorEquals
+    }
+    
     public class ConditionModel : ComponentModel
     {
         public IEnumerable<ComponentModel> Components { get; set; }
-        public string ConditionType { get; set; }
+        public ConditionType ConditionType { get; set; }
         
         public ConditionModel() 
         {
             this.Components = new List<ComponentModel>();
         }
 
-        public ConditionModel(string conditionType, int position) : base(position)
+        public ConditionModel(ConditionType conditionType, int position) : base(position)
         {
             this.Components = new List<ComponentModel>();
             this.ConditionType = conditionType;
@@ -27,25 +32,25 @@ namespace IndicatorsManager.WebApi.Models
             Condition result;
             switch (this.ConditionType)
             {
-                case "And":
+                case ConditionType.And:
                     result = new AndCondition();
                     break;
-                case "Or":
+                case ConditionType.Or:
                     result = new OrCondition();
                     break;
-                case "Equals":
+                case ConditionType.Equals:
                     result = new EqualsCondition();
                     break;
-                case "Mayor":
+                case ConditionType.Mayor:
                     result = new MayorCondition();
                     break;
-                case "MayorEquals":
+                case ConditionType.MayorEquals:
                     result = new MayorEqualsCondition();
                     break;
-                case "Minor":
+                case ConditionType.Minor:
                     result = new MinorCondition();
                     break;
-                case "MinorEquals":
+                case ConditionType.MinorEquals:
                     result = new MinorEqualsCondition();
                     break;
                 default:

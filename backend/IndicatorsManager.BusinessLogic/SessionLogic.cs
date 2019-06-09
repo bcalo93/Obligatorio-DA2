@@ -28,7 +28,7 @@ namespace IndicatorsManager.BusinessLogic
         public bool IsValidToken(Guid token)
         {
             AuthenticationToken authToken = repository.GetByToken(token);
-            return authToken != null;
+            return authToken != null && authToken.User != null && !authToken.User.IsDeleted;
         }
 
         public AuthenticationToken CreateToken(string username, string password)

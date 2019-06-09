@@ -66,6 +66,16 @@ namespace IndicatorsManager.DataAccess.Visitors
             }
             return result;
         }
+
+        public List<Component> VisitItemBoolean(ItemBoolean boolean)
+        {
+            return new List<Component> { boolean };
+        }
+
+        public List<Component> VisitItemDate(ItemDate date)
+        {
+            return new List<Component> { date };
+        }
     }
 
 }

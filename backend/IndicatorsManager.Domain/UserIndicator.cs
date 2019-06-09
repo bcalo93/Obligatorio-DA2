@@ -8,6 +8,7 @@ namespace IndicatorsManager.Domain
         public virtual Indicator Indicator { get; set; }
         public Guid UserId { get; set; }
         public virtual User User { get; set; }
+        public string Alias { get; set; }
         public int Position { get; set; }
         public bool IsVisible { get; set; }
 
@@ -19,6 +20,14 @@ namespace IndicatorsManager.Domain
             this.User = user;
             this.IndicatorId = indicator.Id;
             this.Indicator = indicator;
+        }
+
+        public UserIndicator Update(UserIndicator config)
+        {
+            this.Position = config.Position;
+            this.IsVisible = config.IsVisible;
+            this.Alias = config.Alias;
+            return this;
         }
     }
     
