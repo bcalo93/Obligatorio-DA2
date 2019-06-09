@@ -1,10 +1,12 @@
+import { UserRole } from 'src/enums';
+
 export class User {
     id: string;
     name: string;
     lastName: string;
     username: string;
     email: string;
-    role: string;
+    role: UserRole;
     password: string;
 
     constructor(
@@ -12,7 +14,7 @@ export class User {
         lastName: string,
         username: string,
         email: string,
-        role: string,
+        role: UserRole,
         password: string) {
             this.name = name;
             this.lastName = lastName;
