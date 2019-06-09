@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import { User, Indicator } from '../models';
 import { environment } from '../environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { UtilsService } from './utils.service';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +30,8 @@ export class UserService {
   addUser(user: User): Observable<User> {
     const url = `${environment.apiEndpoint}/users`;
     const options = this.utilsService.getOptions();
-    return this.http.post<User>(url, user, options);
+    return this.http.post<User>(url, user, options)
+      .pipe(catchError((error: HttpErrorResponse) => throwError(error.error || 'Server Error')));
   }
 
   updateUser(user: User): Observable<User> {

@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
-    this.errorMessage = '';
+    this.clearErrorMsg();
   }
 
   login() {
@@ -25,7 +25,10 @@ export class LoginComponent implements OnInit {
     const credentials = new Credentials(username, password);
     this.authService.login(credentials)
       .subscribe(
-      () => this.router.navigate(['/']),
+      () => {
+        this.router.navigate(['/']);
+        this.clearErrorMsg();
+      },
       (error: any) => this.errorMessage = error
     );
   }
@@ -40,5 +43,9 @@ export class LoginComponent implements OnInit {
 
   isFormInvalid() {
     return this.username.invalid || this.password.invalid;
+  }
+
+  clearErrorMsg() {
+    this.errorMessage = '';
   }
 }
