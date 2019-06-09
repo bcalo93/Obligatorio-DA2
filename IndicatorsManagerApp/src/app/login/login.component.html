@@ -1,0 +1,25 @@
+<div class="login">
+    <h2>Login</h2>
+    <div class="login-container">
+      <div class="wrapper">
+          <mat-form-field>
+            <input matInput placeholder="Username" [formControl]="username" (keyup.enter)="isFormInvalid() ? null : login()">
+            <mat-error *ngIf="username.invalid">{{getUsernameErrorMessage()}}</mat-error>
+          </mat-form-field>
+      </div>
+      <div class="wrapper">
+        <mat-form-field>
+            <input matInput type="password" placeholder="Password" [formControl]="password" (keyup.enter)="isFormInvalid() ? null : login()">
+            <mat-error *ngIf="password.invalid">{{getPasswordErrorMessage()}}</mat-error>
+          </mat-form-field>
+      </div>
+      <div class="wrapper error-msg">
+          <mat-error color="warn" *ngIf="errorMessage">{{errorMessage}}</mat-error>
+      </div>
+      <div class="wrapper">
+        <button mat-raised-button color="primary" 
+          [disabled]="isFormInvalid()" (click)="login()">Login</button>
+      </div>
+    </div>
+</div>
+  

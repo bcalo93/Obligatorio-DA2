@@ -26,10 +26,11 @@ namespace IndicatorsManager.WebApi.Test
                 Password = "password"
             };
             Guid token = Guid.NewGuid();
+            User user = CreateUser();
             AuthenticationToken authToken = new AuthenticationToken()
             {
                 Token = token,
-                User = CreateUser()
+                User = user
             };
             
             var mockSession = new Mock<ISessionLogic>(MockBehavior.Strict);
@@ -41,8 +42,9 @@ namespace IndicatorsManager.WebApi.Test
             mockSession.VerifyAll();
 
             var createResponse = result as OkObjectResult;
-            Guid resultToken = (Guid)(createResponse.Value as object);
-            Assert.AreEqual(token, resultToken);
+            LoginModelOut resultToken = (LoginModelOut)(createResponse.Value as object);
+            Assert.AreEqual(token, resultToken.Token);
+            Assert.AreEqual(user.Name, resultToken.User.Name);
         }
 
         [TestMethod]

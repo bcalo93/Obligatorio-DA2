@@ -16,6 +16,7 @@ using IndicatorsManager.BusinessLogic;
 using IndicatorsManager.BusinessLogic.Interface;
 using IndicatorsManager.Domain;
 using Newtonsoft.Json.Converters;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace IndicatorsManager.WebApi
 {
@@ -37,8 +38,18 @@ namespace IndicatorsManager.WebApi
                 options.SerializerSettings.Converters.Add(new StringEnumConverter());
                 options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
             });
+            
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info 
+                { 
+                    Title = "My API",
+                    Version = "v1" 
+                });
+            });
+            
             services.AddDbContext<DbContext, DomainContext>(
-                o => o.UseSqlServer(Configuration.GetConnectionString("IndicatorsManagerDb"))
+                o => o.UseSqlServer(Configuration.GetConnectionString("IndicatorsManagerDbMac"))
             );
 
             services.AddScoped<ILogic<User>, UserLogic>();
@@ -66,6 +77,16 @@ namespace IndicatorsManager.WebApi
             services.AddScoped<IReportLogic, ReportLogic>();
             services.AddScoped<ILogQuery, LogRepository>();
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllHeaders", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,6 +96,22 @@ namespace IndicatorsManager.WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
+
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = string.Empty;
+            });
+
+            app.UseCors("AllowAllHeaders");
+            app.UseHttpsRedirection();
+            app.UseAuthentication();
 
             app.UseMvc();
         }

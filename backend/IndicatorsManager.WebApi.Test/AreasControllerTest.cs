@@ -314,12 +314,14 @@ namespace IndicatorsManager.WebApi.Test
         {
             Guid areaId = Guid.NewGuid();
             Guid body = Guid.NewGuid();
+            Area area = new Area() { Id = areaId };
 
             mockUserAreaLogic.Setup(m => m.AddAreaManager(It.IsAny<Guid>(), It.IsAny<Guid>()));
-            
+            mockArea.Setup(m => m.Get(areaId)).Returns(area);
+
             var result = controller.Post(areaId, body);
             
-            Assert.IsInstanceOfType(result, typeof(OkResult));
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
         }  
 
         [TestMethod]
