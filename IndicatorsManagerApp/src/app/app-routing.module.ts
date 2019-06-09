@@ -9,7 +9,8 @@ import { UserEditComponent } from './user-edit/user-edit.component';
 const routes: Routes = [
   { path: '', component: HomeManagerComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
-  { path: 'user/edit', component: UserEditComponent},
+  { path: 'user/add', component: UserEditComponent },
+  { path: 'user/:id', component: UserEditComponent },
   { path: '**', redirectTo: '' }
 ];
 

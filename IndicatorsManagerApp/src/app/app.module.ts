@@ -17,13 +17,17 @@ import {
   MatSelectModule,
   MatRadioModule,
   MatIconModule,
-  MatCardModule
+  MatCardModule,
+  MatMenuModule,
+  MatToolbarModule,
+  MatSnackBarModule
 } from '@angular/material';
 
 import { HomeManagerComponent } from './home-manager/home-manager.component';
 import { LoginComponent } from './login/login.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { ErrorMessageComponent } from './error-message/error-message.component';
+import { HeaderComponent } from './header/header.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +35,8 @@ import { ErrorMessageComponent } from './error-message/error-message.component';
     HomeManagerComponent,
     LoginComponent,
     UserEditComponent,
-    ErrorMessageComponent
+    ErrorMessageComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +53,10 @@ import { ErrorMessageComponent } from './error-message/error-message.component';
     MatSelectModule,
     MatRadioModule,
     MatIconModule,
-    MatCardModule
+    MatCardModule,
+    MatMenuModule,
+    MatToolbarModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent],

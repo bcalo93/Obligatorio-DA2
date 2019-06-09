@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 
 import { Credentials, User } from '../models';
 import { environment } from '../environments/environment';
 import { map, tap, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { UserRole } from 'src/enums';
 
 export const TOKEN_NAME = 'token';
 export const USER = 'user';
@@ -24,6 +25,14 @@ export class AuthService {
 
   getCurrentUser(): User {
     return JSON.parse(localStorage.getItem(USER));
+  }
+
+  isManagerLoggedIn() {
+    return !!this.getCurrentUser() && this.getCurrentUser().role === UserRole.MANAGER;
+  }
+
+  isAdminLoggedIn() {
+    return !!this.getCurrentUser() && this.getCurrentUser().role === UserRole.ADMIN;
   }
 
   setDataIntoLocalStorage(data: any): void {
