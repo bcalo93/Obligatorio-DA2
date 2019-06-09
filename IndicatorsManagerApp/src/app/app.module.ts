@@ -15,18 +15,23 @@ import {
   MatInputModule,
   MatRippleModule,
   MatSelectModule,
+  MatRadioModule,
+  MatIconModule,
+  MatCardModule
 } from '@angular/material';
 
 import { HomeManagerComponent } from './home-manager/home-manager.component';
 import { LoginComponent } from './login/login.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
+import { ErrorMessageComponent } from './error-message/error-message.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeManagerComponent,
     LoginComponent,
-    UserEditComponent
+    UserEditComponent,
+    ErrorMessageComponent
   ],
   imports: [
     BrowserModule,
@@ -41,6 +46,9 @@ import { UserEditComponent } from './user-edit/user-edit.component';
     MatInputModule,
     MatRippleModule,
     MatSelectModule,
+    MatRadioModule,
+    MatIconModule,
+    MatCardModule
   ],
   providers: [],
   bootstrap: [AppComponent],
