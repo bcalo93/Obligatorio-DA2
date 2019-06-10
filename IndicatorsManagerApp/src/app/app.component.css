@@ -1,0 +1,9 @@
+.app {
+    display: flex;
+	flex-direction: column;
+}
+
+.outlet{
+    flex: 1;
+    padding-top: 60px; 
+}

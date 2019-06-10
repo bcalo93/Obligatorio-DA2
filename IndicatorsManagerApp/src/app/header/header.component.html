@@ -1,4 +1,4 @@
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" class="header">
   <button mat-button class="m-0" routerLink="/">IndicatorsManagerApp</button>
   <div *ngIf="isAdminLoggedIn()">
     <button mat-button [matMenuTriggerFor]="management">Management</button>
@@ -6,10 +6,10 @@
   </div>
   <div *ngIf="isManagerLoggedIn()">
     <button mat-button routerLink="/">Active Indicators</button>
-    <button mat-button routerLink="/myIndicators">My Indicators</button>
+    <button mat-button routerLink="/indicators/config">My Indicators</button>
   </div>
   <div class="btn-logout mr-4">
-    <button mat-button [disabled]="currentUser.role === 'Manager'" routerLink="/user/{{currentUser.id}}">{{currentUser.name}} {{currentUser.lastName}}</button>
+    <button mat-button [disabled]="currentUser.role === 'Manager'" routerLink="/users/{{currentUser.id}}">{{currentUser.name}} {{currentUser.lastName}}</button>
     <button mat-button (click)="logout()">
       <mat-icon class="mr-2">exit_to_app</mat-icon>Logout
     </button>
@@ -22,8 +22,8 @@
   </mat-menu>
 
   <mat-menu #users="matMenu">
-    <button mat-menu-item>All Users</button>
-    <button mat-menu-item routerLink="/user/add">Add New User</button>
+    <button mat-menu-item routerLink="/users">All Users</button>
+    <button mat-menu-item routerLink="/users/add">Add New User</button>
   </mat-menu>
 
   <mat-menu #areas="matMenu">
