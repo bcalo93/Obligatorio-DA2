@@ -18,13 +18,15 @@ export class UserService {
   getAllUsers(): Observable<Array<User>> {
     const url = `${environment.apiEndpoint}/users`;
     const options = this.utilsService.getOptions();
-    return this.http.get<Array<User>>(url, options);
+    return this.http.get<Array<User>>(url, options)
+      .pipe(catchError((error: HttpErrorResponse) => throwError(error.error || 'Server Error')));
   }
 
   getUser(userId: string): Observable<User> {
     const url = `${environment.apiEndpoint}/users/${userId}`;
     const options = this.utilsService.getOptions();
-    return this.http.get<User>(url, options);
+    return this.http.get<User>(url, options)
+      .pipe(catchError((error: HttpErrorResponse) => throwError(error.error || 'Server Error')));
   }
 
   addUser(user: User): Observable<User> {
@@ -37,13 +39,15 @@ export class UserService {
   updateUser(user: User): Observable<User> {
     const url = `${environment.apiEndpoint}/users/${user.id}`;
     const options = this.utilsService.getOptions();
-    return this.http.put<User>(url, user, options);
+    return this.http.put<User>(url, user, options)
+      .pipe(catchError((error: HttpErrorResponse) => throwError(error.error || 'Server Error')));
   }
 
   deleteUser(userId: string): Observable<any> {
     const url = `${environment.apiEndpoint}/users/${userId}`;
     const options = this.utilsService.getOptions();
-    return this.http.delete(url, options);
+    return this.http.delete(url, options)
+    .pipe(catchError((error: HttpErrorResponse) => throwError(error.error || 'Server Error')));
   }
 
   getManagerIndicators(): Observable<Array<Indicator>> {

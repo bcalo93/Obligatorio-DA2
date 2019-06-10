@@ -5,12 +5,14 @@ import { HomeManagerComponent } from './home-manager/home-manager.component';
 import { AuthGuard } from '../guards/auth.guard';
 import { LoginComponent } from './login/login.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
+import { UsersListComponent } from './users-list/users-list.component';
 
 const routes: Routes = [
   { path: '', component: HomeManagerComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
-  { path: 'user/add', component: UserEditComponent },
-  { path: 'user/:id', component: UserEditComponent },
+  { path: 'users/add', component: UserEditComponent },
+  { path: 'users/:id', component: UserEditComponent },
+  { path: 'users', component: UsersListComponent },
   { path: '**', redirectTo: '' }
 ];
 

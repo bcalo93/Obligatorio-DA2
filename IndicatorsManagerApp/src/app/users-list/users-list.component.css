@@ -1,0 +1,27 @@
+h2 {
+    text-align: center;
+    margin: auto;
+ }
+
+div.col {
+    margin: auto;
+}
+
+.table tbody tr:hover {
+    color: #212529;
+    background-color: #C5CAE9;
+}
+
+.thead-custom {
+    background-color: #9FA8DA;
+}
+
+.action {
+    text-align: center;
+}
+
+div.action {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+ }

@@ -20,7 +20,8 @@ import {
   MatCardModule,
   MatMenuModule,
   MatToolbarModule,
-  MatSnackBarModule
+  MatSnackBarModule,
+  MatListModule
 } from '@angular/material';
 
 import { HomeManagerComponent } from './home-manager/home-manager.component';
@@ -28,6 +29,7 @@ import { LoginComponent } from './login/login.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { ErrorMessageComponent } from './error-message/error-message.component';
 import { HeaderComponent } from './header/header.component';
+import { UsersListComponent } from './users-list/users-list.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,8 @@ import { HeaderComponent } from './header/header.component';
     LoginComponent,
     UserEditComponent,
     ErrorMessageComponent,
-    HeaderComponent
+    HeaderComponent,
+    UsersListComponent
   ],
   imports: [
     BrowserModule,
@@ -56,7 +59,8 @@ import { HeaderComponent } from './header/header.component';
     MatCardModule,
     MatMenuModule,
     MatToolbarModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatListModule
   ],
   providers: [],
   bootstrap: [AppComponent],
