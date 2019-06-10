@@ -16,6 +16,7 @@ export class UserEditComponent implements OnInit {
   title: string;
   user: User;
   currentUserName: string;
+  isEdit: boolean;
 
   name =  new FormControl('', [Validators.required]);
   lastName = new FormControl('', [Validators.required]);
@@ -36,21 +37,24 @@ export class UserEditComponent implements OnInit {
   ngOnInit() {
     const id = this.currentRoute.snapshot.paramMap.get('id');
     if (id) {
+      this.isEdit = true;
       this.loadCurrentUserDetails(id);
       this.title = 'Edit User Details';
     } else {
+      this.isEdit = false;
       this.title = 'Create New User';
     }
   }
 
   loadCurrentUserDetails(id: string) {
-    this.userService.getAllUsers()
-      .subscribe(users => {
-        this.user = users.find(x => x.id === id);
+    this.userService.getUser(id)
+      .subscribe(user => {
+        this.user = user;
         this.name.setValue(this.user.name);
         this.lastName.setValue(this.user.lastName);
         this.username.setValue(this.user.username);
         this.email.setValue(this.user.email);
+        this.selectedRole = this.user.role;
     });
   }
 
@@ -61,8 +65,30 @@ export class UserEditComponent implements OnInit {
     const email = this.email.value;
     const password = this.password.value;
     const user = new User(name, lastName, username, email, this.selectedRole, password);
-    console.log(user);
+
+    if (!this.isEdit) {
+      this.addUser(user);
+    } else {
+      this.updateUser(user);
+    }
+  }
+
+  addUser(user: User) {
     this.userService.addUser(user)
+    .subscribe(
+      (data: User) => {
+        this.clearErrorMsg();
+        console.log(data);
+      },
+      (error: any) => {
+        this.errorMessage = error;
+        console.log(this.errorMessage);
+      }
+    );
+  }
+
+  updateUser(user: User) {
+    this.userService.updateUser(user)
     .subscribe(
       (data: User) => {
         this.clearErrorMsg();
