@@ -24,13 +24,25 @@ namespace IndicatorsManager.WebApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login([FromBody] LoginModel model) {
-            var authenticationToken = session.CreateToken(model.Username, model.Password);
-            if (authenticationToken == null) 
+        public IActionResult Login([FromBody] LoginModel model) 
+        {
+            try
             {
-                return BadRequest("Usuario/contraseña inválidos");
+                var authenticationToken = session.CreateToken(model.Username, model.Password);
+                if (authenticationToken == null) 
+                {
+                    return BadRequest("Usuario/contraseña inválidos");
+                }
+                return Ok(new LoginModelOut(authenticationToken));
             }
-            return Ok(new LoginModelOut(authenticationToken));
+            catch(UnauthorizedException ue)
+            {
+                return Unauthorized(ue.Message);
+            }
+            catch(DataAccessException)
+            {
+                return StatusCode(503, "El servicio no esta disponible.");
+            }
         }
     }
 

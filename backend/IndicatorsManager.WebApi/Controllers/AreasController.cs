@@ -36,9 +36,9 @@ namespace IndicatorsManager.WebApi.Controllers
             {
                 return Ok(this.areaLogic.GetAll().Select(a => new AreaModel(a)));
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no está disponible.");
+                return StatusCode(503, de.Message);
             }
         }
 
@@ -51,13 +51,13 @@ namespace IndicatorsManager.WebApi.Controllers
                 Area result = this.areaLogic.Get(id);
                 if(result == null)
                 {
-                    return NotFound("El área no existe.");
+                    return NotFound("The area doesn't exist.");
                 }
                 return Ok(new AreaModel(result));
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no está disponible.");
+                return StatusCode(503, de.Message);
             }
         }
 
@@ -78,9 +78,9 @@ namespace IndicatorsManager.WebApi.Controllers
             {
                 return Conflict(ee.Message);
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no está disponible.");
+                return StatusCode(503, de.Message);
             }
         }
 
@@ -93,7 +93,7 @@ namespace IndicatorsManager.WebApi.Controllers
                 Area result = this.areaLogic.Update(id, area.ToEntity());
                 if(result == null)
                 {
-                    return NotFound(string.Format("El área no existe."));
+                    return NotFound(string.Format("The area doesn't exist."));
                 }
                 return Ok(new AreaModel(result));
             }
@@ -105,9 +105,9 @@ namespace IndicatorsManager.WebApi.Controllers
             {
                 return Conflict(ee.Message);
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no está disponible.");
+                return StatusCode(503, de.Message);
             }
         }        
 
@@ -120,9 +120,9 @@ namespace IndicatorsManager.WebApi.Controllers
                 this.areaLogic.Remove(id);
                 return NoContent();
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no está disponible.");
+                return StatusCode(503, de.Message);
             }
         }
 
@@ -144,9 +144,9 @@ namespace IndicatorsManager.WebApi.Controllers
             {
                 return Conflict(ee.Message);
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no está disponible.");
+                return StatusCode(503, de.Message);
             }
         }
 
@@ -163,9 +163,9 @@ namespace IndicatorsManager.WebApi.Controllers
             {
                 return BadRequest(ie.Message);
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no está disponible.");
+                return StatusCode(503, de.Message);
             }
         }
 
@@ -190,9 +190,9 @@ namespace IndicatorsManager.WebApi.Controllers
             {
                 return NotFound(en.Message);
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no está disponible.");
+                return StatusCode(503, de.Message);
             }
         }
 
@@ -208,9 +208,9 @@ namespace IndicatorsManager.WebApi.Controllers
             {
                 return BadRequest(ee.Message);
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no está disponible.");
+                return StatusCode(503, de.Message);
             }
         }
         

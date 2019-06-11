@@ -9,6 +9,7 @@ namespace IndicatorsManager.DataAccess
     public abstract class BaseRepository<T> : IRepository<T> where T : class
     {
         protected DbContext context;
+        protected const string CONNECTION_ERROR = "The service is unavailable.";
 
         public BaseRepository(DbContext context)
         {
@@ -23,7 +24,7 @@ namespace IndicatorsManager.DataAccess
             }
             catch(InvalidOperationException ex)
             {
-                throw new IdExistException("Una entidad con esta Id ya existe.", ex);
+                throw new IdExistException("An entity with that Id already exist.", ex);
             }
         }
 
@@ -45,7 +46,7 @@ namespace IndicatorsManager.DataAccess
             }
             catch(DbUpdateException ex)
             {
-                throw new DataAccessException("Ocurrió un error guardando la entidad.", ex);
+                throw new DataAccessException("An error occured when trying to save an entity.", ex);
             }
         }
 

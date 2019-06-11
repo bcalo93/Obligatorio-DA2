@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using IndicatorsManager.BusinessLogic.Interface;
 using IndicatorsManager.Domain;
+using IndicatorsManager.DataAccess.Interface.Exceptions;
 
 namespace IndicatorsManager.WebApi.Filters
 {
@@ -33,30 +34,45 @@ namespace IndicatorsManager.WebApi.Filters
                 return;
             }
 
-            var sessions = (ISessionLogic)context.HttpContext.RequestServices.GetService(typeof(ISessionLogic));
+            var sessions = (ISessionLogic)context.HttpContext.RequestServices
+                .GetService(typeof(ISessionLogic));
 
-            User user = sessions.GetUser(tokenId);
-            if(user == null || user.IsDeleted)
+            try
             {
-                context.Result = new ContentResult()
+                User user = sessions.GetUser(tokenId);
+                if(user == null || user.IsDeleted)
                 {
-                    StatusCode = 400,
-                    Content = "El Token es inválido"
-                };
-                return;
+                    context.Result = new ContentResult()
+                    {
+                        StatusCode = 400,
+                        Content = "El Token es inválido"
+                    };
+                    return;
+                }
+
+                var indicatorsLogic = (IIndicatorLogic)context.HttpContext.RequestServices
+                    .GetService(typeof(IIndicatorLogic));
+                
+                string[] path = context.HttpContext.Request.Path.Value.Split('/');
+                Guid indicatorId;
+                bool validIndicatorId = Guid.TryParse(path[path.Length -1], out indicatorId);
+                if(validIndicatorId && user.Role == Role.Manager && !indicatorsLogic
+                    .GetManagerIndicators(tokenId).Any(i => i.Indicator.Id == indicatorId))
+                {
+                    context.Result = new ContentResult()
+                    {
+                        StatusCode = 401,
+                        Content = "El gerente no tiene acceso a este Indicador"
+                    };
+                    return;
+                }
             }
-
-            var indicatorsLogic = (IIndicatorLogic)context.HttpContext.RequestServices.GetService(typeof(IIndicatorLogic));
-            
-            string[] path = context.HttpContext.Request.Path.Value.Split('/');
-            Guid indicatorId;
-            bool validIndicatorId = Guid.TryParse(path[path.Length -1], out indicatorId);
-            if(validIndicatorId && user.Role == Role.Manager && !indicatorsLogic.GetManagerIndicators(tokenId).Any(i => i.Indicator.Id == indicatorId))
+            catch(DataAccessException de)
             {
                 context.Result = new ContentResult()
                 {
-                    StatusCode = 401,
-                    Content = "El gerente no tiene acceso a este Indicador"
+                    StatusCode = 503,
+                    Content = de.Message
                 };
                 return;
             }

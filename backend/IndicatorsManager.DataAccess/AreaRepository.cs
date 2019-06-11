@@ -5,6 +5,7 @@ using IndicatorsManager.Domain;
 using Microsoft.EntityFrameworkCore;
 using IndicatorsManager.DataAccess.Interface;
 using IndicatorsManager.DataAccess.Interface.Exceptions;
+using System.Data.SqlClient;
 
 namespace IndicatorsManager.DataAccess
 {
@@ -14,17 +15,38 @@ namespace IndicatorsManager.DataAccess
 
         public override Area Get(Guid id)
         {
-            return context.Set<Area>().Where(x => x.Id == id).FirstOrDefault();
+            try
+            {
+                return context.Set<Area>().Where(x => x.Id == id).FirstOrDefault();
+            }
+            catch(SqlException ex)
+            {
+                throw new DataAccessException(CONNECTION_ERROR, ex);
+            }
         }
         
         public override IEnumerable<Area> GetAll()
         {
-           return context.Set<Area>().ToList();
+            try
+            {
+                return context.Set<Area>().ToList();
+            }
+            catch(SqlException ex)
+            {
+                throw new DataAccessException(CONNECTION_ERROR, ex);
+            }
         }
 
         public Area GetByName(string name)
         {
-            return this.context.Set<Area>().Where(a => a.Name == name).FirstOrDefault();
+            try
+            {
+                return this.context.Set<Area>().Where(a => a.Name == name).FirstOrDefault();
+            }
+            catch(SqlException ex)
+            {
+                throw new DataAccessException(CONNECTION_ERROR, ex);
+            }
         }
 
     }

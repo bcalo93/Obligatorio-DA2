@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using IndicatorsManager.BusinessLogic.Interface;
 using IndicatorsManager.Domain;
+using IndicatorsManager.DataAccess.Interface.Exceptions;
 
 namespace IndicatorsManager.WebApi.Filters {
 
@@ -39,26 +40,39 @@ namespace IndicatorsManager.WebApi.Filters {
                 return;
             }
 
-            var sessions = (ISessionLogic)context.HttpContext.RequestServices.GetService(typeof(ISessionLogic));
+            var sessions = (ISessionLogic)context.HttpContext.RequestServices
+                .GetService(typeof(ISessionLogic));
 
-            if (!sessions.IsValidToken(result))
+            try
             {
-                context.Result = new ContentResult()
+                if (!sessions.IsValidToken(result))
                 {
-                    StatusCode = 400,
-                    Content = "El Token es inválido",
-                };
-                return;
-            }
-            if (!sessions.HasLevel(result, _role))
-            {
-                context.Result = new ContentResult()
+                    context.Result = new ContentResult()
+                    {
+                        StatusCode = 400,
+                        Content = "El Token es inválido",
+                    };
+                    return;
+                }
+                if (!sessions.HasLevel(result, _role))
                 {
-                    StatusCode = 400,
-                    Content = "El usuario no es " + _role,
-                };
-                return;
+                    context.Result = new ContentResult()
+                    {
+                        StatusCode = 400,
+                        Content = "El usuario no es " + _role,
+                    };
+                    return;
+                }
             }
+            catch(DataAccessException de)
+                {
+                    context.Result = new ContentResult()
+                    {
+                        StatusCode = 503,
+                        Content = de.Message
+                    };
+                    return;
+                }
         }
         
         public void OnActionExecuted(ActionExecutedContext context)

@@ -103,12 +103,14 @@ namespace IndicatorsManager.WebApi.Test
                 Name = "Name Post",
                 DataSource = "DataSource Post"
             };            
-            mockArea.Setup(m => m.Create(It.IsAny<Area>())).Throws(new DataAccessException(""));
+            mockArea.Setup(m => m.Create(It.IsAny<Area>()))
+                .Throws(new DataAccessException("Connection Error"));
 
             var result = controller.Post(requestBody);
 
             var response = result as ObjectResult;
             Assert.AreEqual(503, response.StatusCode);
+            Assert.AreEqual("Connection Error", response.Value);
         }
 
         [TestMethod]
@@ -160,18 +162,20 @@ namespace IndicatorsManager.WebApi.Test
             var result = controller.Get(Guid.NewGuid());
 
             var response = result as NotFoundObjectResult;
-            Assert.AreEqual("El área no existe.", response.Value);
+            Assert.AreEqual("The area doesn't exist.", response.Value);
         }
 
         [TestMethod]
         public void GetAreaDataAccessExceptionTest()
         {
-            mockArea.Setup(m => m.Get(It.IsAny<Guid>())).Throws(new DataAccessException(""));
+            mockArea.Setup(m => m.Get(It.IsAny<Guid>()))
+               .Throws(new DataAccessException("Connection Error"));
 
             var result = controller.Get(Guid.NewGuid());
 
             var response = result as ObjectResult;
             Assert.AreEqual(503, response.StatusCode);
+            Assert.AreEqual("Connection Error", response.Value);
         }
 
         [TestMethod]
@@ -190,12 +194,14 @@ namespace IndicatorsManager.WebApi.Test
         [TestMethod]
         public void GetAllAreaDataAccessExceptionTest()
         {
-            mockArea.Setup(m => m.GetAll()).Throws(new DataAccessException(""));
+            mockArea.Setup(m => m.GetAll())
+                .Throws(new DataAccessException("Connection Error"));
 
             var result = controller.Get();
 
             var response = result as ObjectResult;
-            Assert.AreEqual(503, response.StatusCode);     
+            Assert.AreEqual(503, response.StatusCode);
+            Assert.AreEqual("Connection Error", response.Value);
         }
 
         [TestMethod]
@@ -236,7 +242,7 @@ namespace IndicatorsManager.WebApi.Test
             var result = controller.Put(Guid.NewGuid(), requestBody);
             
             var response = result as NotFoundObjectResult;
-            Assert.AreEqual("El área no existe.", response.Value);
+            Assert.AreEqual("The area doesn't exist.", response.Value);
         }
 
         [TestMethod]
@@ -280,12 +286,14 @@ namespace IndicatorsManager.WebApi.Test
                 Name = "Name Put",
                 DataSource = "DataSource Put"
             };
-            mockArea.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<Area>())).Throws(new DataAccessException(""));
+            mockArea.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<Area>()))
+                .Throws(new DataAccessException("Connection Error"));
 
             var result = controller.Put(Guid.NewGuid(), requestBody);
 
             var response = result as ObjectResult;
             Assert.AreEqual(503, response.StatusCode);
+            Assert.AreEqual("Connection Error", response.Value);
         }        
 
         [TestMethod]
@@ -301,12 +309,14 @@ namespace IndicatorsManager.WebApi.Test
         [TestMethod]
         public void DeleteDataAccessExceptionTest()
         {
-            mockArea.Setup(m => m.Remove(It.IsAny<Guid>())).Throws(new DataAccessException(""));
+            mockArea.Setup(m => m.Remove(It.IsAny<Guid>()))
+                .Throws(new DataAccessException("Connection Error"));
 
             var result = controller.Delete(Guid.NewGuid());
 
             var response = result as ObjectResult;
             Assert.AreEqual(503, response.StatusCode);
+            Assert.AreEqual("Connection Error", response.Value);
         }
 
         [TestMethod]
@@ -346,12 +356,14 @@ namespace IndicatorsManager.WebApi.Test
             Guid areaId = Guid.NewGuid();
             Guid body = Guid.NewGuid();
 
-            mockUserAreaLogic.Setup(m => m.AddAreaManager(It.IsAny<Guid>(), It.IsAny<Guid>())).Throws(new DataAccessException(""));
+            mockUserAreaLogic.Setup(m => m.AddAreaManager(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .Throws(new DataAccessException("Connection Error"));
 
             var result = controller.Post(areaId, body);
             
             var response = result as ObjectResult;
             Assert.AreEqual(503, response.StatusCode);
+            Assert.AreEqual("Connection Error", response.Value);
         }  
 
         [TestMethod]
@@ -380,12 +392,14 @@ namespace IndicatorsManager.WebApi.Test
         [TestMethod]
         public void DeleteUserAreaDataAccessExceptionTest()
         {
-            mockUserAreaLogic.Setup(m => m.RemoveAreaManager(It.IsAny<Guid>(), It.IsAny<Guid>())).Throws(new DataAccessException(""));
+            mockUserAreaLogic.Setup(m => m.RemoveAreaManager(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .Throws(new DataAccessException("Connection Error"));
 
             var result = controller.Delete(Guid.NewGuid(), Guid.NewGuid());
 
             var response = result as ObjectResult;
             Assert.AreEqual(503, response.StatusCode);
+            Assert.AreEqual("Connection Error", response.Value);
         }
         
         [TestMethod]
@@ -566,7 +580,8 @@ namespace IndicatorsManager.WebApi.Test
         {
             Guid areaId = Guid.NewGuid();
             
-            mockIndicator.Setup(m => m.Create(areaId, It.IsAny<Indicator>())).Throws(new DataAccessException(""));
+            mockIndicator.Setup(m => m.Create(areaId, It.IsAny<Indicator>()))
+                .Throws(new DataAccessException("Connection Error"));
 
             // Request Body
             IndicatorCreateModel requestBody = new IndicatorCreateModel { Name = "Test Indicator" };
@@ -574,6 +589,7 @@ namespace IndicatorsManager.WebApi.Test
             var result = controller.AddIndicator(areaId, requestBody);
             var response = result as ObjectResult;
             Assert.AreEqual(503, response.StatusCode);
+            Assert.AreEqual("Connection Error", response.Value);
         }
 
         private void AssertAreasAreEqual(Area area, AreaModel model)

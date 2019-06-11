@@ -22,22 +22,22 @@ namespace IndicatorsManager.DataAccess
             {
                 throw new DataAccessException("El connection string es null");
             }
-            SqlConnection conn = new SqlConnection(this.connectionString);
 
-            SqlDataReader rdr = null;
-
+            SqlConnection conn = null;
             object ret = null;
-            
+            SqlDataReader rdr = null;
             try
             {
+                conn = new SqlConnection(this.connectionString);
                 conn.Open();
-                
                 SqlCommand cmd = new SqlCommand(query, conn);
-                
                 rdr = cmd.ExecuteReader();
                 rdr.Read();
                 ret = rdr[0];
-
+            }
+            catch(ArgumentException ae)
+            {
+                throw new DataAccessException("El formato del Connection String es invalido", ae);
             }
             catch(SqlException ex) {
                 throw new DataAccessException(ex.Message, ex);

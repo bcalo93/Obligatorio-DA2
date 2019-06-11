@@ -99,10 +99,19 @@ namespace IndicatorsManager.DataAccess.Test
 
         [TestMethod]
         [ExpectedException(typeof(DataAccessException))]
-        public void RunQueryInvalidConnStrTest()
+        public void RunQueryInvalidConnStrTest_1()
         {
             IQueryRunner runner = new QueryRunner();
             runner.SetConnectionString("Server=.\\SQLSERV;Database=prueba;Trusted_Connection=True;MultipleActiveResultSets=True;");
+            int ret = (int)runner.RunQuery("SELECT COUNT(*) FROM category;");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(DataAccessException))]
+        public void RunQueryInvalidConnStrTest_2()
+        {
+            IQueryRunner runner = new QueryRunner();
+            runner.SetConnectionString("Wrong");
             int ret = (int)runner.RunQuery("SELECT COUNT(*) FROM category;");
         }
 

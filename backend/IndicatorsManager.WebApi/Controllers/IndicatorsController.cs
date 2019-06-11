@@ -41,9 +41,9 @@ namespace IndicatorsManager.WebApi.Controllers
             {
                 return NotFound(en.Message);
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no esta disponible.");
+                return StatusCode(503, de.Message);
             }
         }
 
@@ -64,9 +64,9 @@ namespace IndicatorsManager.WebApi.Controllers
             {
                 return BadRequest(ie.Message);
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no esta disponible.");
+                return StatusCode(503, de.Message);
             }
         }
 
@@ -79,9 +79,9 @@ namespace IndicatorsManager.WebApi.Controllers
                 this.indicatorLogic.Remove(id);
                 return NoContent();
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no esta disponible.");
+                return StatusCode(503, de.Message);
             }
         }
 
@@ -106,9 +106,9 @@ namespace IndicatorsManager.WebApi.Controllers
             {
                 return Conflict(ee.Message);
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no esta disponible.");
+                return StatusCode(503, de.Message);
             }
         }
     }
