@@ -33,7 +33,7 @@ namespace IndicatorsManager.BusinessLogic.Visitors
             }
             catch(DataAccessException de)
             {
-                throw new EvaluationException(string.Format("La consulta {0} es incorrecta.", query.QueryTextValue), de);
+                throw new EvaluationException(string.Format("Query {0} is incorrect.", query.QueryTextValue), de);
             }
         }
 
@@ -51,7 +51,7 @@ namespace IndicatorsManager.BusinessLogic.Visitors
             }
             catch(InvalidCastException ic)
             {
-                throw new EvaluationException("Uno de los elementos del And no devuelve booleano", ic);
+                throw new EvaluationException("One or many And element/s don't return a boolean value.", ic);
             }
         }
 
@@ -64,7 +64,7 @@ namespace IndicatorsManager.BusinessLogic.Visitors
             }
             catch(InvalidCastException ic)
             {
-                throw new EvaluationException("Uno de los elementos del Or no devuelve booleano", ic);
+                throw new EvaluationException("One or many Or element/s don't return a boolean value.", ic);
             }
         }
 

@@ -31,7 +31,7 @@ namespace IndicatorsManager.WebApi.Controllers
                 var authenticationToken = session.CreateToken(model.Username, model.Password);
                 if (authenticationToken == null) 
                 {
-                    return BadRequest("Usuario/contraseña inválidos");
+                    return BadRequest("User/password invalid.");
                 }
                 return Ok(new LoginModelOut(authenticationToken));
             }
@@ -39,9 +39,9 @@ namespace IndicatorsManager.WebApi.Controllers
             {
                 return Unauthorized(ue.Message);
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no esta disponible.");
+                return StatusCode(503, de.Message);
             }
         }
     }

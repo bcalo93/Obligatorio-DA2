@@ -108,7 +108,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemQuery query = new ItemQuery { QueryTextValue = queryString};
 
             string result = query.Accept(visitor);
-            Assert.AreEqual("Consulta Incorrecta - SELECT * FROM TABLE", result);
+            Assert.AreEqual("Incorrect Query - SELECT * FROM TABLE", result);
         }
 
         [TestMethod]
@@ -175,7 +175,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             MayorCondition mayor = new MayorCondition { Components = new List<Component>{ query, text }};
             
             string result = mayor.Accept(visitor);
-            Assert.AreEqual("(Consulta Incorrecta - SELECT COUNT(*) FROM TABLE > Venus)", result);
+            Assert.AreEqual("(Incorrect Query - SELECT COUNT(*) FROM TABLE > Venus)", result);
         }
         
 
@@ -256,7 +256,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             MayorEqualsCondition mayorEquals = new MayorEqualsCondition { Components = new List<Component>{ query, text }};
             
             string result = mayorEquals.Accept(visitor);
-            Assert.AreEqual("(Consulta Incorrecta - SELECT COUNT(*) FROM TABLE >= Venus)", result);
+            Assert.AreEqual("(Incorrect Query - SELECT COUNT(*) FROM TABLE >= Venus)", result);
         }
 
         [TestMethod]
@@ -336,7 +336,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             MinorCondition minor = new MinorCondition { Components = new List<Component>{ query, text }};
             
             string result = minor.Accept(visitor);
-            Assert.AreEqual("(Consulta Incorrecta - SELECT COUNT(*) FROM TABLE < Venus)", result);
+            Assert.AreEqual("(Incorrect Query - SELECT COUNT(*) FROM TABLE < Venus)", result);
         }
 
         [TestMethod]
@@ -416,7 +416,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             MinorEqualsCondition minorEquals = new MinorEqualsCondition { Components = new List<Component>{ query, text }};
             
             string result = minorEquals.Accept(visitor);
-            Assert.AreEqual("(Consulta Incorrecta - SELECT COUNT(*) FROM TABLE <= Venus)", result);
+            Assert.AreEqual("(Incorrect Query - SELECT COUNT(*) FROM TABLE <= Venus)", result);
         }
 
         [TestMethod]
@@ -496,7 +496,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             EqualsCondition equals = new EqualsCondition { Components = new List<Component>{ query, text }};
             
             string result = equals.Accept(visitor);
-            Assert.AreEqual("(Consulta Incorrecta - SELECT COUNT(*) FROM TABLE = Venus)", result);
+            Assert.AreEqual("(Incorrect Query - SELECT COUNT(*) FROM TABLE = Venus)", result);
         }
 
         [TestMethod]

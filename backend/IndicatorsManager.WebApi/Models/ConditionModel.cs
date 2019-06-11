@@ -54,7 +54,7 @@ namespace IndicatorsManager.WebApi.Models
                     result = new MinorEqualsCondition();
                     break;
                 default:
-                    throw new ComponentException("conditionType debe ser And, Or, Equals, Mayor, MayorEquals, Minor o MinorEquals.");
+                    throw new ComponentException("conditionType must be And, Or, Equals, Mayor, MayorEquals, Minor or MinorEquals.");
             }
             result.Position = this.Position;
             result.Components = this.Components.Select(c => c.ToEntity()).ToList();

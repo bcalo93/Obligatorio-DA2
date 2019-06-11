@@ -18,7 +18,7 @@ namespace IndicatorsManager.WebApi.Filters
                 context.Result = new ContentResult()
                 {
                     StatusCode = 401,
-                    Content = "Se requiere un Token"
+                    Content = "A token is required."
                 };
                 return;
             }
@@ -29,7 +29,7 @@ namespace IndicatorsManager.WebApi.Filters
                 context.Result = new ContentResult()
                 {
                     StatusCode = 400,
-                    Content = "El Token es inválido"
+                    Content = "The token is invalid."
                 };
                 return;
             }
@@ -45,7 +45,7 @@ namespace IndicatorsManager.WebApi.Filters
                     context.Result = new ContentResult()
                     {
                         StatusCode = 400,
-                        Content = "El Token es inválido"
+                        Content = "The  token is invalid."
                     };
                     return;
                 }
@@ -62,7 +62,7 @@ namespace IndicatorsManager.WebApi.Filters
                     context.Result = new ContentResult()
                     {
                         StatusCode = 401,
-                        Content = "El gerente no tiene acceso a este Indicador"
+                        Content = "The  manager cannot see this Indicator."
                     };
                     return;
                 }

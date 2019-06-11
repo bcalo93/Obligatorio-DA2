@@ -46,7 +46,7 @@ namespace IndicatorsManager.BusinessLogic.Visitors
             }
             else
             {
-                throw new EvaluationException("No se puede convertir a decimal");
+                throw new EvaluationException("Cannot convert to decimal.");
             }
         }
     }

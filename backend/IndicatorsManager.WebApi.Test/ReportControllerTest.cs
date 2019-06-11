@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using IndicatorsManager.WebApi.Controllers;
 using IndicatorsManager.WebApi.Models;
-using IndicatorsManager.BusinessLogic.Interface.Exceptions;
-using IndicatorsManager.DataAccess.Interface.Exceptions;
 using System.Collections.Generic;
 using System.Linq;
 

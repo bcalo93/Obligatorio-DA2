@@ -35,7 +35,7 @@ namespace IndicatorsManager.BusinessLogic
             }
             catch(IdExistException) 
             {
-                throw new EntityExistException("Ya existe un área con este id");
+                throw new EntityExistException("The area already exist.");
             }
             return area;
         }
@@ -77,16 +77,16 @@ namespace IndicatorsManager.BusinessLogic
             User user = this.userRepo.Get(userId);
             if (user == null || user.IsDeleted || user.Role != Role.Manager)
             {
-                throw new InvalidEntityException("El usuario no existe/ no es válido");
+                throw new InvalidEntityException("The user doesn't exist or is invalid.");
             }
             Area area = this.repository.Get(areaId);
             if (area == null)
             {
-                throw new InvalidEntityException("El área no existe");
+                throw new InvalidEntityException("The area doesn't exist.");
             }
             if(user.UserAreas.Any(u => u.AreaId == area.Id))
             {
-                throw new EntityExistException("El usuario ya es parte del area.");
+                throw new EntityExistException("The user is part of the area.");
             }
             area.AddUser(new UserArea{ User = user });
             repository.Save();
@@ -97,12 +97,12 @@ namespace IndicatorsManager.BusinessLogic
             User user = this.userRepo.Get(userId);
             if (user == null || user.IsDeleted)
             {
-                throw new InvalidEntityException("El usuario no existe");
+                throw new InvalidEntityException("The user doesn't exist.");
             }
             Area area = this.repository.Get(areaId);
             if (area == null)
             {
-                throw new InvalidEntityException("El área no existe");
+                throw new InvalidEntityException("The area doesn't exist.");
             }
             UserArea userArea = new UserArea(user, area);
             area.RemoveUser(userArea);
@@ -118,7 +118,7 @@ namespace IndicatorsManager.BusinessLogic
         {
             if (area == null || !area.IsValid()) 
             {
-                throw new InvalidEntityException("Los datos del área no son válidos");
+                throw new InvalidEntityException("Area's data is invalid.");
             }
         }
 
@@ -127,7 +127,7 @@ namespace IndicatorsManager.BusinessLogic
             Area areaNameCheck = this.query.GetByName(area.Name);
             if(areaNameCheck != null && areaNameCheck.Id != area.Id)
             {
-                throw new EntityExistException("El nombre de área ya existe.");
+                throw new EntityExistException("Area name already exist.");
             }
         } 
         

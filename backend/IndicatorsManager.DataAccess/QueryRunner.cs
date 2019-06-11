@@ -20,7 +20,7 @@ namespace IndicatorsManager.DataAccess
         {
             if(this.connectionString == null)
             {
-                throw new DataAccessException("El connection string es null");
+                throw new DataAccessException("The connection string is null");
             }
 
             SqlConnection conn = null;
@@ -37,7 +37,7 @@ namespace IndicatorsManager.DataAccess
             }
             catch(ArgumentException ae)
             {
-                throw new DataAccessException("El formato del Connection String es invalido", ae);
+                throw new DataAccessException("Connection String format is invalid", ae);
             }
             catch(SqlException ex) {
                 throw new DataAccessException(ex.Message, ex);

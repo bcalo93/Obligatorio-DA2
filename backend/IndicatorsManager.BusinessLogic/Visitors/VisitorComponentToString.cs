@@ -42,7 +42,7 @@ namespace IndicatorsManager.BusinessLogic.Visitors
             }
             catch(DataAccessException)
             {
-                return string.Format("Consulta Incorrecta - {0}", query.QueryTextValue);
+                return string.Format("Incorrect Query - {0}", query.QueryTextValue);
             }
         }
 

@@ -36,7 +36,7 @@ namespace IndicatorsManager.WebApi.Models
                 case StringType.Text:
                     return new ItemText { Position = this.Position, TextValue = this.Value };
                 default:
-                    throw new ComponentException("type debe ser Sql o Text.");
+                    throw new ComponentException("type must be Sql or Text.");
             }
         }
     }

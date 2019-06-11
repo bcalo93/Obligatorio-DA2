@@ -13,12 +13,12 @@ namespace IndicatorsManager.BusinessLogic.Visitors
 
         protected override bool IsMayorImplementation(DataType dataType)
         {
-            throw new EvaluationException("Los booleanos no se pueden comparar con > o >=");
+            throw new EvaluationException("Booleans cannot be compared using > o >=");
         }
 
         protected override bool IsMinorImplementation(DataType dataType)
         {
-            throw new EvaluationException("Los booleanos no se pueden comparar con < o <=");
+            throw new EvaluationException("Booleans cannot be compared using < o <=");
         }
 
         public override object GetDataValue()
