@@ -26,20 +26,20 @@ namespace IndicatorsManager.BusinessLogic
         {
             if(!this.IsValidItem(item))
             {
-                throw new InvalidEntityException("El Item es invalido.");
+                throw new InvalidEntityException("The item's data is invalid.");
             }
             Indicator indicator = this.indicatorRepository.Get(inidcatorId);
             if(indicator == null)
             {
-                throw new EntityNotExistException("El Indicador es invalida.");
+                throw new EntityNotExistException("The indicator is invalid.");
             }
             if(indicator.IndicatorItems.Any(i => i.Name == item.Name))
             {
-                throw new EntityExistException("Un item con ese nombre ya existe");
+                throw new EntityExistException("An item with that name already exist.");
             }
             if(indicator.IndicatorItems.Count >= 3)
             {
-                throw new IndicatorException("El indicador tiene muchos Items");
+                throw new IndicatorException("The Indicator has to many items.");
             }
             indicator.IndicatorItems.Add(item);
             this.indicatorRepository.Save();
@@ -51,7 +51,7 @@ namespace IndicatorsManager.BusinessLogic
             IndicatorItem toEvalualte  = this.itemRepository.Get(id);
             if(toEvalualte == null)
             {
-                throw new EntityNotExistException(string.Format("El Item de id {0} no existe.", id));
+                throw new EntityNotExistException(string.Format("The item with id {0} doesn't exist.", id));
             }
             this.queryRunner.SetConnectionString(toEvalualte.Indicator.Area.DataSource);
             string resultAsString = toEvalualte.Condition.Accept(new VisitorComponentToString(this.queryRunner));
@@ -88,12 +88,12 @@ namespace IndicatorsManager.BusinessLogic
             IndicatorItem original = this.itemRepository.Get(id);
             if(original == null)
             {
-                throw new EntityNotExistException(String.Format("El indicador de id {0} no existe", id.ToString()));
+                throw new EntityNotExistException(String.Format("The item with Id {0} doesn't exist", id.ToString()));
             }
             Indicator indicator = original.Indicator;
             if(indicator.IndicatorItems.Any(i => i.Name == item.Name && i.Id != original.Id))
             {
-                throw new EntityExistException("Hay otro item con ese nombre.");
+                throw new EntityExistException("There's other item with that name.");
             }
             indicator.IndicatorItems.Remove(original);
             indicator.IndicatorItems.Add(item);

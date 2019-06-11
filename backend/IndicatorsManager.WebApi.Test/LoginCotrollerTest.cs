@@ -66,7 +66,7 @@ namespace IndicatorsManager.WebApi.Test
             mockSession.VerifyAll();
 
             var response = result as BadRequestObjectResult;
-            Assert.AreEqual("Usuario/contraseña inválidos", response.Value);
+            Assert.AreEqual("User/password invalid.", response.Value);
         }
 
 

@@ -24,12 +24,12 @@ namespace IndicatorsManager.BusinessLogic
         {
             if(user == null || !user.IsValid())
             {
-                throw new InvalidEntityException("Los datos del usuario son invalidos");
+                throw new InvalidEntityException("The user's data is invalid.");
             }
             User checkUsername = this.query.GetByUsername(user.Username);
             if(checkUsername != null)
             {
-                throw new EntityExistException("El nombre de usuario que esta intentando crear ya existe.");
+                throw new EntityExistException("The username you are trying to create already exist.");
             }
             
             try
@@ -37,9 +37,9 @@ namespace IndicatorsManager.BusinessLogic
                 this.repository.Add(user);
                 this.repository.Save();
             }
-            catch(IdExistException)
+            catch(IdExistException ie)
             {
-                throw new EntityExistException("Un Usuario con ese Id ya existe.");
+                throw new EntityExistException("A User with that Id already exist.", ie);
             }
 
             return user;

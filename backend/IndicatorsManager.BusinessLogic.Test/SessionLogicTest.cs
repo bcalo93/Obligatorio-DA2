@@ -75,7 +75,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             mockLogger.Setup(m => m.Add(It.IsAny<Log>()));
             mockLogger.Setup(m => m.Save());
                       
-            mockUserRepo.Setup(m => m.GetAll()).Returns(users);            
+            mockUserRepo.Setup(m => m.GetAll()).Returns(users);
 
             mockTokenRepo.Setup(m => m.GetByUser(It.IsAny<User>())).Returns(authToken);
             mockTokenRepo.Setup(m => m.Update(It.IsAny<AuthenticationToken>()));
@@ -88,6 +88,7 @@ namespace IndicatorsManager.BusinessLogic.Test
         }
 
         [TestMethod]
+        [ExpectedException(typeof(UnauthorizedException))]
         public void CreateAuthenticationTokenInvalidUsernameOrPasswordTest()
         {
             var users = CreateUsers(10);
@@ -95,8 +96,19 @@ namespace IndicatorsManager.BusinessLogic.Test
             mockUserRepo.Setup(m => m.GetAll()).Returns(users);
             
             AuthenticationToken result = session.CreateToken("invalid username", "invalid password");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedException))]
+        public void CreateAuthenticationTokenUserDeletedTest()
+        {
+            var users = CreateUsers(10);
+            User deleted = users.ElementAt(6);
+            deleted.IsDeleted = true;
             
-            Assert.IsNull(result);
+            mockUserRepo.Setup(m => m.GetAll()).Returns(users);
+            
+            AuthenticationToken result = session.CreateToken(deleted.Username, deleted.Password);
         }
 
         [TestMethod]

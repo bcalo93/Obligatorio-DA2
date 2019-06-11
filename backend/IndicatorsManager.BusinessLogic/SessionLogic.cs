@@ -33,17 +33,20 @@ namespace IndicatorsManager.BusinessLogic
 
         public AuthenticationToken CreateToken(string username, string password)
         {
-            var users = userRepo.GetAll();
-            var user = users.FirstOrDefault(x => x.Username == username && x.Password == password);
-            if (user == null)
+            User user = CheckCredentials(username, password);
+            AuthenticationToken authToken = repository.GetByUser(user);
+                        
+            if (authToken != null)
             {
-                return null;
+                authToken.Token = Guid.NewGuid();
+                repository.Update(authToken);
             }
-            AuthenticationToken newAuthToken = new AuthenticationToken() 
+            else
             {
-                Token = Guid.NewGuid(),
-                User = user
-            };
+                authToken = new AuthenticationToken() { Token = Guid.NewGuid(), User = user };
+                repository.Add(authToken);
+            }
+            repository.Save();
             Log log = new Log()
             {
                 DateTime = DateTime.Now,
@@ -51,21 +54,7 @@ namespace IndicatorsManager.BusinessLogic
             };
             logger.Add(log);
             logger.Save();
-
-            AuthenticationToken existingAuthToken = repository.GetByUser(user);
-            if (existingAuthToken != null)
-            {
-                existingAuthToken.Update(newAuthToken);
-                repository.Update(existingAuthToken);
-                repository.Save();
-                return existingAuthToken;
-            }
-            else
-            {
-                repository.Add(newAuthToken);
-                repository.Save();
-                return newAuthToken;
-            }
+            return authToken;
         }
 
         public bool HasLevel(Guid token, Role role)
@@ -87,6 +76,16 @@ namespace IndicatorsManager.BusinessLogic
             return userRepo.Get(authToken.User.Id);
         }
 
-
+        private User CheckCredentials(string username, string password)
+        {
+            IEnumerable<User> users = userRepo.GetAll();
+            User result = users.FirstOrDefault(x => x.Username == username && 
+                x.Password == password && !x.IsDeleted);
+            if(result == null)
+            {
+                throw new UnauthorizedException("The credentials are invalid.");
+            }
+            return result;
+        }
     }
 }

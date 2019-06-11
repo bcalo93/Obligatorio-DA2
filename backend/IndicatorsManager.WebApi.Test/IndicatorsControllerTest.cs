@@ -53,7 +53,8 @@ namespace IndicatorsManager.WebApi.Test
                 Name = "Name Put"
             };
 
-            indicatorMock.Setup(m => m.Update(expectedId, It.IsAny<Indicator>())).Returns(updateResult);
+            indicatorMock.Setup(m => m.Update(expectedId, It.IsAny<Indicator>()))
+                .Returns(updateResult);
 
             var result = controller.Put(expectedId, requestBody);
 
@@ -67,7 +68,8 @@ namespace IndicatorsManager.WebApi.Test
         public void PutIndicatorNotFoundTest()
         {
             Guid expectedId = Guid.NewGuid();
-            string expectedError = String.Format("El indicador de id {0} no existe", expectedId.ToString());
+            string expectedError = String.Format("The indicator with id {0} doesn't exist", 
+                expectedId.ToString());
             IndicatorOnlyModel requestBody = new IndicatorOnlyModel
             {
                 Name = "Name Put"
@@ -91,12 +93,13 @@ namespace IndicatorsManager.WebApi.Test
                 Name = ""
             };
 
-            indicatorMock.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<Indicator>())).Throws(new InvalidEntityException("El indicador es invalido"));
+            indicatorMock.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<Indicator>()))
+                .Throws(new InvalidEntityException("The indicator is invalid."));
 
             var result = controller.Put(expectedId, requestBody);
 
             var response = result as BadRequestObjectResult;
-            Assert.AreEqual("El indicador es invalido", response.Value);
+            Assert.AreEqual("The indicator is invalid.", response.Value);
         }
 
         [TestMethod]
@@ -108,13 +111,14 @@ namespace IndicatorsManager.WebApi.Test
                 Name = "Test Put"
             };
 
-            indicatorMock.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<Indicator>())).Throws(new DataAccessException("Error en el data access"));
+            indicatorMock.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<Indicator>()))
+                .Throws(new DataAccessException("Connection Error"));
 
             var result = controller.Put(expectedId, requestBody);
 
             var response = result as ObjectResult;
             Assert.AreEqual(503, response.StatusCode);
-            Assert.AreEqual("El servicio no esta disponible.", response.Value);
+            Assert.AreEqual("Connection Error", response.Value);
         }
 
         [TestMethod]
@@ -134,13 +138,14 @@ namespace IndicatorsManager.WebApi.Test
         {
             Guid expectedId = Guid.NewGuid();
 
-            indicatorMock.Setup(m => m.Remove(expectedId)).Throws(new DataAccessException(""));
+            indicatorMock.Setup(m => m.Remove(expectedId))
+                .Throws(new DataAccessException("Connection Error"));
 
             var result = controller.Delete(expectedId);
 
             var response = result as ObjectResult;
             Assert.AreEqual(503, response.StatusCode);
-            Assert.AreEqual("El servicio no esta disponible.", response.Value);
+            Assert.AreEqual("Connection Error", response.Value);
         } 
 
         private User CreateUser(Guid id) 

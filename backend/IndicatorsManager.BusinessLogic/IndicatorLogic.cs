@@ -33,13 +33,13 @@ namespace IndicatorsManager.BusinessLogic
         {
             if(!this.IsValidIndicator(indicator))
             {
-                throw new InvalidEntityException("El Indicador o alguna de las partes es invalido.");
+                throw new InvalidEntityException("The Indicator or any part is invalid.");
             }
 
             Area area = this.areaRepository.Get(areaId);
             if(area == null)
             {
-                throw new EntityNotExistException("El Area es invalida.");
+                throw new EntityNotExistException("The Area is invalid.");
             }
             area.Indicators.Add(indicator);
             this.areaRepository.Save();
@@ -52,7 +52,7 @@ namespace IndicatorsManager.BusinessLogic
             Indicator toEvalualte = this.indicatorRepository.Get(indicatorId);
             if(toEvalualte == null)
             {
-                throw new EntityNotExistException(string.Format("El Indicator de id {0} no existe.", indicatorId));
+                throw new EntityNotExistException(string.Format("The Indicator of Id {0} doesn't exist.", indicatorId));
             }
             this.queryRunner.SetConnectionString(toEvalualte.Area.DataSource);
             foreach (IndicatorItem item in toEvalualte.IndicatorItems)
@@ -78,7 +78,7 @@ namespace IndicatorsManager.BusinessLogic
             Area area = this.areaRepository.Get(areaId);
             if(area  == null)
             {
-                throw new EntityNotExistException(String.Format("El area de id {0} no existe", areaId.ToString()));
+                throw new EntityNotExistException(String.Format("The Area with Id {0} doesn't exist", areaId.ToString()));
             }
             return area.Indicators;
         }
@@ -136,12 +136,12 @@ namespace IndicatorsManager.BusinessLogic
         {
              if(indicator == null || !this.ValidName(indicator.Name))
              {
-                 throw new InvalidEntityException("El indicador es invalido");
+                 throw new InvalidEntityException("The indicator is invalid");
              }
              Indicator original = this.indicatorRepository.Get(id);
              if(original == null)
              {
-                 throw new EntityNotExistException(String.Format("El indicador de id {0} no existe", id.ToString()));
+                 throw new EntityNotExistException(String.Format("The indicator with Id {0} doesn't exist.", id.ToString()));
              }
 
              original.Update(indicator);
@@ -188,11 +188,11 @@ namespace IndicatorsManager.BusinessLogic
             AuthenticationToken token = this.tokenRepository.GetByToken(authToken);
             if(token == null || token.User == null || token.User.IsDeleted)
             {
-                throw new UnauthorizedException("El token es invalido.");
+                throw new UnauthorizedException("The token is invalid.");
             }
             if(token.User.Role != aRole)
             {
-                throw new UnauthorizedException(string.Format("El usuario no es {0}", aRole.ToString()));
+                throw new UnauthorizedException(string.Format("The user isn't {0}", aRole.ToString()));
             }
             return token.User;
         }
@@ -236,7 +236,7 @@ namespace IndicatorsManager.BusinessLogic
             {
                 if(!allIndicators.Any(i => i.Id == config.IndicatorId))
                 {
-                    throw new EntityNotExistException("Uno de los Indicadores no existe.");
+                    throw new EntityNotExistException("One or many Indicator of the list don't exist.");
                 }
             }
         }

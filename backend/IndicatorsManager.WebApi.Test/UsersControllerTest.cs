@@ -82,12 +82,13 @@ namespace IndicatorsManager.WebApi.Test
                 Role = Role.Manager
             };
             
-            mockUser.Setup(m => m.Create(It.IsAny<User>())).Throws(new InvalidEntityException("Los datos del usuario son invalidos."));
+            mockUser.Setup(m => m.Create(It.IsAny<User>()))
+                .Throws(new InvalidEntityException("The user data is incorrect."));
 
             var result = controller.Post(requestBody);
             
             var response = result as BadRequestObjectResult;
-            Assert.AreEqual("Los datos del usuario son invalidos.", response.Value);
+            Assert.AreEqual("The user data is incorrect.", response.Value);
             
         }
 
@@ -106,12 +107,13 @@ namespace IndicatorsManager.WebApi.Test
             
 
             var mock = new Mock<ILogic<User>>(MockBehavior.Strict);
-            mockUser.Setup(m => m.Create(It.IsAny<User>())).Throws(new EntityExistException("El nombre de usuario que esta intentando crear ya existe."));
+            mockUser.Setup(m => m.Create(It.IsAny<User>()))
+                 .Throws(new EntityExistException("The username already exist."));
 
             var result = controller.Post(requestBody);
             
             var response = result as ConflictObjectResult;
-            Assert.AreEqual("El nombre de usuario que esta intentando crear ya existe.", response.Value);
+            Assert.AreEqual("The username already exist.", response.Value);
         }
 
         [TestMethod]
@@ -127,13 +129,14 @@ namespace IndicatorsManager.WebApi.Test
                 Role = Role.Manager
             };
             
-            mockUser.Setup(m => m.Create(It.IsAny<User>())).Throws(new DataAccessException(""));
+            mockUser.Setup(m => m.Create(It.IsAny<User>()))
+                .Throws(new DataAccessException("Connection Error"));
 
             var result = controller.Post(requestBody);
 
             var response = result as ObjectResult;
             Assert.AreEqual(503, response.StatusCode);
-            Assert.AreEqual("El servicio no esta disponible.", response.Value);
+            Assert.AreEqual("Connection Error", response.Value);
         }
 
         [TestMethod]
@@ -168,19 +171,20 @@ namespace IndicatorsManager.WebApi.Test
             var result = controller.Get(Guid.NewGuid());
 
             var response = result as NotFoundObjectResult;
-            Assert.AreEqual("El usuario no existe.", response.Value);
+            Assert.AreEqual("The user doesn't exist.", response.Value);
         }
 
         [TestMethod]
         public void GetUserDataAccessExceptionTest()
         {
-            mockUser.Setup(m => m.Get(It.IsAny<Guid>())).Throws(new DataAccessException(""));
+            mockUser.Setup(m => m.Get(It.IsAny<Guid>()))
+                .Throws(new DataAccessException("Connection Error"));
 
             var result = controller.Get(Guid.NewGuid());
 
             var response = result as ObjectResult;
             Assert.AreEqual(503, response.StatusCode);
-            Assert.AreEqual("El servicio no esta disponible.", response.Value);
+            Assert.AreEqual("Connection Error", response.Value);
         }
 
         [TestMethod]
@@ -210,13 +214,14 @@ namespace IndicatorsManager.WebApi.Test
         [TestMethod]
         public void GetAllUserDataAccessExceptionTest()
         {
-            mockUser.Setup(m => m.GetAll()).Throws(new DataAccessException(""));
+            mockUser.Setup(m => m.GetAll())
+                .Throws(new DataAccessException("Connection Error"));
 
             var result = controller.Get();
 
             var response = result as ObjectResult;
             Assert.AreEqual(503, response.StatusCode);
-            Assert.AreEqual("El servicio no esta disponible.", response.Value);
+            Assert.AreEqual("Connection Error", response.Value);
             
         }
 
@@ -267,12 +272,13 @@ namespace IndicatorsManager.WebApi.Test
                 Role = Role.Manager
             };
 
-            mockUser.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<User>())).Returns<IEnumerable<User>>(null);
+            mockUser.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<User>()))
+                .Returns<IEnumerable<User>>(null);
 
             var result = controller.Put(Guid.NewGuid(), requestBody);
             
             var response = result as NotFoundObjectResult;
-            Assert.AreEqual("El Usuario Username Put no existe.", response.Value);
+            Assert.AreEqual("The user Username Put doesn't exist.", response.Value);
         }
 
         [TestMethod]
@@ -288,12 +294,13 @@ namespace IndicatorsManager.WebApi.Test
                 Role = Role.Manager
             };
 
-            mockUser.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<User>())).Throws(new InvalidEntityException("Los datos del usuario son invalidos."));
+            mockUser.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<User>()))
+                .Throws(new InvalidEntityException("The user data is invalid."));
 
             var result = controller.Put(Guid.NewGuid(), requestBody);
             
             var response = result as BadRequestObjectResult;
-            Assert.AreEqual("Los datos del usuario son invalidos.", response.Value);
+            Assert.AreEqual("The user data is invalid.", response.Value);
             
         }
 
@@ -310,12 +317,13 @@ namespace IndicatorsManager.WebApi.Test
                 Role = Role.Manager
             };
             
-            mockUser.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<User>())).Throws(new EntityExistException("El nombre de usuario que esta intentando crear ya existe."));
+            mockUser.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<User>()))
+                .Throws(new EntityExistException("The username already exist."));
 
             var result = controller.Put(Guid.NewGuid(), requestBody);
             
             var response = result as ConflictObjectResult;
-            Assert.AreEqual("El nombre de usuario que esta intentando crear ya existe.", response.Value);
+            Assert.AreEqual("The username already exist.", response.Value);
         }
 
         [TestMethod]
@@ -331,13 +339,14 @@ namespace IndicatorsManager.WebApi.Test
                 Role = Role.Manager
             };
 
-            mockUser.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<User>())).Throws(new DataAccessException(""));
+            mockUser.Setup(m => m.Update(It.IsAny<Guid>(), It.IsAny<User>()))
+                .Throws(new DataAccessException("Connection Error"));
 
             var result = controller.Put(Guid.NewGuid(), requestBody);
 
             var response = result as ObjectResult;
             Assert.AreEqual(503, response.StatusCode);
-            Assert.AreEqual("El servicio no esta disponible.", response.Value);
+            Assert.AreEqual("Connection Error", response.Value);
         }
 
         [TestMethod]
@@ -353,13 +362,14 @@ namespace IndicatorsManager.WebApi.Test
         [TestMethod]
         public void DeleteDataAccessExceptionTest()
         {
-            mockUser.Setup(m => m.Remove(It.IsAny<Guid>())).Throws(new DataAccessException(""));
+            mockUser.Setup(m => m.Remove(It.IsAny<Guid>()))
+                .Throws(new DataAccessException("Connection Error"));
 
             var result = controller.Delete(Guid.NewGuid());
 
             var response = result as ObjectResult;
             Assert.AreEqual(503, response.StatusCode);
-            Assert.AreEqual("El servicio no esta disponible.", response.Value);
+            Assert.AreEqual("Connection Error", response.Value);
         }
 
         private void AssertUsers(User expected, UserPersistModel actual)

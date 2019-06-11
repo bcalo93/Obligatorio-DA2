@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IndicatorsManager.BusinessLogic.Interface;
-using IndicatorsManager.BusinessLogic.Interface.Exceptions;
 using IndicatorsManager.DataAccess.Interface.Exceptions;
 using IndicatorsManager.Domain;
-using IndicatorsManager.WebApi.Exceptions;
 using IndicatorsManager.WebApi.Filters;
 using IndicatorsManager.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -27,39 +25,31 @@ namespace IndicatorsManager.WebApi.Controllers
 
         [ProtectFilter(Role.Admin)]
         [HttpGet("topusers")]
-        public IActionResult GetTopUsers()
+        public IActionResult GetTopUsers([FromQuery]int limit)
         {
             try
             {
-                IEnumerable<User> result = this.report.GetUsersMostLogs(10);
-                if(result == null)
-                {
-                    return NotFound("No hay usuarios que se hayan logueado.");
-                }
+                IEnumerable<User> result = this.report.GetUsersMostLogs(limit);
                 return Ok(result.Select(u => new UserGetModel(u)));
             }
-            catch(Exception)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no está disponible.");
+                return StatusCode(503, de.Message);
             }
         }
 
         [ProtectFilter(Role.Admin)]
         [HttpGet("tophiddenindicators")]
-        public IActionResult GetTopHiddenIndicators()
+        public IActionResult GetTopHiddenIndicators([FromQuery]int limit)
         {
             try
             {
-                IEnumerable<Indicator> result = this.report.GetMostHiddenIndicators(10);
-                if(result == null)
-                {
-                    return NotFound("No hay indicadores ocultos.");
-                }
+                IEnumerable<Indicator> result = this.report.GetMostHiddenIndicators(limit);
                 return Ok(result.Select(i => new IndicatorOnlyModel(i)));
             }
-            catch(Exception)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no está disponible.");
+                return StatusCode(503, de.Message);
             }
         }
     }

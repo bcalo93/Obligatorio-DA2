@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using IndicatorsManager.DataAccess.Interface;
 using IndicatorsManager.DataAccess.Interface.Exceptions;
@@ -14,53 +15,89 @@ namespace IndicatorsManager.DataAccess
         public IndicatorRepository(DbContext context) : base(context) { }
         public override Indicator Get(Guid id)
         {
-            return this.context.Set<Indicator>().Where(i => i.Id == id)
-                .Include(i => i.Area)
-                .Include(i => i.UserIndicators)
-                .Include(i => i.IndicatorItems)
-                .ThenInclude(ii => ii.Condition)
-                .FirstOrDefault();
+            try
+            {
+                return this.context.Set<Indicator>().Where(i => i.Id == id)
+                    .Include(i => i.Area)
+                    .Include(i => i.UserIndicators)
+                    .Include(i => i.IndicatorItems)
+                    .ThenInclude(ii => ii.Condition)
+                    .FirstOrDefault();
+            }
+            catch(SqlException ex)
+            {
+                throw new DataAccessException(CONNECTION_ERROR, ex);
+            }
         }
 
         public override IEnumerable<Indicator> GetAll()
         {
-            return this.context.Set<Indicator>()
-                .Include(i => i.Area)
-                .Include(i => i.IndicatorItems)
-                .Include(i => i.UserIndicators)
-                .ThenInclude(ui => ui.User)
-                .ToList();
+            try
+            {
+                return this.context.Set<Indicator>()
+                    .Include(i => i.Area)
+                    .Include(i => i.IndicatorItems)
+                    .Include(i => i.UserIndicators)
+                    .ThenInclude(ui => ui.User)
+                    .ToList();
+            }
+            catch(SqlException ex)
+            {
+                throw new DataAccessException(CONNECTION_ERROR, ex);
+            }
         }
 
         public override void Remove(Indicator indicator)
         {
-            if(indicator == null)
+            try
             {
-                throw new DataAccessException("El indicador es null.");
+                if(indicator == null)
+                {
+                    throw new DataAccessException("El indicador es null.");
+                }
+                foreach(IndicatorItem items in indicator.IndicatorItems)
+                {
+                    this.context.Set<Component>().RemoveRange(items.Condition.Accept(
+                        new VisitorComponentToList()));
+                }
+                this.context.Set<Indicator>().Remove(indicator);
             }
-            foreach(IndicatorItem items in indicator.IndicatorItems)
+            catch(SqlException ex)
             {
-                this.context.Set<Component>().RemoveRange(items.Condition.Accept(new VisitorComponentToList()));
+                throw new DataAccessException(CONNECTION_ERROR, ex);
             }
-            this.context.Set<Indicator>().Remove(indicator);
         }
 
         public IEnumerable<Indicator> GetManagerIndicators(Guid userId)
         {
-            return this.context.Set<Indicator>().Where(i => i.Area.UserAreas.Any(u => u.UserId == userId))
-                                                .Include(i => i.UserIndicators)
-                                                .ToList();
+            try
+            {
+                return this.context.Set<Indicator>()
+                    .Where(i => i.Area.UserAreas.Any(u => u.UserId == userId))
+                    .Include(i => i.UserIndicators)
+                    .ToList();
+            }
+            catch(SqlException ex)
+            {
+                throw new DataAccessException(CONNECTION_ERROR, ex);
+            }
         }
 
         public IEnumerable<Indicator> GetMostHiddenIndicators(int limit)
         {
-            return this.context.Set<UserIndicator>()
-                .Where(ui => !ui.IsVisible)
-                .GroupBy(ui => ui.Indicator)
-                .OrderByDescending(ui => ui.Count())
-                .Take(limit)
-                .Select(ui => ui.Key);
+            try
+            {
+                return this.context.Set<UserIndicator>()
+                    .Where(ui => !ui.IsVisible)
+                    .GroupBy(ui => ui.Indicator)
+                    .OrderByDescending(ui => ui.Count())
+                    .Take(limit)
+                    .Select(ui => ui.Key);
+            }
+            catch(SqlException ex)
+            {
+                throw new DataAccessException(CONNECTION_ERROR, ex);
+            }
         }
-
     }
 }
