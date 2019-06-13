@@ -1,0 +1,188 @@
+[
+    {
+        "name": "Indicator With Conditions",
+        "items": [
+            {
+                "name": "Red",
+                "condition": {
+                    "components": [
+                        {
+                            "value": "SELECT COUNT(*) FROM category;",
+                            "type": "Sql",
+                            "position": 1
+                        },
+                        {
+                            "value": 6,
+                            "position": 2
+                        }
+                    ],
+                    "conditionType": "Mayor",
+                    "position": 1
+                }
+            },
+            {
+                "name": "Yellow",
+                "condition": {
+                    "conditionType": "And",
+                    "position": 1,
+                    "components": [
+                        {
+                            "conditionType": "MinorEquals",
+                            "position": 1,
+                            "components": [
+                                {
+                                    "value": "SELECT COUNT(*) FROM category;",
+                                    "type": "Sql",
+                                    "position": 1
+                                },
+                                {
+                                    "value": 5,
+                                    "position": 2
+                                }
+                            ]
+                        },
+                        {
+                            "conditionType": "MayorEquals",
+                            "position": 2,
+                            "components": [
+                                {
+                                    "value": "SELECT COUNT(*) FROM category;",
+                                    "type": "Sql",
+                                    "position": 1
+                                },
+                                {
+                                    "value": 3,
+                                    "position": 2
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "Green",
+                "condition": {
+                    "components": [
+                        {
+                            "value": "SELECT COUNT(*) FROM category;",
+                            "type": "Sql",
+                            "position": 1
+                        },
+                        {
+                            "value": 3,
+                            "position": 2
+                        }
+                    ],
+                    "conditionType": "Minor",
+                    "position": 1
+                }
+            }
+        ]
+    },
+    {
+        "name": "Indicator Ok Test",
+        "items": [
+            {
+                "name": "Red",
+                "condition": {
+                    "components": [
+                        {
+                            "value": "SELECT COUNT(*) As TotalInglesEspanol FROM Account WHERE LangPref ='Spanish' OR LangPref = 'English'",
+                            "type": "Sql",
+                            "position": 1
+                        },
+                        {
+                            "value": "SELECT COUNT(*) As TotalOtrosIdiomas FROM Account WHERE LangPref <> 'Spanish' AND LangPref <> 'English'",
+                            "type": "Sql",
+                            "position": 2
+                        }
+                    ],
+                    "conditionType": "Minor",
+                    "position": 1
+                }
+            },
+            {
+                "name": "Yellow",
+                "condition": {
+                    "conditionType": "And",
+                    "position": 1,
+                    "components": [
+                        {
+                            "conditionType": "MayorEquals",
+                            "position": 1,
+                            "components": [
+                                {
+                                    "value": "SELECT COUNT(*) As TotalInglesEspanol FROM Account WHERE LangPref = 'Spanish' OR LangPref = 'English'",
+                                    "type": "Sql",
+                                    "position": 1
+                                },
+                                {
+                                    "value": "SELECT COUNT(*) As TotalOtrosIdiomas FROM Account WHERE LangPref <> 'Spanish' AND LangPref <> 'English'",
+                                    "type": "Sql",
+                                    "position": 2
+                                }
+                            ]
+                        },
+                        {
+                            "conditionType": "Mayor",
+                            "position": 2,
+                            "components": [
+                                {
+                                    "value": "SELECT COUNT(*) As TotalEspanol FROM Account WHERE LangPref = 'Spanish'",
+                                    "type": "Sql",
+                                    "position": 1
+                                },
+                                {
+                                    "value": "SELECT COUNT(*) As TotalIngles FROM Account WHERE LangPref = 'English'",
+                                    "type": "Sql",
+                                    "position": 2
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "Green",
+                "condition": {
+                    "conditionType": "And",
+                    "position": 1,
+                    "components": [
+                        {
+                            "conditionType": "MayorEquals",
+                            "position": 1,
+                            "components": [
+                                {
+                                    "value": "SELECT COUNT(*) As TotalInglesEspanol FROM Account WHERE LangPref = 'Spanish' OR LangPref = 'English'",
+                                    "type": "Sql",
+                                    "position": 1
+                                },
+                                {
+                                    "value": "SELECT COUNT(*) As TotalOtrosIdiomas FROM Account WHERE LangPref <> 'Spanish' AND LangPref <> 'English'",
+                                    "type": "Sql",
+                                    "position": 2
+                                }
+                            ]
+                        },
+                        {
+                            "conditionType": "MinorEquals",
+                            "position": 2,
+                            "components": [
+                                {
+                                    "value": "SELECT COUNT(*) As TotalEspanol FROM Account WHERE LangPref = 'Spanish'",
+                                    "type": "Sql",
+                                    "position": 1
+                                },
+                                {
+                                    "value": "SELECT COUNT(*) As TotalIngles FROM Account WHERE LangPref = 'English'",
+                                    "type": "Sql",
+                                    "position": 2
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

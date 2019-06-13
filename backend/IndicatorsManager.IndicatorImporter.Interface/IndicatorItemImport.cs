@@ -2,10 +2,10 @@ using System;
 
 namespace IndicatorsManager.IndicatorImporter.Interface
 {
-    public class IndicatorItemImporter
+    public class IndicatorItemImport
     {
         public string Name { get; set; }
-        public ComponentImporter ComponentImporter { get; set; }
+        public ComponentImport ComponentImport { get; set; }
     }
     
 }

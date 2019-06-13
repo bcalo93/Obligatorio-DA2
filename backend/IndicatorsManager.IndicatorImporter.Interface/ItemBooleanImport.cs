@@ -2,7 +2,7 @@ using System;
 
 namespace IndicatorsManager.IndicatorImporter.Interface
 {
-    public class ItemBooleanImporter : ComponentImporter
+    public class ItemBooleanImport : ComponentImport
     {
         public bool Boolean { get; set; }
     }

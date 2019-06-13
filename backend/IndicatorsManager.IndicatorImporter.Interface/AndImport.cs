@@ -2,7 +2,7 @@ using System;
 
 namespace IndicatorsManager.IndicatorImporter.Interface
 {
-    public class OrImporter : ConditionImporter
+    public class AndImport : ConditionImport
     {
         
     }

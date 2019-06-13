@@ -2,7 +2,7 @@ using System;
 
 namespace IndicatorsManager.IndicatorImporter.Interface
 {
-    public class ItemTextImporter : ComponentImporter
+    public class ItemTextImport : ComponentImport
     {
         public string Text { get; set; }
     }

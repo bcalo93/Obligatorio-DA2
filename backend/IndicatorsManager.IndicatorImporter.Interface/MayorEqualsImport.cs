@@ -2,8 +2,8 @@ using System;
 
 namespace IndicatorsManager.IndicatorImporter.Interface
 {
-    public abstract class ComponentImporter
+    public class MayorEqualsImport : ConditionImport
     {
-        public int Position { get; set; }
+        
     }
 }
