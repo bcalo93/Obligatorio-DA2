@@ -1,0 +1,24 @@
+<mat-card>
+  <mat-card-title>Add New Condition</mat-card-title>
+  <button (click)="showData()">SHOW DATA</button>
+  <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+  <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+    <button id="node-{{node.item}}" mat-icon-button matTreeNodeToggle>
+      <mat-icon class="mat-icon-rtl-mirror">
+        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+      </mat-icon>
+    </button>
+    <div class="col-sm-2">
+      <label>{{node.item}}</label>
+    </div>
+    <div class="col-sm-8">
+      <app-condition-dropdown 
+        [node] = "node"
+        [nodeItemName]="node.item" 
+        (addChildren)="addComoenents($event)"
+        (deleteChildren)="deleteComponents($event)">
+      </app-condition-dropdown>
+    </div>
+    </mat-tree-node>  
+  </mat-tree>
+</mat-card>
