@@ -6,6 +6,7 @@ import { AuthGuard } from '../guards/auth.guard';
 import { LoginComponent } from './login/login.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { UsersListComponent } from './users-list/users-list.component';
+import { ConditionEditComponent } from './condition-edit/condition-edit.component';
 
 const routes: Routes = [
   { path: '', component: HomeManagerComponent, canActivate: [AuthGuard] },
@@ -13,6 +14,7 @@ const routes: Routes = [
   { path: 'users/add', component: UserEditComponent },
   { path: 'users/:id', component: UserEditComponent },
   { path: 'users', component: UsersListComponent },
+  { path: 'condition/add', component: ConditionEditComponent },
   { path: '**', redirectTo: '' }
 ];
 

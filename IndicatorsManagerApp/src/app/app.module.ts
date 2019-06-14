@@ -21,8 +21,14 @@ import {
   MatMenuModule,
   MatToolbarModule,
   MatSnackBarModule,
-  MatListModule
+  MatListModule,
+  MatTableModule,
+  MatTreeModule
+
 } from '@angular/material';
+
+import {DragDropModule} from '@angular/cdk/drag-drop';
+
 
 import { HomeManagerComponent } from './home-manager/home-manager.component';
 import { LoginComponent } from './login/login.component';
@@ -30,6 +36,9 @@ import { UserEditComponent } from './user-edit/user-edit.component';
 import { ErrorMessageComponent } from './error-message/error-message.component';
 import { HeaderComponent } from './header/header.component';
 import { UsersListComponent } from './users-list/users-list.component';
+import { ConditionEditComponent } from './condition-edit/condition-edit.component';
+import { UserIndicatorConfigComponent } from './user-indicator-config/user-indicator-config.component';
+import { ConditionDropdownComponent } from './condition-dropdown/condition-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +48,10 @@ import { UsersListComponent } from './users-list/users-list.component';
     UserEditComponent,
     ErrorMessageComponent,
     HeaderComponent,
-    UsersListComponent
+    UsersListComponent,
+    ConditionEditComponent,
+    UserIndicatorConfigComponent,
+    ConditionDropdownComponent
   ],
   imports: [
     BrowserModule,
@@ -60,7 +72,10 @@ import { UsersListComponent } from './users-list/users-list.component';
     MatMenuModule,
     MatToolbarModule,
     MatSnackBarModule,
-    MatListModule
+    MatListModule,
+    DragDropModule,
+    MatTableModule,
+    MatTreeModule
   ],
   providers: [],
   bootstrap: [AppComponent],
