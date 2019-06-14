@@ -1,0 +1,34 @@
+
+  <div class="col-sm-6 p-0 m-0">
+    <mat-form-field [hideRequiredMarker]="isRoot()">
+        <mat-label>Select Condition Type</mat-label>
+        <mat-select [(value)]="selectedConditionType">
+          <mat-option *ngIf="!isRoot()" value="Sql">Query</mat-option>
+          <mat-option *ngIf="!isRoot()" value="String">Text</mat-option>
+          <mat-option *ngIf="!isRoot()" value="Int">Number</mat-option>
+          <mat-option *ngIf="!isRoot()" value="Date">Date</mat-option>
+          <mat-option *ngIf="!isRoot()" value="Boolean">Boolean</mat-option>
+          <mat-option value="Compound">Compound</mat-option>
+        </mat-select>
+    </mat-form-field>
+  </div>
+
+
+<div class="col-sm-6 p-0 m-0" *ngIf="isCompound(); else conditionType">
+    <mat-form-field>
+        <mat-label>Select a Logical Operator</mat-label>
+        <mat-select [(value)]="selectedOperator" (selectionChange)="alertMe($event.value)">
+          <mat-option *ngFor="let operator of operators" value="{{operator.value}}">{{operator.label}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+
+
+<ng-template #conditionType>
+    <div class="col-sm-6 p-0 m-0">
+      <mat-form-field class="example-full-width" *ngIf="selectedConditionType">
+          <label>{{inputType}}</label>
+          <input matInput placeholder="type your condition..." value="{{inputType}}">
+      </mat-form-field>
+    </div>
+  </ng-template>
