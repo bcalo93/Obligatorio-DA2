@@ -4,13 +4,33 @@ import {Component, Injectable, ViewChild, AfterViewInit} from '@angular/core';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 import {BehaviorSubject} from 'rxjs';
 import { ConditionDropdownComponent } from '../condition-dropdown/condition-dropdown.component';
+import { Operators } from 'src/enums';
 
 /**
  * Node for to-do item
  */
 export class TodoItemNode {
-  children: TodoItemNode[];
   item: string;
+  children: TodoItemNode[];
+  position: number; //index in parent array [Root => position 0]
+  type: string; //selectedConditionType child property
+  operator?: Operators;
+  operatorLabel: string;
+  value: any;
+
+  // constructor() {}
+
+  // constructor(node: TodoItemNode) {
+  //   if(node!){
+  //   this.item = node.item;
+  //   this.children = node.children;
+  //   this.position = node.position;
+  //   this.type = node.type;
+  //   this.operator = node.operator;
+  //   this.operatorLabel = node.operatorLabel;
+  //   this.value = node.value;
+  // }
+  // }
 }
 
 /** Flat to-do item node with expandable and level information */
@@ -84,8 +104,8 @@ export class ChecklistDatabase {
     }
   }
 
-  updateItem(node: TodoItemNode, name: string) {
-    node.item = name;
+  updateItem(node: TodoItemNode, newNode: TodoItemNode) {
+    node = newNode;
     this.dataChange.next(this.data);
   }
 
@@ -94,6 +114,27 @@ export class ChecklistDatabase {
       parent.children = [];
       this.dataChange.next(this.data);
     }
+  }
+
+  buildCurrentState(parentNode: TodoItemNode): string {
+    let ret = '';
+    let leftItem = '';
+    let rightItem = '';
+    console.log('PARENT NODE: ', parentNode);
+    const actualOperatorLabel = parentNode.operatorLabel;
+    console.log('ACTUAL OPERATOR LABEL: ', actualOperatorLabel);
+    if (actualOperatorLabel && parentNode.children && parentNode.children.length > 0) {
+      leftItem = ret.concat(this.buildCurrentState(parentNode.children[0]));
+      rightItem = ret.concat(this.buildCurrentState(parentNode.children[1]));
+      ret = ret.concat('[( ' + leftItem).concat(' ) ' + actualOperatorLabel + ' ( ').concat(rightItem + ' )]');
+    } else {
+      if ( parentNode.item !== 'Root') {
+        ret = ret.concat(parentNode.item);
+      }
+    }
+    console.log('RET: ', ret);
+
+    return ret;
   }
 }
 
@@ -123,6 +164,9 @@ export class ConditionEditComponent implements AfterViewInit{
 
   dataSource: MatTreeFlatDataSource<TodoItemNode, TodoItemFlatNode>;
 
+  /** CUSTOM PROPS */
+  currentExpression = '';
+
   constructor(private _database: ChecklistDatabase) {
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
     this.treeControl = new FlatTreeControl<TodoItemFlatNode>(this.getLevel, this.isExpandable);
@@ -130,8 +174,12 @@ export class ConditionEditComponent implements AfterViewInit{
 
     _database.dataChange.subscribe(data => {
       this.dataSource.data = data;
+      this.currentExpression = this._database.buildCurrentState(this.findRootNode());
     });
+
   }
+
+  findRootNode = () => this._database.data.find(x => x.item === 'Root');
 
   /* CUSTOM */
   addComoenents(event: any) {
@@ -144,8 +192,7 @@ export class ConditionEditComponent implements AfterViewInit{
 
       this._database.insertItem(parentNode!, { item: keyLeft, children: [] });
       this._database.insertItem(parentNode!, { item: keyRight, children: [] });
-
-
+      this.currentExpression = this._database.buildCurrentState(this.findRootNode());
       this.treeControl.expand(node);
     }
   }
@@ -155,6 +202,7 @@ export class ConditionEditComponent implements AfterViewInit{
     const childrens = this.getChildren(parentNode);
     if (childrens) {
       this._database.deleteChildren(parentNode!);
+      this.currentExpression = this._database.buildCurrentState(this.findRootNode());
       this.treeControl.collapse(node);
     }
   }
@@ -169,6 +217,7 @@ export class ConditionEditComponent implements AfterViewInit{
 
   ngAfterViewInit() {
     document.getElementById('node-Root').click();
+    this.currentExpression = this._database.buildCurrentState(this.findRootNode());
   }
 
   /* TREE COMPONENT */
@@ -212,5 +261,18 @@ export class ConditionEditComponent implements AfterViewInit{
       }
     }
     return null;
+  }
+
+  updateOperatorSelection(operatorItem: any, node: TodoItemFlatNode) {
+    const currentNode = this.flatNodeMap.get(node);
+    let newNode = this.flatNodeMap.get(node);
+    newNode.operatorLabel = operatorItem.label;
+    console.log("OPERATOR ITEM EVENT: ",operatorItem);
+    console.log("NEW NODE: ",newNode);
+    console.log("CURRENT NODE: ",currentNode);
+
+    this._database.updateItem(currentNode, newNode);
+    this.currentExpression = this._database.buildCurrentState(this.findRootNode());
+
   }
 }

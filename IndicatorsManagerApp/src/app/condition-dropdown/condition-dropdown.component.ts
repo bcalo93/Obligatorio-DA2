@@ -17,6 +17,7 @@ export class ConditionDropdownComponent implements OnInit {
 
   @Output() addChildren: EventEmitter<any> = new EventEmitter();
   @Output() deleteChildren: EventEmitter<any> = new EventEmitter();
+  @Output() operatorItemChange: EventEmitter<any> = new EventEmitter();
 
   @Input() state: boolean;
   @Input() node: TodoItemFlatNode;
@@ -48,7 +49,8 @@ export class ConditionDropdownComponent implements OnInit {
     }
   }
 
-  alertMe(event:any) { 
-    console.log(event)
+  operatorChange(event: any) {
+    const operatorItem = this.operators.find(x => x.value === event);
+    this.operatorItemChange.emit(operatorItem);
   }
 }

@@ -17,7 +17,7 @@
 <div class="col-sm-6 p-0 m-0" *ngIf="isCompound(); else conditionType">
     <mat-form-field>
         <mat-label>Select a Logical Operator</mat-label>
-        <mat-select [(value)]="selectedOperator" (selectionChange)="alertMe($event.value)">
+        <mat-select [(value)]="selectedOperator" (selectionChange)="operatorChange($event.value)">
           <mat-option *ngFor="let operator of operators" value="{{operator.value}}">{{operator.label}}</mat-option>
         </mat-select>
     </mat-form-field>
