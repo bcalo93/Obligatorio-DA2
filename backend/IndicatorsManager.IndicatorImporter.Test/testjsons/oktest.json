@@ -123,10 +123,11 @@
                             "position": 1,
                             "components": [
                                 {
-                                    "query": "SELECT COUNT(*) As TotalInglesEspanol FROM Account WHERE LangPref = 'Spanish' OR LangPref = 'English'",                                    "position": 1
+                                    "query": "SELECT COUNT(*) As TotalInglesEspanol FROM Account WHERE LangPref = 'Spanish' OR LangPref = 'English'",
+                                    "position": 1
                                 },
                                 {
-                                    "date": "2013-10-21T13:28:06.419Z",
+                                    "date": "2013-10-21T13:28:06.000Z",
                                     "position": 2
                                 }
                             ]
