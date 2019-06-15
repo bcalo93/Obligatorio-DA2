@@ -23,7 +23,9 @@ import {
   MatSnackBarModule,
   MatListModule,
   MatTableModule,
-  MatTreeModule
+  MatTreeModule,
+  MatDatepickerModule,
+  MatNativeDateModule
 
 } from '@angular/material';
 
@@ -75,7 +77,9 @@ import { ConditionDropdownComponent } from './condition-dropdown/condition-dropd
     MatListModule,
     DragDropModule,
     MatTableModule,
-    MatTreeModule
+    MatTreeModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

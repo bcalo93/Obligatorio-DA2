@@ -17,7 +17,7 @@
 <div class="col-sm-6 p-0 m-0" *ngIf="isCompound(); else conditionType">
     <mat-form-field>
         <mat-label>Select a Logical Operator</mat-label>
-        <mat-select [(value)]="selectedOperator" (selectionChange)="operatorChange($event.value)">
+        <mat-select [(value)]="selectedOperator" (selectionChange)="operatorChange($event.value); false">
           <mat-option *ngFor="let operator of operators" value="{{operator.value}}">{{operator.label}}</mat-option>
         </mat-select>
     </mat-form-field>
@@ -25,10 +25,41 @@
 
 
 <ng-template #conditionType>
-    <div class="col-sm-6 p-0 m-0">
-      <mat-form-field class="example-full-width" *ngIf="selectedConditionType">
-          <label>{{inputType}}</label>
-          <input matInput placeholder="type your condition..." value="{{inputType}}">
-      </mat-form-field>
+  <div *ngIf="selectedConditionType">
+    <div class="col-12 p-0 m-0" [ngSwitch]="selectedConditionType">
+      <div *ngSwitchCase="'Date'">
+        <mat-form-field class="example-full-width col-6 p-0 m-0" >
+            <input matInput [matDatepicker]="picker" placeholder="Choose a date" [formControl]="inputDate" (dateChange)="onChangeDate($event)">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+      </div>
+      <div *ngSwitchCase="'Boolean'">
+        <mat-form-field class="example-full-width col-6 p-0 m-0" >
+          <mat-label>Select an option</mat-label>
+          <mat-select [(value)]="selectedBoolean" (selectionChange)="onChangeBoolean($event.value); false">
+            <mat-option value="true">TRUE</mat-option>
+            <mat-option value="false">FALSE</mat-option>
+          </mat-select>        
+        </mat-form-field>
+      </div>
+      <div *ngSwitchCase="'Sql'">
+        <mat-form-field class="example-full-width" >     
+            <input matInput placeholder="query...." [formControl]="inputQuery" (change)="onChangeString($event)">
+        </mat-form-field>
+      </div>
+      <div *ngSwitchCase="'String'">
+        <mat-form-field class="example-full-width" >     
+            <input matInput placeholder="string...." [formControl]="inputString" (change)="onChangeString($event)">
+        </mat-form-field>
+      </div>
+      <div *ngSwitchCase="'Int'">
+        <mat-form-field class="example-full-width" >        
+          <input matInput placeholder="number...." [formControl]="inputInt" (change)="onChangeInt($event)">
+          <mat-error *ngIf="inputInt.hasError('required')">Input is <strong>required</strong></mat-error>
+          <mat-error *ngIf="!inputInt.hasError('required') && inputInt.hasError('incorrect')">Input must be <strong>numeric</strong></mat-error>
+        </mat-form-field>
+      </div>
     </div>
-  </ng-template>
+  </div>
+</ng-template>
