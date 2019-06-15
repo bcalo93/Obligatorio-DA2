@@ -1,10 +1,10 @@
 <mat-card>
   <mat-card-title>Add New Condition</mat-card-title>
-  <!-- <button (click)="showData()">SHOW DATA</button> -->
+  <button (click)="showData()">EVALUATE</button>
   <label>Current Expression: {{currentExpression}}</label>
 
   <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-  <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+  <mat-tree-node *matTreeNodeDef="let node">
     <button id="node-{{node.item}}" mat-icon-button matTreeNodeToggle>
       <mat-icon class="mat-icon-rtl-mirror">
         {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
@@ -15,11 +15,12 @@
     </div>
     <div class="col-sm-8 dropdown">
       <app-condition-dropdown 
-        [node] = "node"
-        [nodeItemName]="node.item" 
-        (addChildren)="addComoenents($event)"
-        (deleteChildren)="deleteComponents($event)"
-        (operatorItemChange)="updateOperatorSelection($event, node)">
+        [node]="node"
+        [nodeType]="getNodeSelectedConditionType(node)"
+        (updateNode)="updateNode($event)"
+        (operatorItemChange)="updateOperatorSelection($event, node)"
+        (inputValue)="updateInputNode($event)"
+        >
       </app-condition-dropdown>
     </div>
     </mat-tree-node>  

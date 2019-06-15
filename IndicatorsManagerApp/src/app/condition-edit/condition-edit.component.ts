@@ -1,9 +1,7 @@
-import {SelectionModel} from '@angular/cdk/collections';
 import {FlatTreeControl} from '@angular/cdk/tree';
-import {Component, Injectable, ViewChild, AfterViewInit} from '@angular/core';
+import {Component, Injectable, AfterViewInit} from '@angular/core';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 import {BehaviorSubject} from 'rxjs';
-import { ConditionDropdownComponent } from '../condition-dropdown/condition-dropdown.component';
 import { Operators } from 'src/enums';
 
 /**
@@ -83,11 +81,12 @@ export class ChecklistDatabase {
       const value = obj[key];
       const node = new TodoItemNode();
       node.item = key;
+      node.type = level === 0 ? 'Compound' : '';
       if (value != null) {
         if (typeof value === 'object') {
           node.children = this.buildFileTree(value, level + 1);
         } else {
-          node.item = value;
+          node.children = [];
         }
       }
 
@@ -99,20 +98,16 @@ export class ChecklistDatabase {
   insertItem(parent: TodoItemNode, obj: any) {
     if (parent.children) {
       parent.children.push(obj);
-      this.dataChange.next(this.data);
-      // console.log('HOLE DATA: ', this.data);
     }
   }
 
-  updateItem(node: TodoItemNode, newNode: TodoItemNode) {
-    node = newNode;
+  updateItem() {
     this.dataChange.next(this.data);
   }
 
   deleteChildren(parent: TodoItemNode) {
     if (parent.children) {
       parent.children = [];
-      this.dataChange.next(this.data);
     }
   }
 
@@ -120,9 +115,7 @@ export class ChecklistDatabase {
     let ret = '';
     let leftItem = '';
     let rightItem = '';
-    console.log('PARENT NODE: ', parentNode);
     const actualOperatorLabel = parentNode.operatorLabel;
-    console.log('ACTUAL OPERATOR LABEL: ', actualOperatorLabel);
     if (actualOperatorLabel && parentNode.children && parentNode.children.length > 0) {
       leftItem = ret.concat(this.buildCurrentState(parentNode.children[0]));
       rightItem = ret.concat(this.buildCurrentState(parentNode.children[1]));
@@ -132,8 +125,6 @@ export class ChecklistDatabase {
         ret = ret.concat(parentNode.item);
       }
     }
-    console.log('RET: ', ret);
-
     return ret;
   }
 }
@@ -179,45 +170,8 @@ export class ConditionEditComponent implements AfterViewInit{
 
   }
 
-  findRootNode = () => this._database.data.find(x => x.item === 'Root');
-
-  /* CUSTOM */
-  addComoenents(event: any) {
-    const node = event;
-    const parentNode = this.flatNodeMap.get(node);
-    const childrens = this.getChildren(parentNode);
-    if (childrens && childrens.length === 0) {
-      const keyLeft = node.level + '_LeftCondition';
-      const keyRight = node.level + '_RightCondition';
-
-      this._database.insertItem(parentNode!, { item: keyLeft, children: [] });
-      this._database.insertItem(parentNode!, { item: keyRight, children: [] });
-      this.currentExpression = this._database.buildCurrentState(this.findRootNode());
-      this.treeControl.expand(node);
-    }
-  }
-  deleteComponents(event: any) {
-    const node = event;
-    const parentNode = this.flatNodeMap.get(node);
-    const childrens = this.getChildren(parentNode);
-    if (childrens) {
-      this._database.deleteChildren(parentNode!);
-      this.currentExpression = this._database.buildCurrentState(this.findRootNode());
-      this.treeControl.collapse(node);
-    }
-  }
-
-  showNodeItem(node: TodoItemNode) {
-    console.log(node);
-  }
-
-  showData() {
-    console.log(this._database.data);
-  }
-
   ngAfterViewInit() {
     document.getElementById('node-Root').click();
-    this.currentExpression = this._database.buildCurrentState(this.findRootNode());
   }
 
   /* TREE COMPONENT */
@@ -226,6 +180,8 @@ export class ConditionEditComponent implements AfterViewInit{
   isExpandable = (node: TodoItemFlatNode) => node.expandable;
 
   getChildren = (node: TodoItemNode): TodoItemNode[] => node.children;
+
+  hasChild = (node: TodoItemFlatNode) => this.flatNodeMap.get(node).children.length > 0;
 
   /**
    * Transformer to convert nested node to flat node. Record the nodes in maps for later use.
@@ -263,16 +219,84 @@ export class ConditionEditComponent implements AfterViewInit{
     return null;
   }
 
+  /* CUSTOM */
+  findRootNode = () => this._database.data.find(x => x.item === 'Root');
+
+  showNodeItem(node: TodoItemNode) {
+    console.log(node);
+  }
+
+  showData() {
+    console.log(this._database.data);
+  }
+
+  getNodeSelectedConditionType(node: TodoItemFlatNode) {
+    if (!!node) {
+      const currentNode = this.flatNodeMap.get(node);
+      return currentNode.type;
+    } else { return ''; }
+  }
+
+  updateNode(event: any) {
+    console.log('updateNode() event', event);
+    if (event.nodeType === 'Compound') {
+      this.addComponents(event.node);
+    } else {
+      this.deleteComponents(event.node);
+    }
+    const updatedNode = this.updateNodeProps(event);
+    const parentNodeFlat = this.getParentNode(event.node);
+    const parentNode = this.flatNodeMap.get(parentNodeFlat);
+    const childrenIndex = parentNode.children.indexOf(updatedNode);
+
+    parentNode.children.splice(childrenIndex, 1, event.node);
+    parentNode.children.splice(childrenIndex, 1, updatedNode);
+    this._database.updateItem();
+  }
+
+  addComponents(node: TodoItemFlatNode) {
+    const parentNode = this.flatNodeMap.get(node);
+    const childrens = this.getChildren(parentNode);
+    if (childrens && childrens.length === 0) {
+      const keyLeft = node.level + '_LeftCondition';
+      const keyRight = node.level + '_RightCondition';
+      this._database.insertItem(parentNode!, { item: keyLeft, children: [] });
+      this._database.insertItem(parentNode!, { item: keyRight, children: [] });
+      this.treeControl.expand(node);
+    }
+  }
+
+  deleteComponents(node: TodoItemFlatNode) {
+    const parentNode = this.flatNodeMap.get(node);
+    const childrens = this.getChildren(parentNode);
+    if (childrens) {
+      this._database.deleteChildren(parentNode!);
+      this.treeControl.collapse(node);
+    }
+  }
+
+  updateNodeProps(event: any): TodoItemNode {
+    const newNode = this.flatNodeMap.get(event.node);
+    if (!!event.nodeType) {
+      newNode.type = event.nodeType;
+    }
+    if (!!event.value) {
+      newNode.value = event.value;
+    }
+    return newNode;
+  }
+
   updateOperatorSelection(operatorItem: any, node: TodoItemFlatNode) {
-    const currentNode = this.flatNodeMap.get(node);
-    let newNode = this.flatNodeMap.get(node);
+    const newNode = this.flatNodeMap.get(node);
     newNode.operatorLabel = operatorItem.label;
-    console.log("OPERATOR ITEM EVENT: ",operatorItem);
-    console.log("NEW NODE: ",newNode);
-    console.log("CURRENT NODE: ",currentNode);
-
-    this._database.updateItem(currentNode, newNode);
+    newNode.operator = operatorItem.value;
+    this._database.updateItem();
     this.currentExpression = this._database.buildCurrentState(this.findRootNode());
+  }
 
+  updateInputNode(event: any) {
+    console.log('updateNode() event', event);
+    this.updateNodeProps(event);
+    this._database.updateItem();
   }
 }
