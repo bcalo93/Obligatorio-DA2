@@ -2,13 +2,18 @@ using System.Collections.Generic;
 
 namespace IndicatorsManager.IndicatorImporter.Interface
 {
-    public abstract class ConditionImport : ComponentImport
+    public enum ConditionType
     {
-        public List<ComponentImport> ComponentImports { get; set; }
+        And, Or, Equals, Minor, MinorEquals, Mayor, MayorEquals
+    }
+    public class ConditionImport : ComponentImport
+    {
+        public List<ComponentImport> Components { get; set; }
+        public ConditionType ConditionType { get; set; }
 
         public ConditionImport()
         {
-            this.ComponentImports = new List<ComponentImport>();
+            this.Components = new List<ComponentImport>();
         }
     }
 }

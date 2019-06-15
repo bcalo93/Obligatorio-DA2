@@ -13,7 +13,7 @@ namespace IndicatorsManager.DataAccess.Test
     public class QueryRunnerTest : BaseTest
     {
 
-        private const string CONNECTION_STRING = "Server=.\\SQLEXPRESS;Database=DatosPrueba;Trusted_Connection=True;MultipleActiveResultSets=True;";
+        private const string CONNECTION_STRING = "Server=.\\SQLSERVER2014;Database=DatosPrueba;Trusted_Connection=True;MultipleActiveResultSets=True;";
 
         [TestMethod]
         public void RunQueryOKTest()
