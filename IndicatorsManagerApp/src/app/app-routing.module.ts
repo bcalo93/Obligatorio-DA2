@@ -18,6 +18,7 @@ const routes: Routes = [
   { path: 'users', component: UsersListComponent },
   { path: 'condition/add', component: ConditionEditComponent },
   { path: 'areas/add', component: AreaEditComponent },
+  { path: 'areas/:id', component: AreaEditComponent },
   { path: 'areas/managers', component: ManagerAssignmentComponent },
   { path: '**', redirectTo: '' }
 ];
