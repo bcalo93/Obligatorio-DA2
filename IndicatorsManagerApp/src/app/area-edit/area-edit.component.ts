@@ -16,6 +16,8 @@ export class AreaEditComponent implements OnInit {
   areaId: string;
   errorMessage: string;
   title: string;
+  buttonTitle: string;
+  indicatorList: [];
 
   name = new FormControl('', [Validators.required]);
   dataSource = new FormControl('', [Validators.required]);
@@ -34,9 +36,11 @@ export class AreaEditComponent implements OnInit {
       this.isEdit = true;
       this.loadAreaDetails(id);
       this.title = 'Area Details';
+      this.buttonTitle = 'Save';
     } else {
       this.isEdit = false;
-      this.title = 'Create User';
+      this.title = 'Create area';
+      this.buttonTitle = 'Create';
     }
   }
 
@@ -44,8 +48,15 @@ export class AreaEditComponent implements OnInit {
     const newArea = new Area();
     newArea.name = this.name.value;
     newArea.dataSource = this.dataSource.value;
+    if (!this.isEdit) {
+      this.addArea(newArea);
+    } else {
+      this.updateArea(newArea);
+    }
+  }
 
-    this.areaService.addArea(newArea).subscribe(
+  addArea(area: Area) {
+    this.areaService.addArea(area).subscribe(
       response => {
         this.areaId = response.id;
         this.clearErrorMsg();
@@ -53,6 +64,20 @@ export class AreaEditComponent implements OnInit {
       error => {
         this.errorMessage = error;
         this.router.navigate(['/areas', 1]);
+      }
+    );
+  }
+
+  updateArea(area: Area) {
+    this.areaService.updateArea(area)
+    .subscribe(
+      (data: Area) => {
+        this.clearErrorMsg();
+        console.log(data);
+      },
+      (error: any) => {
+        this.errorMessage = error;
+        console.log(this.errorMessage);
       }
     );
   }
