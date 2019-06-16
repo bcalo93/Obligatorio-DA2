@@ -3,7 +3,7 @@ import {Component, Injectable, AfterViewInit} from '@angular/core';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 import {BehaviorSubject} from 'rxjs';
 import { Operators } from 'src/enums';
-import { ConditionModel, ComponentModel, StringItem, IntItem, DateItem, BooleanItem } from 'src/models';
+import { ConditionModel, ComponentModel, StringItem, IntItem, DateItem, BooleanItem, IndicatorItem } from 'src/models';
 import { FormControl, Validators } from '@angular/forms';
 
 /**
@@ -44,6 +44,7 @@ const TREE_DATA = {
 @Injectable()
 export class ChecklistDatabase {
   dataChange = new BehaviorSubject<TodoItemNode[]>([]);
+  invalidComponent = false;
 
   get data(): TodoItemNode[] { return this.dataChange.value; }
 
@@ -59,6 +60,8 @@ export class ChecklistDatabase {
     // Notify the change.
     this.dataChange.next(data);
   }
+
+  isInvalid(): boolean { return this.invalidComponent; }
 
   /**
    * Build the file structure tree. The `value` is the Json object, or a sub-tree of a Json object.
@@ -135,11 +138,13 @@ export class ChecklistDatabase {
         component.dateValue = node.value;
         component.position = index;
         return component;
-      } else {
+      } else if (node.type === 'Boolean') {
         const component = new BooleanItem();
         component.booleanValue = node.value;
         component.position = index;
         return component;
+      } else {
+        return null;
       }
     } else {
       const parentComponent = new ConditionModel();
@@ -246,15 +251,6 @@ export class ConditionEditComponent implements AfterViewInit{
   /* CUSTOM */
   findRootNode = () => this._database.data.find(x => x.item === 'Root');
 
-  showNodeItem(node: TodoItemNode) {
-    console.log(node);
-  }
-
-  showData() {
-    console.log(this._database.data);
-    console.log('PUTO EL QUE LEE', this._database.buildModel(this._database.data[0], 0));
-  }
-
   getNodeSelectedConditionType(node: TodoItemFlatNode) {
     if (!!node) {
       const currentNode = this.flatNodeMap.get(node);
@@ -323,5 +319,17 @@ export class ConditionEditComponent implements AfterViewInit{
     console.log('updateNode() event', event);
     this.updateNodeProps(event);
     this._database.updateItem();
+  }
+
+  createItemIndicator() {
+    const condition = this._database.buildModel(this._database.data[0], 0);
+    const itemIndicator = new IndicatorItem();
+    itemIndicator.name = this.conditionName.value;
+    itemIndicator.condition = condition;
+    console.log(itemIndicator);
+  }
+
+  isInvalidCondition(): boolean {
+    return this.conditionName.invalid;
   }
 }
