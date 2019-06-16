@@ -66,18 +66,18 @@ export class AreaService {
       .pipe(catchError((error: HttpErrorResponse) => throwError(error.error || 'Server Error')));
   }
 
-  addIndicators(areaId: string): Observable<Indicator> {
+  addIndicators(areaId: string, indicator: Indicator): Observable<Indicator> {
     const url = `${environment.apiEndpoint}/areas/${areaId}/indicators`;
-    const body = JSON.stringify(areaId);
+    const body = JSON.stringify(indicator);
     const options = this.utilsService.getOptions();
     return this.http.post<Indicator>(url, body, options)
       .pipe(catchError((error: HttpErrorResponse) => throwError(error.error || 'Server Error')));
   }
 
-  getIndicators(areaId: string): Observable<Indicator> {
+  getIndicators(areaId: string): Observable<Array<Indicator>> {
     const url = `${environment.apiEndpoint}/areas/${areaId}/indicators`;
     const options = this.utilsService.getOptions();
-    return this.http.get<Indicator>(url, options)
+    return this.http.get<Array<Indicator>>(url, options)
       .pipe(catchError((error: HttpErrorResponse) => throwError(error.error || 'Server Error')));
   }
 }
