@@ -6,6 +6,6 @@ namespace IndicatorsManager.BusinessLogic.Interface
     {
         public int IndicatorsImported { get; set; }
         public int TotalIndicators { get; set; }
-        public IEnumerable<string> Errors { get; set; }
+        public string Error { get; set; }
     }
 }

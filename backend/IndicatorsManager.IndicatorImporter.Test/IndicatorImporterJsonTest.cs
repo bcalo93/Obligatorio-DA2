@@ -50,7 +50,7 @@ namespace IndicatorsManager.IndicatorImporter.Test
             ConditionImport condition1 = item11.Condition as ConditionImport;
             Assert.AreEqual(1, condition1.Position);
             Assert.AreEqual(2, condition1.Components.Count);
-            Assert.AreEqual(ConditionType.Mayor, condition1.ConditionType);
+            Assert.AreEqual(ConditionType.Greater, condition1.ConditionType);
             ItemQueryImport condition11 = condition1.Components.Single(c => c.Position == 1) as ItemQueryImport;
             Assert.AreEqual("SELECT COUNT(*) FROM category;", condition11.Query);
             ItemNumberImport condition12 = condition1.Components.Single(c => c.Position == 2) as ItemNumberImport;
@@ -73,7 +73,7 @@ namespace IndicatorsManager.IndicatorImporter.Test
 
             ConditionImport condition22 = condition2.Components.Single(c => c.Position == 2) as ConditionImport;
             Assert.AreEqual(2, condition22.Components.Count);
-            Assert.AreEqual(ConditionType.MayorEquals, condition22.ConditionType);
+            Assert.AreEqual(ConditionType.GreaterEquals, condition22.ConditionType);
             ItemQueryImport condition221 = condition22.Components.Single(c => c.Position == 1) as ItemQueryImport;
             Assert.AreEqual("SELECT COUNT(*) FROM category;", condition221.Query);
             ItemNumberImport condition222 = condition22.Components.Single(c => c.Position == 2) as ItemNumberImport;
@@ -124,7 +124,7 @@ namespace IndicatorsManager.IndicatorImporter.Test
             Assert.AreEqual(ConditionType.Or, condition6.ConditionType);
             ConditionImport condition61 = condition6.Components.Single(c => c.Position == 1) as ConditionImport;
             Assert.AreEqual(2, condition61.Components.Count);
-            Assert.AreEqual(ConditionType.MayorEquals, condition61.ConditionType);
+            Assert.AreEqual(ConditionType.GreaterEquals, condition61.ConditionType);
             ItemQueryImport condition611 = condition61.Components.Single(c => c.Position == 1) as ItemQueryImport;
             Assert.AreEqual("SELECT COUNT(*) As TotalInglesEspanol FROM Account WHERE LangPref = 'Spanish' OR LangPref = 'English'", condition611.Query);
             ItemDateImport condition612 = condition61.Components.Single(c => c.Position == 2) as ItemDateImport;
@@ -132,7 +132,7 @@ namespace IndicatorsManager.IndicatorImporter.Test
 
             ConditionImport condition62 = condition6.Components.Single(c => c.Position == 2) as ConditionImport;
             Assert.AreEqual(2, condition62.Components.Count);
-            Assert.AreEqual(ConditionType.Mayor, condition62.ConditionType);
+            Assert.AreEqual(ConditionType.Greater, condition62.ConditionType);
             ItemQueryImport condition621 = condition62.Components.Single(c => c.Position == 1) as ItemQueryImport;
             Assert.AreEqual("SELECT COUNT(*) As TotalEspanol FROM Account WHERE LangPref = 'Spanish'", condition621.Query);
             ItemQueryImport condition622 = condition62.Components.Single(c => c.Position == 2) as ItemQueryImport;

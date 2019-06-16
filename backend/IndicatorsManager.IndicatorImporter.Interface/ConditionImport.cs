@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using IndicatorsManager.IndicatorImporter.Interface.Visitor;
 
 namespace IndicatorsManager.IndicatorImporter.Interface
 {
     public enum ConditionType
     {
-        And, Or, Equals, Minor, MinorEquals, Mayor, MayorEquals
+        And, Or, Equals, Minor, MinorEquals, Greater, GreaterEquals
     }
     public class ConditionImport : ComponentImport
     {
@@ -14,6 +15,11 @@ namespace IndicatorsManager.IndicatorImporter.Interface
         public ConditionImport()
         {
             this.Components = new List<ComponentImport>();
+        }
+
+        public override T Accept<T>(IConditionImportVisitor<T> visitor)
+        {
+            return visitor.VisitConditionImport(this);
         }
     }
 }
