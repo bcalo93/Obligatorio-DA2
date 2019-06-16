@@ -33,6 +33,7 @@ export class AreaEditComponent implements OnInit {
   ngOnInit() {
     const id = this.currentRoute.snapshot.paramMap.get('id');
     if (id) {
+      this.areaId = id;
       this.isEdit = true;
       this.loadAreaDetails(id);
       this.title = 'Area Details';
@@ -98,5 +99,9 @@ export class AreaEditComponent implements OnInit {
 
   goBack(): void {
     this.location.back();
+  }
+
+  isFormValid() {
+    return !this.name.invalid && !this.dataSource.invalid;
   }
 }
