@@ -1,8 +1,9 @@
-import { Condition, Result } from '.';
+import { Result } from '.';
+import { ComponentModel } from './componentModel';
 
 export class IndicatorItem {
-    id: string;
-    colour: string;
-    condition: Condition;
-    result: Result;
+    id?: string;
+    name: string;
+    condition: ComponentModel;
+    result?: Result;
 }
