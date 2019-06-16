@@ -4,6 +4,7 @@ import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 import {BehaviorSubject} from 'rxjs';
 import { Operators } from 'src/enums';
 import { ConditionModel, ComponentModel, StringItem, IntItem, DateItem, BooleanItem } from 'src/models';
+import { FormControl, Validators } from '@angular/forms';
 
 /**
  * Node for to-do item
@@ -177,6 +178,9 @@ export class ConditionEditComponent implements AfterViewInit{
 
   /** CUSTOM PROPS */
   currentExpression = '';
+
+  conditionName = new FormControl('', [Validators.required]);
+
 
   constructor(private _database: ChecklistDatabase) {
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);

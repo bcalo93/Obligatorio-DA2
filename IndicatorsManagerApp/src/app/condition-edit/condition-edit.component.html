@@ -1,8 +1,25 @@
 <mat-card>
   <mat-card-title>Add New Condition</mat-card-title>
-  <button (click)="showData()">EVALUATE</button>
-  <label *ngIf="currentExpression">Current Expression: {{currentExpression}}</label>
-
+  <div class="row">
+    <div class="col">
+      <label *ngIf="currentExpression">Current Expression: {{currentExpression}}</label>
+    </div>
+  </div>
+  <div class="row mb-5">
+    <div class="col-10">
+        <mat-form-field class="example-full-width inputName" >     
+          <input matInput placeholder="Enter condition colour....." [formControl]="conditionName">
+          <mat-error *ngIf="conditionName.hasError('required')">Field is <strong>required</strong></mat-error>
+        </mat-form-field>
+    </div>
+    <div class="col margin-auto">
+      <button mat-raised-button color="primary">Save</button>
+    </div>
+</div>
+      
+  
+  
+<mat-card>
   <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
   <mat-tree-node *matTreeNodeDef="let node">
     <button id="node-{{node.item}}" mat-icon-button matTreeNodeToggle>
@@ -25,4 +42,5 @@
     </div>
     </mat-tree-node>  
   </mat-tree>
+</mat-card>
 </mat-card>

@@ -1,5 +1,19 @@
-.dropdown {
+.inputName {
     display:block !important;
     position: relative !important; 
-    width: 100% !important;
+    width: 80% !important;
+    margin-right: auto;
+}
+
+.margin-auto button {
+    width: 100%;
+}
+
+.margin-auto {
+    margin: auto;
+}
+
+
+button:focus {
+    outline:0;
 }
