@@ -7,6 +7,8 @@ import { LoginComponent } from './login/login.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { UsersListComponent } from './users-list/users-list.component';
 import { ConditionEditComponent } from './condition-edit/condition-edit.component';
+import { AreaEditComponent } from './area-edit/area-edit.component';
+import { ManagerAssignmentComponent } from './manager-assignment/manager-assignment.component';
 
 const routes: Routes = [
   { path: '', component: HomeManagerComponent, canActivate: [AuthGuard] },
@@ -15,6 +17,8 @@ const routes: Routes = [
   { path: 'users/:id', component: UserEditComponent },
   { path: 'users', component: UsersListComponent },
   { path: 'condition/add', component: ConditionEditComponent },
+  { path: 'areas/add', component: AreaEditComponent },
+  { path: 'areas/managers', component: ManagerAssignmentComponent },
   { path: '**', redirectTo: '' }
 ];
 
