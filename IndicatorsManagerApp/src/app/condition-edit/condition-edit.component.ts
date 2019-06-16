@@ -3,6 +3,7 @@ import {Component, Injectable, AfterViewInit} from '@angular/core';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 import {BehaviorSubject} from 'rxjs';
 import { Operators } from 'src/enums';
+import { ConditionModel, ComponentModel, StringItem, IntItem, DateItem, BooleanItem } from 'src/models';
 
 /**
  * Node for to-do item
@@ -15,20 +16,6 @@ export class TodoItemNode {
   operator?: Operators;
   operatorLabel: string;
   value: any;
-
-  // constructor() {}
-
-  // constructor(node: TodoItemNode) {
-  //   if(node!){
-  //   this.item = node.item;
-  //   this.children = node.children;
-  //   this.position = node.position;
-  //   this.type = node.type;
-  //   this.operator = node.operator;
-  //   this.operatorLabel = node.operatorLabel;
-  //   this.value = node.value;
-  // }
-  // }
 }
 
 /** Flat to-do item node with expandable and level information */
@@ -126,6 +113,39 @@ export class ChecklistDatabase {
       }
     }
     return ret;
+  }
+
+  buildModel(node: TodoItemNode, index: number): ComponentModel {
+    if (node.children.length === 0) {
+      if (node.type === 'Sql' ||  node.type === 'String') {
+        const component = new StringItem();
+        component.value = node.value;
+        component.type = node.type;
+        component.position = index;
+        return component;
+      } else if (node.type === 'Int') {
+        const component = new IntItem();
+        component.position = index;
+        component.value = node.value;
+        component.position = index;
+        return component;
+      } else if (node.type === 'Date') {
+        const component = new DateItem();
+        component.dateValue = node.value;
+        component.position = index;
+        return component;
+      } else {
+        const component = new BooleanItem();
+        component.booleanValue = node.value;
+        component.position = index;
+        return component;
+      }
+    } else {
+      const parentComponent = new ConditionModel();
+      parentComponent.conditionType = node.operator;
+      parentComponent.components = node.children.map((item, pos) => this.buildModel(item, pos));
+      return parentComponent;
+    }
   }
 }
 
@@ -228,6 +248,7 @@ export class ConditionEditComponent implements AfterViewInit{
 
   showData() {
     console.log(this._database.data);
+    console.log('PUTO EL QUE LEE', this._database.buildModel(this._database.data[0], 0));
   }
 
   getNodeSelectedConditionType(node: TodoItemFlatNode) {
