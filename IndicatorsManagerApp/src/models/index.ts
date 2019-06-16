@@ -10,4 +10,4 @@ export * from './conditionModel';
 export * from './dateItem';
 export * from './intItem';
 export * from './stringItem';
-
+export * from './booleanItem';
