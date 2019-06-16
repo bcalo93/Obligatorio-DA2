@@ -52,6 +52,7 @@ export class AreaEditComponent implements OnInit {
     if (!this.isEdit) {
       this.addArea(newArea);
     } else {
+      newArea.id = this.areaId;
       this.updateArea(newArea);
     }
   }
@@ -60,11 +61,11 @@ export class AreaEditComponent implements OnInit {
     this.areaService.addArea(area).subscribe(
       response => {
         this.areaId = response.id;
+        this.router.navigate(['/areas', this.areaId]);
         this.clearErrorMsg();
       },
       error => {
         this.errorMessage = error;
-        this.router.navigate(['/areas', 1]);
       }
     );
   }
@@ -74,11 +75,10 @@ export class AreaEditComponent implements OnInit {
     .subscribe(
       (data: Area) => {
         this.clearErrorMsg();
-        console.log(data);
+        console.log('Area Updated', data);
       },
       (error: any) => {
         this.errorMessage = error;
-        console.log(this.errorMessage);
       }
     );
   }

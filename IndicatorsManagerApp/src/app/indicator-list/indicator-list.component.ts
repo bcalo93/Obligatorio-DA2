@@ -3,8 +3,8 @@ import { Indicator } from 'src/models';
 import { AreaService } from 'src/services';
 import { IndicatorService } from 'src/services/indicator.service';
 import { FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
-const indicatorsTEST = [{name: "indicator 1"},{name: "indicator 2"},{name: "indicator 3"}]
 
 @Component({
   selector: 'app-indicator-list',
@@ -16,42 +16,52 @@ export class IndicatorListComponent implements OnInit {
   @Input() areaId: string;
   indicators: Array<Indicator>;
   name = new FormControl('', [Validators.required]);
+  errorMessage: string;
 
   constructor(
     private areaService: AreaService,
-    private indicatorService: IndicatorService ) { }
+    private indicatorService: IndicatorService,
+    private router: Router) { }
 
   ngOnInit() {
     this.areaService.getIndicators(this.areaId)
       .subscribe(
-        indicators => this.indicators = indicators,
-        error => {
-          this.indicators = indicatorsTEST as Array<Indicator>,
-          console.log(error);
-        }
+        indicators => {
+          console.log(indicators)
+          const orderedList = indicators.reverse();
+          this.indicators = orderedList;
+        },
+        error => this.errorMessage = error
       );
   }
 
-  deleteUser(indicatorId: string) {
+  deleteIndicator(indicatorId: string) {
     this.indicatorService.deleteIndicator(indicatorId).subscribe(
       () => {
         const index = this.indicators.findIndex(x => x.id === indicatorId);
         this.indicators.splice(index, 1);
         console.log('Indicator deleted');
       },
-      error => console.log(error)
+      error => this.errorMessage = error
     );
   }
+
+  editIndicator(indicatorId: string) {
+    this.router.navigate(['/indicator', indicatorId]);
+  }
+
 
   save() {
     const indicator = new Indicator();
     indicator.name = this.name.value;
-    this.indicators.splice(0, 0, indicator);
-    this.name.setValue('');
-    // this.areaService.addIndicators(this.areaId, indicator).subscribe(
-    //   () => { },
-    //   error => console.log(error)
-    // );
+    this.areaService.addIndicators(this.areaId, indicator).subscribe(
+      response => {
+        document.getElementById('indicator-name').blur();
+        this.name.reset();
+        this.indicators.splice(0, 0, response);
+      },
+      error => this.errorMessage = error
+    );
   }
 
 }

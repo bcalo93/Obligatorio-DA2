@@ -8,11 +8,11 @@
         <mat-card-title class="title mb-5" *ngIf="isEdit">Edit area information</mat-card-title>
 
         <mat-form-field>
-          <input matInput placeholder="Area name" [formControl]="name" (keyup.enter)="isFormValid() ? null : save()">
+          <input matInput placeholder="Area name" [formControl]="name" (keyup.enter)="!isFormValid() ? null : save()">
           <mat-error *ngIf="name.invalid">Area name is <strong>required</strong></mat-error>
         </mat-form-field>
         <mat-form-field>
-          <input matInput placeholder="Data Source" [formControl]="dataSource" (keyup.enter)="isFormValid() ? null : save()">
+          <input matInput placeholder="Data Source" [formControl]="dataSource" (keyup.enter)="!isFormValid() ? null : save()">
           <mat-error *ngIf="dataSource.invalid">Data Source is <strong>required</strong></mat-error>
         </mat-form-field>
       </div>
