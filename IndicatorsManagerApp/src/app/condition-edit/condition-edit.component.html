@@ -1,7 +1,7 @@
 <mat-card>
   <mat-card-title>Add New Condition</mat-card-title>
   <button (click)="showData()">EVALUATE</button>
-  <label>Current Expression: {{currentExpression}}</label>
+  <label *ngIf="currentExpression">Current Expression: {{currentExpression}}</label>
 
   <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
   <mat-tree-node *matTreeNodeDef="let node">
