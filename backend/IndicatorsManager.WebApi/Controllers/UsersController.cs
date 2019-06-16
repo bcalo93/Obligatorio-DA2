@@ -33,9 +33,9 @@ namespace IndicatorsManager.WebApi.Controllers
             {
                 return Ok(this.userLogic.GetAll().Select(u => new UserGetModel(u)));
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no esta disponible.");
+                return StatusCode(503, de.Message);
             }
         }
 
@@ -48,13 +48,13 @@ namespace IndicatorsManager.WebApi.Controllers
                 User result = this.userLogic.Get(id);
                 if(result == null)
                 {
-                    return NotFound("El usuario no existe.");
+                    return NotFound("The user doesn't exist.");
                 }
                 return Ok(new UserGetModel(result));
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no esta disponible.");
+                return StatusCode(503, de.Message);
             }
         }
 
@@ -75,9 +75,9 @@ namespace IndicatorsManager.WebApi.Controllers
             {
                 return Conflict(ee.Message);
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no esta disponible.");
+                return StatusCode(503, de.Message);
             }
         }
 
@@ -90,7 +90,7 @@ namespace IndicatorsManager.WebApi.Controllers
                 User result = this.userLogic.Update(id, user.ToEntity());
                 if(result == null)
                 {
-                    return NotFound(string.Format("El Usuario {0} no existe.",user.Username));
+                    return NotFound(string.Format("The user {0} doesn't exist.",user.Username));
                 }
                 return Ok(new UserGetModel(result));
             }
@@ -102,9 +102,9 @@ namespace IndicatorsManager.WebApi.Controllers
             {
                 return Conflict(ee.Message);
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no esta disponible.");
+                return StatusCode(503, de.Message);
             }
         }
 
@@ -117,9 +117,9 @@ namespace IndicatorsManager.WebApi.Controllers
                 this.userLogic.Remove(id);
                 return NoContent();
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no esta disponible.");
+                return StatusCode(503, de.Message);
             }
         }
 
@@ -128,13 +128,7 @@ namespace IndicatorsManager.WebApi.Controllers
         {
             try 
             {
-                Guid token;
-                bool isValid = Guid.TryParse(HttpContext.Request.Headers["Authorization"], out token);
-                if(!isValid)
-                {
-                    return Unauthorized("El token es invalido.");
-                }
-                
+                Guid token = ParseAuthorizationHeader();
                 return Ok(this.indicatorLogic.GetManagerIndicators(token)
                     .Select(i => new IndicatorConfigModel(i)));
             }
@@ -142,9 +136,9 @@ namespace IndicatorsManager.WebApi.Controllers
             {
                 return Unauthorized(ue.Message);
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no esta disponible");
+                return StatusCode(503, de.Message);
             }
         }
 
@@ -161,9 +155,9 @@ namespace IndicatorsManager.WebApi.Controllers
             {
                 return Unauthorized(ue.Message);
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no esta disponible");
+                return StatusCode(503, de.Message);
             }
         }
 
@@ -172,12 +166,7 @@ namespace IndicatorsManager.WebApi.Controllers
         {
             try
             {
-                Guid token;
-                bool isValid = Guid.TryParse(HttpContext.Request.Headers["Authorization"], out token);
-                if(!isValid)
-                {
-                    return Unauthorized("El token es invalido.");
-                }
+                Guid token = ParseAuthorizationHeader();
                 this.indicatorLogic.AddIndicatorConfiguration(config.Select(c => c.ToEntity()), token);
                 return Ok();
             }
@@ -189,9 +178,9 @@ namespace IndicatorsManager.WebApi.Controllers
             {
                 return NotFound(ee.Message);
             }
-            catch(DataAccessException)
+            catch(DataAccessException de)
             {
-                return StatusCode(503, "El servicio no esta disponible");
+                return StatusCode(503, de.Message);
             }
         }
 
@@ -201,7 +190,7 @@ namespace IndicatorsManager.WebApi.Controllers
             bool isValid = Guid.TryParse(HttpContext.Request.Headers["Authorization"], out token);
             if(!isValid)
             {
-                throw new UnauthorizedException("El formato del token es invalido.");
+                throw new UnauthorizedException("The token format is invalid");
             }
             return token;
         }
