@@ -1,0 +1,40 @@
+button.icon-button { 
+    width: 56px !important;
+}
+
+.header-row{
+    border-top: 1px solid #3f51b5;
+    background-color: #9FA8DA;
+    height: 70px;
+    padding: auto;
+    align-content: center;
+}
+
+.item-row{
+    border-bottom: 1px solid #3f51b5;
+    height: 75px;
+}
+
+.item-row-created:hover .action-row, .item-row-created:hover{
+    display: flex !important;
+    background-color: #C5CAE9;
+}
+
+.action-row { display: none; }
+
+.item-row > .col {
+    margin: auto;
+    padding: auto;
+    align-content: center;
+}
+
+.box {
+    height: 50vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.input-indicator {
+    width: 100%;
+}
+

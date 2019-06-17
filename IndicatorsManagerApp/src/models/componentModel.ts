@@ -1,4 +1,6 @@
-export class ComponentModel {
+export abstract class ComponentModel {
     id?: string;
     position: number;
+
+    abstract isValid(): boolean;
 }

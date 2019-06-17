@@ -41,6 +41,11 @@ import { UsersListComponent } from './users-list/users-list.component';
 import { ConditionEditComponent } from './condition-edit/condition-edit.component';
 import { UserIndicatorConfigComponent } from './user-indicator-config/user-indicator-config.component';
 import { ConditionDropdownComponent } from './condition-dropdown/condition-dropdown.component';
+import { AreaEditComponent } from './area-edit/area-edit.component';
+import { ManagerAssignmentComponent } from './manager-assignment/manager-assignment.component';
+import { IndicatorListComponent } from './indicator-list/indicator-list.component';
+import { IndicatorEditComponent } from './indicator-edit/indicator-edit.component';
+import { ConditionListComponent } from './condition-list/condition-list.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +58,12 @@ import { ConditionDropdownComponent } from './condition-dropdown/condition-dropd
     UsersListComponent,
     ConditionEditComponent,
     UserIndicatorConfigComponent,
-    ConditionDropdownComponent
+    ConditionDropdownComponent,
+    AreaEditComponent,
+    ManagerAssignmentComponent,
+    IndicatorListComponent,
+    IndicatorEditComponent,
+    ConditionListComponent
   ],
   imports: [
     BrowserModule,

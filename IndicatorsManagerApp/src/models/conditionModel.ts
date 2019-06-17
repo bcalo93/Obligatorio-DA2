@@ -8,4 +8,8 @@ export class ConditionModel extends ComponentModel {
     constructor()  {
         super();
     }
+
+    isValid() {
+        return !this.components.some( e => e === null);
+    }
 }

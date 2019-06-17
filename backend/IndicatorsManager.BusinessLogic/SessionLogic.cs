@@ -5,7 +5,6 @@ using IndicatorsManager.DataAccess.Interface;
 using IndicatorsManager.BusinessLogic.Interface;
 using IndicatorsManager.Domain;
 using IndicatorsManager.BusinessLogic.Interface.Exceptions;
-using IndicatorsManager.DataAccess.Interface.Exceptions;
 
 namespace IndicatorsManager.BusinessLogic
 {

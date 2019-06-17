@@ -1,0 +1,41 @@
+
+<mat-card>
+    <mat-card-title class="title">Indicators List</mat-card-title>
+    <div class="row wrapper">
+        <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
+    </div>
+    <div class="box">
+        <div class="row header-row">
+            <div class="col ml-3">INDICATOR NAME</div>
+        </div>
+        <div class="row item-row">
+            <div class="col ml-2">
+                <mat-form-field class="input-indicator">
+                  <input id="indicator-name" matInput placeholder="Enter new indicator name" [formControl]="name" 
+                    (keyup.enter)="name.invalid ? null : save()">
+                  <mat-error *ngIf="name.invalid">Indicator name is <strong>required</strong></mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-2">
+                <button mat-fab class="icon-button" color="accent" [disabled]="name.invalid" (click)="save()">add</button>
+            </div>
+        </div>
+        <div class="row item-row item-row-created" *ngFor="let item of indicators">
+            <div class="col ml-3">{{item.name}}</div>
+            <div class="col">
+              <div class="row action-row">
+                  <div class="col">
+                    <button mat-fab class="icon-button" color="primary" (click)="editIndicator(item.id)">
+                      <mat-icon>create</mat-icon>
+                    </button>
+                  </div>
+                  <div class="col">
+                    <button mat-fab class="icon-button" color="warn" (click)="deleteIndicator(item.id)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</mat-card>

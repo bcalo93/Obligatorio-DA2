@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using IndicatorsManager.DataAccess.Interface;
 using IndicatorsManager.BusinessLogic.Interface;
@@ -83,7 +82,7 @@ namespace IndicatorsManager.BusinessLogic
             
             if(!this.IsValidItem(item))
             {
-                throw new InvalidEntityException("El item es invalido");
+                throw new InvalidEntityException("The item is invalid");
             }
             IndicatorItem original = this.itemRepository.Get(id);
             if(original == null)

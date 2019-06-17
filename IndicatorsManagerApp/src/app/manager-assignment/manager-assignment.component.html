@@ -1,0 +1,25 @@
+<div class="row">
+    <button mat-raised-button color="primary" (click)="showList(done)">Show Done List</button>
+</div>
+<div class="row" cdkDropListGroup>
+  <div class="col example-container m-5">
+    <h2>All Managers</h2>
+    <div
+      cdkDropList
+      [cdkDropListData]="todo"
+      class="example-list"
+      (cdkDropListDropped)="drop($event)">
+      <div class="col example-box" *ngFor="let item of todo" cdkDrag>{{item}}</div>
+    </div>
+  </div>
+  <div class="col example-container m-5">
+    <h2>Assigned Managers</h2>
+    <div
+      cdkDropList
+      [cdkDropListData]="done"
+      class="example-list"
+      (cdkDropListDropped)="drop($event)">
+      <div class="example-box" *ngFor="let item of done" cdkDrag>{{item}}</div>
+    </div>
+  </div>  
+</div>

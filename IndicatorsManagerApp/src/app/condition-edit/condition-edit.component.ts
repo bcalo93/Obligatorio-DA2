@@ -5,6 +5,9 @@ import {BehaviorSubject} from 'rxjs';
 import { Operators } from 'src/enums';
 import { ConditionModel, ComponentModel, StringItem, IntItem, DateItem, BooleanItem, IndicatorItem } from 'src/models';
 import { FormControl, Validators } from '@angular/forms';
+import { IndicatorService } from 'src/services/indicator.service';
+import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 /**
  * Node for to-do item
@@ -184,10 +187,17 @@ export class ConditionEditComponent implements AfterViewInit{
   /** CUSTOM PROPS */
   currentExpression = '';
 
+  errorMessage: string;
+
   conditionName = new FormControl('', [Validators.required]);
 
 
-  constructor(private _database: ChecklistDatabase) {
+  constructor(
+    private _database: ChecklistDatabase,
+    private indicatorService: IndicatorService,
+    private location: Location,
+    private router: Router) {
+
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
     this.treeControl = new FlatTreeControl<TodoItemFlatNode>(this.getLevel, this.isExpandable);
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
@@ -259,7 +269,6 @@ export class ConditionEditComponent implements AfterViewInit{
   }
 
   updateNode(event: any) {
-    console.log('updateNode() event', event);
     if (event.nodeType === 'Compound') {
       this.addComponents(event.node);
     } else {
@@ -316,7 +325,6 @@ export class ConditionEditComponent implements AfterViewInit{
   }
 
   updateInputNode(event: any) {
-    console.log('updateNode() event', event);
     this.updateNodeProps(event);
     this._database.updateItem();
   }
@@ -327,9 +335,21 @@ export class ConditionEditComponent implements AfterViewInit{
     itemIndicator.name = this.conditionName.value;
     itemIndicator.condition = condition;
     console.log(itemIndicator);
+    // console.log('IS VALID TEST',itemIndicator.condition.isValid());
+    const indicatorId = this.router.url.split('/')[2];
+    this.indicatorService.addIndicatorItem(indicatorId, itemIndicator)
+      .subscribe(
+        response => {
+          console.log(response);
+          this.router.navigate(['indicator', indicatorId ]);
+        },
+        error => {
+          this.errorMessage = error;
+        }
+      );
   }
 
-  isInvalidCondition(): boolean {
-    return this.conditionName.invalid;
+  isValidCondition(): boolean {
+    return !this.conditionName.invalid;
   }
 }

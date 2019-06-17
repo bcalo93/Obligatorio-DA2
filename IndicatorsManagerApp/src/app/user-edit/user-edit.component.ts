@@ -17,6 +17,7 @@ export class UserEditComponent implements OnInit {
   user: User;
   currentUserName: string;
   isEdit: boolean;
+  userId: string;
 
   name =  new FormControl('', [Validators.required]);
   lastName = new FormControl('', [Validators.required]);
@@ -27,6 +28,7 @@ export class UserEditComponent implements OnInit {
   roles = [UserRole.ADMIN, UserRole.MANAGER];
   selectedRole: UserRole;
   errorMessage: string;
+  hide = true;
 
   constructor(
     private userService: UserService,
@@ -38,6 +40,7 @@ export class UserEditComponent implements OnInit {
     const id = this.currentRoute.snapshot.paramMap.get('id');
     if (id) {
       this.isEdit = true;
+      this.userId = id;
       this.loadCurrentUserDetails(id);
       this.title = 'Edit User Details';
     } else {
@@ -69,6 +72,7 @@ export class UserEditComponent implements OnInit {
     if (!this.isEdit) {
       this.addUser(user);
     } else {
+      user.id = this.userId;
       this.updateUser(user);
     }
   }
@@ -88,6 +92,7 @@ export class UserEditComponent implements OnInit {
   }
 
   updateUser(user: User) {
+    console.log(user)
     this.userService.updateUser(user)
     .subscribe(
       (data: User) => {

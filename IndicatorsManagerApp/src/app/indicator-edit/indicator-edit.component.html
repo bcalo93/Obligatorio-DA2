@@ -1,0 +1,30 @@
+<mat-card>
+    <mat-card-title class="title">Indicator Details</mat-card-title>
+</mat-card>
+<mat-card>
+  <div class="row">
+    <div class="col">
+      <div class="row wrapper">
+        <mat-card-title class="title mb-5">Edit indicator name</mat-card-title>
+        <mat-form-field>
+          <input matInput placeholder="Indicator name" [formControl]="name" (keyup.enter)="name.invalid ? null : save()">
+          <mat-error *ngIf="name.invalid">Indicator name is <strong>required</strong></mat-error>
+        </mat-form-field>
+      </div>
+      <div class="row wrapper">
+        <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
+      </div>
+      <div class="row wrapper">
+        <button mat-raised-button color="primary" [disabled]="name.invalid" (click)="updateIndicator()">Save</button>
+        <button mat-raised-button class="m-1" (click)="goBack()">Back</button>
+      </div>
+    </div>
+    <div class="col">
+      <div class="row">
+        <div class="col">
+          <app-condition-list [indicatorId]="indicatorId"></app-condition-list>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-card>
