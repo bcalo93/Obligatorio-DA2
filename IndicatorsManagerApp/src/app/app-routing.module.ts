@@ -14,14 +14,19 @@ import { IndicatorEditComponent } from './indicator-edit/indicator-edit.componen
 const routes: Routes = [
   { path: '', component: HomeManagerComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
+
+  { path: 'users', component: UsersListComponent },
   { path: 'users/add', component: UserEditComponent },
   { path: 'users/:id', component: UserEditComponent },
-  { path: 'users', component: UsersListComponent },
+
+  { path: 'areas', component: UsersListComponent },
   { path: 'areas/add', component: AreaEditComponent },
-  { path: 'areas/:id', component: AreaEditComponent },
-  { path: 'indicator/:id', component: IndicatorEditComponent },
-  { path: 'condition/add', component: ConditionEditComponent },
   { path: 'areas/managers', component: ManagerAssignmentComponent },
+
+  { path: 'areas/:id', component: AreaEditComponent },
+
+  { path: 'indicator/:id', component: IndicatorEditComponent },
+  { path: 'indicator/:id/condition/add', component: ConditionEditComponent },
 
   { path: '**', redirectTo: '' }
 ];
