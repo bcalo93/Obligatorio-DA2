@@ -5,14 +5,16 @@
         <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
     </div>
     <div class="box">
-        <div class="row header-row">
-            <div class="col ml-3">CONDITION COLOUR</div>
+      <div class="row header-row">
+        <div class="col"><span>Condition Colour</span></div>
+        <div class="col-3">
             <button mat-fab class="icon-button" color="accent" (click)="addCondition()">
-                <mat-icon>add</mat-icon>
+              <mat-icon>add</mat-icon>
             </button>
-        </div>
-        <div class="row item-row item-row-created" *ngFor="let item of conditions">
-            <div class="col ml-3">{{item.name}}</div>
+        </div>  
+      </div>
+      <div class="row item-row item-row-created" *ngFor="let item of conditions">
+            <div class="col"><span>{{item.name}}</span></div>
             <div class="col">
               <div class="row action-row">
                   <div class="col">
