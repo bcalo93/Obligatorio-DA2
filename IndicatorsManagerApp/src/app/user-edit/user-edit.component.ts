@@ -29,7 +29,7 @@ export class UserEditComponent implements OnInit {
   selectedRole: UserRole;
   errorMessage: string;
   hide = true;
-  
+
   constructor(
     private userService: UserService,
     private location: Location,
