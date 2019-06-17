@@ -3,7 +3,6 @@ import { FormControl, Validators } from '@angular/forms';
 import { AreaService } from 'src/services';
 import { Area } from 'src/models';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Location } from '@angular/common';
 
 
 @Component({
@@ -26,7 +25,6 @@ export class AreaEditComponent implements OnInit {
 
   constructor(
     private areaService: AreaService,
-    private location: Location,
     private currentRoute: ActivatedRoute,
     private router: Router) {}
 
@@ -98,7 +96,7 @@ export class AreaEditComponent implements OnInit {
   }
 
   goBack(): void {
-    this.location.back();
+    this.router.navigate(['/areas']);
   }
 
   isFormValid() {
