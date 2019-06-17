@@ -15,10 +15,10 @@ export class IndicatorService {
     private utilsService: UtilsService,
     private http: HttpClient) {}
 
-  getIndicator(indicatorId: string): Observable<Indicator> {
+  getIndicator(indicatorId: string): Observable<any> {
     const url = `${environment.apiEndpoint}/indicators/${indicatorId}`;
     const options = this.utilsService.getOptions();
-    return this.http.get<Indicator>(url, options)
+    return this.http.get<any>(url, options)
       .pipe(catchError((error: HttpErrorResponse) => throwError(error.error || 'Server Error')));
   }
 
