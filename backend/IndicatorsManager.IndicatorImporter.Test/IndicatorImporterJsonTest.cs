@@ -26,9 +26,11 @@ namespace IndicatorsManager.IndicatorImporter.Test
         public void GetParametersTest()
         {
             IndicatorImporterJson importer = new IndicatorImporterJson();
-            Dictionary<string, string> parameters = importer.GetParameters();
-            Assert.AreEqual(1, parameters.Count);
-            Assert.IsTrue(parameters.ContainsKey("filePath"));
+            IEnumerable<Parameter> parameters = importer.GetParameters();
+            Assert.AreEqual(1, parameters.Count());
+            Assert.AreEqual("Path", parameters.ElementAt(0).Name);
+            Assert.AreEqual("string", parameters.ElementAt(0).Type);
+            Assert.AreEqual("filePath", parameters.ElementAt(0).KeyName);
         }
         
         [TestMethod]

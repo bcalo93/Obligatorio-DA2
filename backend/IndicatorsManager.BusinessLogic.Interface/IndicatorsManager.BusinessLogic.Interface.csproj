@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IndicatorsManager.Domain\IndicatorsManager.Domain.csproj" />
+    <ProjectReference Include="..\IndicatorsManager.IndicatorImporter.Interface\IndicatorsManager.IndicatorImporter.Interface.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

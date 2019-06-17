@@ -5,7 +5,7 @@ namespace IndicatorsManager.IndicatorImporter.Interface
     public interface IIndicatorImporter
     {
         string GetName();
-        Dictionary<string, string> GetParameters();
+        IEnumerable<Parameter> GetParameters();
         IEnumerable<IndicatorImport> ImportIndicators(Dictionary<string, string> parameters);
     }
 }

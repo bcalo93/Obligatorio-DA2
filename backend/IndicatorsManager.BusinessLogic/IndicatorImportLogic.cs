@@ -56,6 +56,10 @@ namespace IndicatorsManager.BusinessLogic
             {
                 result.Error = ie.Message;
             }
+            catch(NullReferenceException)
+            {
+                result.Error = "The json format is incorrect.";
+            }
             catch(DataAccessException de)
             {
                 result.Error = de.Message;

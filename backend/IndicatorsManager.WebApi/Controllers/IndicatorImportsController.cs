@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using IndicatorsManager.BusinessLogic.Interface;
 using IndicatorsManager.WebApi.Models;
 using IndicatorsManager.WebApi.Filters;
+using IndicatorsManager.BusinessLogic.Interface.Exceptions;
+using IndicatorsManager.Domain;
 
 namespace IndicatorsManager.WebApi.Controllers
 {
@@ -16,16 +18,29 @@ namespace IndicatorsManager.WebApi.Controllers
             this.importLogic = importLogic;
         }
 
+        [ProtectFilter(Role.Admin)]
         [HttpGet("info")]
         public IActionResult GetImporterParameters()
         {
             return Ok(this.importLogic.GetIndicatorImporters());
         }
 
+        [ProtectFilter(Role.Admin)]
         [HttpPost]
         public IActionResult Post([FromBody] ImportModel model)
         {
-            return Ok(this.importLogic.ImportIndicators(model.AreaId, model.ImporterName, model.Parameters));
+            try
+            {
+                return Ok(this.importLogic.ImportIndicators(model.AreaId, model.ImporterName, model.Parameters));
+            }
+            catch(EntityNotExistException ee)
+            {
+                return NotFound(ee.Message);
+            }
+            catch(ImportException ie)
+            {
+                return BadRequest(ie.Message);
+            }
         }
     }
 }
