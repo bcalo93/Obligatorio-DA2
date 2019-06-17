@@ -13,7 +13,6 @@ namespace IndicatorsManager.IndicatorImporter.Interface
             var dir = new DirectoryInfo(@".\importers");
             foreach (var fileInfo in dir.GetFiles())
             {
-                Console.WriteLine(fileInfo.FullName);
                 Assembly currentAssembly = Assembly.LoadFile(fileInfo.FullName);
                 result.AddRange(GetIIndicatorImporterInstances(currentAssembly));
             }

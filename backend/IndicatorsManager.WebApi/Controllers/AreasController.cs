@@ -216,13 +216,5 @@ namespace IndicatorsManager.WebApi.Controllers
                 return StatusCode(503, de.Message);
             }
         }
-
-        [HttpGet]
-        [HttpGet("importparameters")]
-        public IActionResult GetImporterParameters()
-        {
-            return Ok(this.importLogic.GetIndicatorImporters());
-        }
-        
     }
 }
