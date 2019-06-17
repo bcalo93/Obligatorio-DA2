@@ -4,6 +4,7 @@
     <ProjectReference Include="..\IndicatorsManager.Domain\IndicatorsManager.Domain.csproj" />
     <ProjectReference Include="..\IndicatorsManager.BusinessLogic.Interface\IndicatorsManager.BusinessLogic.Interface.csproj" />
     <ProjectReference Include="..\IndicatorsManager.DataAccess.Interface\IndicatorsManager.DataAccess.Interface.csproj" />
+    <ProjectReference Include="..\IndicatorsManager.IndicatorImporter.Interface\IndicatorsManager.IndicatorImporter.Interface.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using IndicatorsManager.BusinessLogic.Interface;
 using IndicatorsManager.BusinessLogic.Interface.Exceptions;
 using IndicatorsManager.DataAccess.Interface.Exceptions;
