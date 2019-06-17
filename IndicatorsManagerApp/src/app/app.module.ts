@@ -46,6 +46,7 @@ import { ManagerAssignmentComponent } from './manager-assignment/manager-assignm
 import { IndicatorListComponent } from './indicator-list/indicator-list.component';
 import { IndicatorEditComponent } from './indicator-edit/indicator-edit.component';
 import { ConditionListComponent } from './condition-list/condition-list.component';
+import { AreaListComponent } from './area-list/area-list.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { ConditionListComponent } from './condition-list/condition-list.componen
     ManagerAssignmentComponent,
     IndicatorListComponent,
     IndicatorEditComponent,
-    ConditionListComponent
+    ConditionListComponent,
+    AreaListComponent
   ],
   imports: [
     BrowserModule,
