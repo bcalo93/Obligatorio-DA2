@@ -22,3 +22,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .title {
     text-align: center;
 }
+
+button:focus {
+    outline:0;
+}
