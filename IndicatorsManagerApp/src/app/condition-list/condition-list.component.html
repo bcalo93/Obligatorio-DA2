@@ -1,0 +1,29 @@
+
+<mat-card>
+    <mat-card-title class="title">Condition List</mat-card-title>
+    <div class="row wrapper">
+        <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
+    </div>
+    <div class="box">
+        <div class="row header-row">
+            <div class="col ml-3">CONDITION COLOUR</div>
+            <button mat-fab class="icon-button" color="accent" (click)="addCondition()">
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
+        <div class="row item-row item-row-created" *ngFor="let item of conditions">
+            <div class="col ml-3">{{item.name}}</div>
+            <div class="col">
+              <div class="row action-row">
+                  <div class="col">
+                  </div>
+                  <div class="col">
+                    <button mat-fab class="icon-button" color="warn" (click)="deleteCondition(item.id)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</mat-card>
