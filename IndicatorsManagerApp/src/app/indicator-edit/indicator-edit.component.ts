@@ -31,11 +31,6 @@ export class IndicatorEditComponent implements OnInit {
     }
   }
 
-  addIndicatorItem() {
-    const actualUrl = this.router.url;
-    this.router.navigate([actualUrl + 'condition/add']);
-  }
-
   updateIndicator() {
     console.log(this.indicatorId);
     console.log(this.name.value);
