@@ -27,7 +27,6 @@ export class IndicatorListComponent implements OnInit {
     this.areaService.getIndicators(this.areaId)
       .subscribe(
         indicators => {
-          console.log(indicators)
           const orderedList = indicators.reverse();
           this.indicators = orderedList;
         },
