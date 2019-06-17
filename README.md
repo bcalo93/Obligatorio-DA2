@@ -10,6 +10,7 @@ Ramiro Gonzalez - 167011
 <li>dotnet test backend\IndicatorsManager.DataAccess.Test</li>
 <li>dotnet test backend\IndicatorsManager.BusinessLogic.Test</li>
 <li>dotnet test backend\IndicatorsManager.WebApi.Test</li>
+<li>dotnet test backend\IndicatorsManager.IndicatorImporter.Test</li>
 </ul>
 
 ### Migraciones

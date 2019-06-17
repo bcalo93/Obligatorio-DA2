@@ -1,12 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <ProjectReference Include="..\IndicatorsManager.Domain\IndicatorsManager.Domain.csproj" />
-    <ProjectReference Include="..\IndicatorsManager.IndicatorImporter.Interface\IndicatorsManager.IndicatorImporter.Interface.csproj" />
-  </ItemGroup>
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IndicatorsManager.IndicatorImporter.Interface\IndicatorsManager.IndicatorImporter.Interface.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+  </ItemGroup>
 
 </Project>

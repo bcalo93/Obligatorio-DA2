@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -76,6 +76,8 @@ namespace IndicatorsManager.WebApi
             
             services.AddScoped<IReportLogic, ReportLogic>();
             services.AddScoped<ILogQuery, LogRepository>();
+
+            services.AddScoped<IIndicatorImportLogic, IndicatorImportLogic>();
 
             services.AddCors(options =>
             {
