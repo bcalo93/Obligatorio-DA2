@@ -17,19 +17,19 @@
                 </mat-form-field>
             </div>
             <div class="col-2">
-                <button mat-fab class="icon-button" color="accent" [disabled]="name.invalid" (click)="save()">add</button>
+                <button mat-fab class="icon-button" color="accent" [disabled]="name.invalid" (click)="save()"><mat-icon>add</mat-icon></button>
             </div>
         </div>
         <div class="row item-row item-row-created" *ngFor="let item of indicators">
             <div class="col ml-3">{{item.name}}</div>
-            <div class="col">
-              <div class="row action-row">
-                  <div class="col">
+            <div class="col-4">
+              <div class="row action-row p-0 m-0">
+                  <div class="col p-0 m-0">
                     <button mat-fab class="icon-button" color="primary" (click)="editIndicator(item.id)">
                       <mat-icon>create</mat-icon>
                     </button>
                   </div>
-                  <div class="col">
+                  <div class="col p-0 m-0">
                     <button mat-fab class="icon-button" color="warn" (click)="deleteIndicator(item.id)">
                       <mat-icon>delete</mat-icon>
                     </button>
