@@ -124,7 +124,7 @@ export class ChecklistDatabase {
 
   buildModel(node: TodoItemNode, index: number): ComponentModel {
     if (node.children.length === 0) {
-      if (node.type === 'Sql' ||  node.type === 'String') {
+      if (node.type === 'Sql' ||  node.type === 'Text') {
         const component = new StringItem();
         component.value = node.value;
         component.type = node.type;
@@ -335,6 +335,7 @@ export class ConditionEditComponent implements AfterViewInit{
     itemIndicator.name = this.conditionName.value;
     itemIndicator.condition = condition;
     console.log(itemIndicator);
+    console.log(JSON.stringify(itemIndicator));
     // console.log('IS VALID TEST',itemIndicator.condition.isValid());
     const indicatorId = this.router.url.split('/')[2];
     this.indicatorService.addIndicatorItem(indicatorId, itemIndicator)
@@ -344,6 +345,7 @@ export class ConditionEditComponent implements AfterViewInit{
           this.router.navigate(['indicator', indicatorId ]);
         },
         error => {
+          console.log(error)
           this.errorMessage = error;
         }
       );
@@ -351,5 +353,9 @@ export class ConditionEditComponent implements AfterViewInit{
 
   isValidCondition(): boolean {
     return !this.conditionName.invalid;
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }
