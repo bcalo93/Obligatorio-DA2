@@ -19,7 +19,6 @@ namespace IndicatorsManager.WebApi.Test
         private Mock<ILogic<Area>> mockArea;
         private Mock<IIndicatorLogic> mockIndicator;
         private Mock<IUserAreaLogic> mockUserAreaLogic;
-        private Mock<IIndicatorImportLogic> mockImport;
         private AreasController controller;
 
         [TestInitialize]
@@ -28,9 +27,7 @@ namespace IndicatorsManager.WebApi.Test
             mockArea = new Mock<ILogic<Area>>(MockBehavior.Strict);
             mockIndicator = new Mock<IIndicatorLogic>(MockBehavior.Strict);
             mockUserAreaLogic = new Mock<IUserAreaLogic>(MockBehavior.Strict);
-            mockImport = new Mock<IIndicatorImportLogic>(MockBehavior.Strict);
-            controller = new AreasController(mockArea.Object, mockUserAreaLogic.Object, mockIndicator.Object, 
-                mockImport.Object);
+            controller = new AreasController(mockArea.Object, mockUserAreaLogic.Object, mockIndicator.Object);
         }
 
         [TestCleanup]
@@ -39,7 +36,6 @@ namespace IndicatorsManager.WebApi.Test
             mockArea.VerifyAll();
             mockIndicator.VerifyAll();
             mockUserAreaLogic.VerifyAll();
-            mockImport.VerifyAll();
         }
 
         [TestMethod]
