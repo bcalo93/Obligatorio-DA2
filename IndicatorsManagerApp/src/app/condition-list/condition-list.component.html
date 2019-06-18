@@ -14,11 +14,19 @@
     </div>
     <div class="box p-0 m-0">
       <div class="row item-row item-row-created p-0 m-0" *ngFor="let item of conditions">
-            <div class="col"><span>{{item.name}}</span></div>
+            <div class="col" [ngSwitch]="getValue(item.result.conditionResult)">
+              <span>{{item.name}}</span><mat-icon class="ml-4 mt-4" matTooltip="{{item.result.conditionToString}}">visibility</mat-icon>
+              <mat-icon class="ml-4 mt-4" matTooltip="Your condition has this error: {{item.result.conditionResult}}" 
+                *ngSwitchCase="'string'">error_outline</mat-icon>
+              <mat-icon class="ml-4 mt-4" *ngSwitchCase="'true'" matTooltip="The condition is active">notifications_active</mat-icon>
+              <mat-icon class="ml-4 mt-4" *ngSwitchCase="'false'" matTooltip="The condition is momentarily deactivated">notifications_none</mat-icon>
+            </div>
             <div class="col-2">
-              <button mat-fab class="icon-button" color="warn" (click)="deleteCondition(item.id)">
-                <mat-icon>delete</mat-icon>
-              </button> 
+                <div class="row action-row p-0 m-0">
+                    <button mat-fab class="icon-button" color="warn" (click)="deleteCondition(item.id)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div> 
             </div>
         </div>
     </div>
