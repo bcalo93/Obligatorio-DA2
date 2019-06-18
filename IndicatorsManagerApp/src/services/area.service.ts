@@ -51,9 +51,9 @@ export class AreaService {
       .pipe(catchError((error: HttpErrorResponse) => throwError(error.error || 'Server Error')));
   }
 
-  addManagerToArea(areaId: string): Observable<Area> {
+  addManagerToArea(areaId: string, userId: string): Observable<Area> {
     const url = `${environment.apiEndpoint}/areas/${areaId}/userarea`;
-    const body = JSON.stringify(areaId);
+    const body = JSON.stringify(userId);
     const options = this.utilsService.getOptions();
     return this.http.post<Area>(url, body, options)
       .pipe(catchError((error: HttpErrorResponse) => throwError(error.error || 'Server Error')));
