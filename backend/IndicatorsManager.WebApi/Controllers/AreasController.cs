@@ -20,15 +20,12 @@ namespace IndicatorsManager.WebApi.Controllers
         private ILogic<Area> areaLogic;
         private IIndicatorLogic indicatorLogic;
         private IUserAreaLogic uaLogic;
-        private IIndicatorImportLogic importLogic;
 
-        public AreasController(ILogic<Area> areaLogic, IUserAreaLogic uaLogic, IIndicatorLogic indicatorLogic,
-            IIndicatorImportLogic importLogic) : base()
+        public AreasController(ILogic<Area> areaLogic, IUserAreaLogic uaLogic, IIndicatorLogic indicatorLogic) : base()
         {
             this.areaLogic = areaLogic;
             this.uaLogic = uaLogic;
             this.indicatorLogic = indicatorLogic;
-            this.importLogic = importLogic;
         }
         
         [ProtectFilter(Role.Admin)]
