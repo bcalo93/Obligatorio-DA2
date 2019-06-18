@@ -151,8 +151,9 @@ export class ChecklistDatabase {
       }
     } else {
       const parentComponent = new ConditionModel();
-      parentComponent.conditionType = node.operator;
-      parentComponent.components = node.children.map((item, pos) => this.buildModel(item, pos));
+      parentComponent.conditionType = node.operator || 'And';
+      parentComponent.components = 
+        node.children.map((item, pos) => this.buildModel(item, pos)).filter(x => x !== null);
       return parentComponent;
     }
   }
@@ -310,7 +311,7 @@ export class ConditionEditComponent implements AfterViewInit{
     if (!!event.nodeType) {
       newNode.type = event.nodeType;
     }
-    if (!!event.value) {
+    if (typeof event.value !== 'undefined') {
       newNode.value = event.value;
     }
     return newNode;
@@ -334,18 +335,13 @@ export class ConditionEditComponent implements AfterViewInit{
     const itemIndicator = new IndicatorItem();
     itemIndicator.name = this.conditionName.value;
     itemIndicator.condition = condition;
-    console.log(itemIndicator);
-    console.log(JSON.stringify(itemIndicator));
-    // console.log('IS VALID TEST',itemIndicator.condition.isValid());
     const indicatorId = this.router.url.split('/')[2];
     this.indicatorService.addIndicatorItem(indicatorId, itemIndicator)
       .subscribe(
         response => {
-          console.log(response);
           this.router.navigate(['indicator', indicatorId ]);
         },
         error => {
-          console.log(error)
           this.errorMessage = error;
         }
       );
