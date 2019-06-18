@@ -7,7 +7,7 @@
       <div class="row wrapper">
         <mat-card-title class="title mb-5">Edit indicator name</mat-card-title>
         <mat-form-field>
-          <input matInput placeholder="Indicator name" [formControl]="name" (keyup.enter)="name.invalid ? null : save()">
+          <input matInput placeholder="Indicator name" [formControl]="name" (keyup.enter)="name.invalid ? null : updateIndicator()">
           <mat-error *ngIf="name.invalid">Indicator name is <strong>required</strong></mat-error>
         </mat-form-field>
       </div>
