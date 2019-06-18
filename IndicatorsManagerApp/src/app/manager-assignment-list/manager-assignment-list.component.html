@@ -1,0 +1,67 @@
+<mat-card>
+    <div class="row mt-5">
+      <div class="col-10">
+          <mat-card-title class="ml-5">Selected Area: {{areaSelected.name}}</mat-card-title>
+      </div>
+      <div class="col-2">
+          <button mat-raised-button (click)="goBack()">Back</button>
+      </div>
+
+      <div class="row wrapper mt-4">
+        <button mat-raised-button color="primary" class="kkk" (click)="updateArea()">Update Managers</button>
+      </div>
+      </div>
+
+      <div class="row wrapper">
+          <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
+      </div>
+</mat-card>
+
+    <div class="row">
+        <div class="col example-container">
+            <h2 class="title">All Managers</h2>
+            
+        </div>
+        <div class="col example-container">
+          <div class="row">
+            <div class="col-8">
+                <h2 class="title">Assigned Managers</h2>
+
+            </div>
+            <div class="col">
+                <button mat-fab class="icon-button" color="warn"
+                [disabled]="currentAssignedManagers.length === 0"                   
+                  (click)="removeAll()">
+                    <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+
+          </div>
+        </div>
+    </div>
+
+    <div class="box row" cdkDropListGroup>
+        <div class="col example-container ml-5 mr-5">
+        <div
+          cdkDropList
+          [cdkDropListData]="allManagers"
+          class="example-list"
+          (cdkDropListDropped)="drop($event)">
+          <div class="col example-box" *ngFor="let item of allManagers" cdkDrag>
+            {{item.name}} {{item.lastName}} - {{item.username}} - {{item.email}}
+          </div>
+        </div>
+      </div>
+      <div class="col example-container ml-5 mr-5">
+        <div
+          cdkDropList
+          [cdkDropListData]="assignedManagers"
+          class="example-list"
+          (cdkDropListDropped)="drop($event)">
+          <div class="example-box" *ngFor="let item of assignedManagers">
+              {{item.name}} {{item.lastName}} - {{item.username}} - {{item.email}}
+          </div>
+        </div>
+      </div>  
+    </div>
+
