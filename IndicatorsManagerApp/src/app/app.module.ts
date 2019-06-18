@@ -25,7 +25,8 @@ import {
   MatTableModule,
   MatTreeModule,
   MatDatepickerModule,
-  MatNativeDateModule
+  MatNativeDateModule,
+  MatTooltipModule
 
 } from '@angular/material';
 
@@ -92,6 +93,7 @@ import { AreaListComponent } from './area-list/area-list.component';
     MatTreeModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatTooltipModule
   ],
   providers: [],
   bootstrap: [AppComponent],
