@@ -11,6 +11,7 @@ import { AreaEditComponent } from './area-edit/area-edit.component';
 import { ManagerAssignmentComponent } from './manager-assignment/manager-assignment.component';
 import { IndicatorEditComponent } from './indicator-edit/indicator-edit.component';
 import { AreaListComponent } from './area-list/area-list.component';
+import { ManagerAssignmentListComponent } from './manager-assignment-list/manager-assignment-list.component';
 
 const routes: Routes = [
   { path: '', component: HomeManagerComponent, canActivate: [AuthGuard] },
@@ -23,6 +24,8 @@ const routes: Routes = [
   { path: 'areas', component: AreaListComponent },
   { path: 'areas/add', component: AreaEditComponent },
   { path: 'areas/managers', component: ManagerAssignmentComponent },
+  { path: 'areas/managers/:id', component: ManagerAssignmentListComponent },
+
 
   { path: 'areas/:id', component: AreaEditComponent },
 
