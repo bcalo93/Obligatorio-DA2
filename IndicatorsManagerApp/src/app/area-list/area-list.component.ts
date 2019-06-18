@@ -19,7 +19,7 @@ export class AreaListComponent implements OnInit {
   ngOnInit() {
     this.areaService.getAllAreas()
       .subscribe(
-        areas => this.areas = areas,
+        areas => this.areas = areas.reverse(),
         error => this.errorMessage = error
       );
   }
