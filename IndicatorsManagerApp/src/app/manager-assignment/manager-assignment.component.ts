@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { AreaService } from 'src/services';
+import { User, Area } from 'src/models';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-manager-assignment',
@@ -8,41 +10,25 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 })
 export class ManagerAssignmentComponent implements OnInit {
 
-  todo = [
-    'Get to work',
-    'Pick up groceries',
-    'Go home',
-    'Fall asleep'
-  ];
+  allAreas: Array<Area>;
+  selectedArea: Area;
 
-  done = [
-    'Get up',
-    'Brush teeth',
-    'Take a shower',
-    'Check e-mail',
-    'Walk dog'
-  ];
+  allManagers: Array<User>;
 
-  constructor() { }
+  assignedManagers: Array<User>;
+
+  errorMessage = '';
+
+  constructor(private areaService: AreaService, private router: Router) { }
 
   ngOnInit() {
+    this.areaService.getAllAreas().subscribe(
+      areas => this.allAreas = areas.reverse(),
+      error => this.errorMessage = error
+    );
   }
 
-
-
-  drop(event: CdkDragDrop<string[]>) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else {
-      transferArrayItem(event.previousContainer.data,
-                        event.container.data,
-                        event.previousIndex,
-                        event.currentIndex);
-    }
+  areaSelection() {
+    this.router.navigate(['areas/managers', this.selectedArea]);
   }
-
-  showList(done: any) {
-    console.log(done);
-  }
-
 }
