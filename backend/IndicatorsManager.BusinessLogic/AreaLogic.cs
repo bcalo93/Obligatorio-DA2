@@ -63,9 +63,9 @@ namespace IndicatorsManager.BusinessLogic
         public Area Update(Guid id, Area newArea)
         {
             ThrowErrorIfInvalid(newArea);
-            CheckForEqualName(newArea);
             Area area = repository.Get(id);
             ThrowErrorIfInvalid(area);
+            CheckForEqualName(area, newArea);
             area.Update(newArea);
             repository.Update(area);
             repository.Save();
@@ -122,10 +122,19 @@ namespace IndicatorsManager.BusinessLogic
             }
         }
 
-        private void CheckForEqualName(Area area)
+        private void CheckForEqualName(Area newArea)
         {
-            Area areaNameCheck = this.query.GetByName(area.Name);
-            if(areaNameCheck != null && areaNameCheck.Id != area.Id)
+            Area areaNameCheck = this.query.GetByName(newArea.Name);
+            if(areaNameCheck != null)
+            {
+                throw new EntityExistException("Area name already exist.");
+            }
+        } 
+
+        private void CheckForEqualName(Area found, Area newArea)
+        {
+            Area areaNameCheck = this.query.GetByName(newArea.Name);
+            if(areaNameCheck != null && found.Id != areaNameCheck.Id)
             {
                 throw new EntityExistException("Area name already exist.");
             }
