@@ -1,6 +1,11 @@
-<h1 mat-dialog-title>{{data.currentUser.header}}</h1>
+<ng-container *ngIf="data.currentUser; else elseTemplate">
+    <h1 mat-dialog-title>Hi {{data.currentUser.username}},</h1>
+</ng-container>
+<ng-template #elseTemplate>
+    <h1 mat-dialog-title>{{data.header}}</h1>
+</ng-template>
 <div mat-dialog-content>
-  <p>{{data.message}}</p>
+  <p [innerHTML]="data.message"></p>
 </div>
 <ng-container *ngIf="data.showInput; else confirmationOnly">
   <mat-form-field style="width: 100% !important">
@@ -14,9 +19,10 @@
   </div>
 </ng-container>
 <ng-template #confirmationOnly>
-    <div mat-dialog-actions>
+    <div mat-dialog-actions align="center">
         <button mat-button (click)="onNoClick()">Back</button>
         <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Yes</button>
     </div>
 </ng-template>
+
 
