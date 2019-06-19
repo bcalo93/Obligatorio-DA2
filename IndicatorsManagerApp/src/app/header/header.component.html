@@ -6,7 +6,7 @@
   </div>
   <div *ngIf="isManagerLoggedIn()">
     <button mat-button routerLink="/">Active Indicators</button>
-    <button mat-button routerLink="/indicators/config">My Indicators</button>
+    <button mat-button routerLink="/indicator/config">My Indicators</button>
   </div>
   <div class="btn-logout mr-4">
     <button mat-button [disabled]="currentUser.role === 'Manager'" routerLink="/users/{{currentUser.id}}">{{currentUser.name}} {{currentUser.lastName}}</button>
