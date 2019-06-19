@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\IndicatorsManager.IndicatorImporter.Json\IndicatorsManager.IndicatorImporter.Json.csproj" />
     <ProjectReference Include="..\IndicatorsManager.IndicatorImporter.Interface\IndicatorsManager.IndicatorImporter.Interface.csproj" />
+    <ProjectReference Include="..\IndicatorsManager.IndicatorImporter.Xml\IndicatorsManager.IndicatorImporter.Xml.csproj" />
   </ItemGroup>
 
 </Project>

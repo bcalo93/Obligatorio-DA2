@@ -497,6 +497,43 @@ namespace IndicatorsManager.BusinessLogic.Test
         }
 
         [TestMethod]
+        public void UpdateAreaDataSourceOnlyTest()
+        {
+            Guid expectedId = Guid.NewGuid();
+	        string name = "Test Name";
+            Area getResult = new Area
+            {
+                Id = expectedId,
+                Name = name,
+                DataSource = "Test DataSource"
+            };
+
+            Area update = new Area
+            {
+                Name = name,
+                DataSource = "Test DataSource Changed"
+            };
+
+            var mockQuery = new Mock<IAreaQuery>(MockBehavior.Strict);
+            mockQuery.Setup(m => m.GetByName(It.IsAny<string>())).Returns(getResult);
+
+            var mockUserRepo = new Mock<IRepository<User>>(MockBehavior.Strict);
+
+            var mockRepo = new Mock<IRepository<Area>>(MockBehavior.Strict);
+            mockRepo.Setup(m => m.Get(expectedId)).Returns(getResult);
+            mockRepo.Setup(m => m.Update(It.IsAny<Area>()));
+            mockRepo.Setup(m => m.Save());
+            
+            ILogic<Area> logic = new AreaLogic(mockRepo.Object, mockUserRepo.Object, mockQuery.Object);
+            Area result = logic.Update(expectedId, update);
+
+            mockRepo.VerifyAll();
+            Assert.AreEqual(getResult.Id, result.Id);
+            Assert.AreEqual(getResult.Name, result.Name);
+            Assert.AreEqual("Test DataSource Changed", result.DataSource);
+        }
+
+        [TestMethod]
         public void AddAreaManagerOkTest()
         {
             Guid areaId = Guid.NewGuid();
