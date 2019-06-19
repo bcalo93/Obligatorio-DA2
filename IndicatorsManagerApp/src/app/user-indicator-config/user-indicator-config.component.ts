@@ -48,22 +48,29 @@ export class UserIndicatorConfigComponent implements OnInit {
 
 
   drop(event: CdkDragDrop<any>) {
-    const aux = [...this.indicators];
-    const newList = Array<IndicatorConfig>();
-    aux.reverse().forEach(
-      (item, index) => {
-        const newItem = new IndicatorConfig(item);
-        newItem.setPosition(index);
-        newList.push(newItem);
-      }
-    );
-    this.userService.updateIndicatorConfiguration(newList)
-    .subscribe(
-      () => {
-        console.log('newList', newList);
-        moveItemInArray(aux, event.previousIndex, event.currentIndex);
-      },
-    );
+    if (event.previousIndex !== event.currentIndex) {
+      moveItemInArray(this.indicators, event.previousIndex, event.currentIndex);
+      const newList = Array<IndicatorConfig>();
+      const aux = [...this.indicators].map((item, index) => {
+        const newIndicatorConfig = {
+          indicatorId: item.id,
+          position: index,
+          isVisible: item.isVisible,
+          alias: (item.alias) ? item.alias : item.name
+        };
+        return newIndicatorConfig;
+      });
+      this.userService.updateIndicatorConfiguration(aux as Array<IndicatorConfig>)
+      .subscribe(
+        () => {
+          console.log('newList', newList);
+        },
+        error => {
+          moveItemInArray(this.indicators, event.currentIndex, event.previousIndex);
+          this.errorMessage = error;
+        }
+      );
+    }
   }
 
   getName(item: any) {
@@ -116,6 +123,7 @@ export class UserIndicatorConfigComponent implements OnInit {
           alias: result
         };
         const updateConfig = new IndicatorConfig(newIndicatorConfig as IndicatorConfig);
+        debugger
         const aux = new Array<IndicatorConfig>();
         aux.push(updateConfig);
         console.log(aux);
@@ -132,7 +140,7 @@ export class UserIndicatorConfigComponent implements OnInit {
   }
 
 
-  openHelp(){
+  openHelp() {
     this.dialog.open(DialogComponent, {
       width: '400px',
       height: '300px',

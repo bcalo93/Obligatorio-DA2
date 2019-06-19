@@ -1,3 +1,5 @@
+const MAX_INT =  2147483647;
+
 export class IndicatorConfig {
     indicatorId: string;
     position: number;
@@ -7,7 +9,7 @@ export class IndicatorConfig {
     constructor(indicatorConfig: IndicatorConfig) {
       this.indicatorId = indicatorConfig.indicatorId;
       this.isVisible = indicatorConfig.isVisible;
-      this.position = (indicatorConfig.position) ? indicatorConfig.position : 0;
+      this.position = (typeof indicatorConfig.position !== 'undefined') ? indicatorConfig.position : MAX_INT;
       this.alias = indicatorConfig.alias;
     }
 
