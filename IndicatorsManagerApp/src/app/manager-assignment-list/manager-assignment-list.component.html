@@ -1,7 +1,7 @@
 <mat-card>
-    <div class="row mt-5">
+    <div class="row mt-4">
       <div class="col-10">
-          <mat-card-title class="ml-5">Selected Area: {{areaSelected.name}}</mat-card-title>
+          <h3 class="ml-5 mt-1 title">Selected Area: {{areaSelected.name}}</h3>
       </div>
       <div class="col-2">
           <button mat-raised-button (click)="goBack()">Back</button>
@@ -14,12 +14,12 @@
 
     <div class="row">
         <div class="col example-container p-0 m-0 mt-2">
-            <h3 class="title ">All Managers</h3>
+            <mat-card-title class="mt-2 title">All Managers</mat-card-title>
         </div>
         <div class="col example-container p-0 m-0 ml-2 mt-2">
           <div class="row">
             <div class="col-9">
-                <h3 class="title">Assigned Managers</h3>
+                <mat-card-title class="mt-2 title">Assigned Managers</mat-card-title>
             </div>
             <div class="col-2">
                 <button mat-fab class="icon-button" color="warn"
