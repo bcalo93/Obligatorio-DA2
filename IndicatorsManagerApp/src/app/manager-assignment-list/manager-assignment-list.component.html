@@ -6,27 +6,20 @@
       <div class="col-2">
           <button mat-raised-button (click)="goBack()">Back</button>
       </div>
-
-      <div class="row wrapper mt-4">
-        <button mat-raised-button color="primary" class="kkk" (click)="updateArea()">Update Managers</button>
-      </div>
-      </div>
-
+    </div>
       <div class="row wrapper">
           <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
       </div>
 </mat-card>
 
     <div class="row">
-        <div class="col example-container">
-            <h2 class="title">All Managers</h2>
-            
+        <div class="col example-container p-0 m-0 mt-2">
+            <h2 class="title ">All Managers</h2>
         </div>
-        <div class="col example-container">
+        <div class="col example-container p-0 m-0 ml-2 mt-2">
           <div class="row">
-            <div class="col-8">
+            <div class="col-9">
                 <h2 class="title">Assigned Managers</h2>
-
             </div>
             <div class="col">
                 <button mat-fab class="icon-button" color="warn"
@@ -41,25 +34,27 @@
     </div>
 
     <div class="box row" cdkDropListGroup>
-        <div class="col example-container ml-5 mr-5">
+        <div class="col example-container mt-1 ml-5 mr-5">
         <div
+          style="height: 80%"
           cdkDropList
           [cdkDropListData]="allManagers"
           class="example-list"
           (cdkDropListDropped)="drop($event)">
-          <div class="col example-box" *ngFor="let item of allManagers" cdkDrag>
-            {{item.name}} {{item.lastName}} - {{item.username}} - {{item.email}}
+          <div class="col example-box title" *ngFor="let item of allManagers" cdkDrag>
+            {{item.name}} {{item.lastName}} - ({{item.username}})
           </div>
         </div>
       </div>
-      <div class="col example-container ml-5 mr-5">
+      <div class="col example-container mt-1 ml-5 mr-5">
         <div
+          style="height: 100%"
           cdkDropList
           [cdkDropListData]="assignedManagers"
           class="example-list"
           (cdkDropListDropped)="drop($event)">
-          <div class="example-box" *ngFor="let item of assignedManagers">
-              {{item.name}} {{item.lastName}} - {{item.username}} - {{item.email}}
+          <div class="col example-box title" *ngFor="let item of assignedManagers">
+              {{item.name}} {{item.lastName}} - ({{item.username}})
           </div>
         </div>
       </div>  

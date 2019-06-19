@@ -60,38 +60,26 @@ export class ManagerAssignmentListComponent implements OnInit {
   }
 
 
-  drop(event: CdkDragDrop<Array<Area>>) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else {
-      transferArrayItem(event.previousContainer.data,
-                        event.container.data,
-                        event.previousIndex,
-                        event.currentIndex);
+  drop(event: CdkDragDrop<Array<User>>) {
+    const managers = event.previousContainer.data;
+    const actualManager = managers[event.previousIndex];
+    if (event.previousContainer !== event.container) {
+      this.areaService.addManagerToArea(this.areaId, actualManager.id)
+      .subscribe(
+        response => {
+          console.log(response);
+          this.currentAssignedManagers = [...response.users]
+          transferArrayItem(event.previousContainer.data,
+            event.container.data,
+            event.previousIndex,
+            event.currentIndex);
+        },
+        error => console.log(error)
+      );
     }
   }
 
-  updateArea() {
-    console.log(this.assignedManagers);
-    if (this.assignedManagers.length === 0) {
-      this.errorMessage = 'Drag & Drop some manager to the asigned manager area';
-    } else {
-      console.log('ASSIGNED USERS',this.assignedManagers)
-      this.assignedManagers.forEach(user => {
-          console.log('EACH USER',user)
-          console.log('CURRENT ASSIGNED MANAGERS',this.currentAssignedManagers)
-          console.log(!this.currentAssignedManagers.some(x => x.id === user.id))
-          if (!this.userIsAlreadyAssigned(user)) {
-            this.areaService.addManagerToArea(this.areaId, user.id).subscribe(
-              response => console.log(response),
-              error => console.log(error)
-            );
-          }
-        });
-      }
-  }
-
-  private userIsAlreadyAssigned(user: User): boolean{
+  private userIsAlreadyAssigned(user: User): boolean {
     return this.currentAssignedManagers.some(x => x.id === user.id);
   }
 
@@ -111,6 +99,7 @@ export class ManagerAssignmentListComponent implements OnInit {
             this.areaService.deleteManagerFromArea(this.areaId, item.id).subscribe()
           );
           this.assignedManagers = [];
+          this.currentAssignedManagers = [];
       }
     });
   }
