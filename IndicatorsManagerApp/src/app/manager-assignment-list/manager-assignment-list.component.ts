@@ -37,10 +37,8 @@ export class ManagerAssignmentListComponent implements OnInit {
       response => {
         const area = response;
         this.areaSelected = area;
-        console.log(area);
         this.assignedManagers = [...area.users];
         this.currentAssignedManagers = [...area.users];
-        console.log('CURRENT ASSIGNED MANAGERS', this.currentAssignedManagers)
         this.userService.getAllUsers()
         .subscribe(
           users => {
@@ -51,7 +49,6 @@ export class ManagerAssignmentListComponent implements OnInit {
             } else {
               this.allManagers = [...managers];
             }
-            console.log('ALL MANAGERS',this.allManagers);
           },
           error => this.errorMessage = error
         );
@@ -68,7 +65,6 @@ export class ManagerAssignmentListComponent implements OnInit {
       this.areaService.addManagerToArea(this.areaId, actualManager.id)
       .subscribe(
         response => {
-          console.log(response);
           this.currentAssignedManagers = [...response.users]
           transferArrayItem(event.previousContainer.data,
             event.container.data,
