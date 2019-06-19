@@ -4,16 +4,14 @@ export class IndicatorConfig {
     isVisible: boolean;
     alias: string;
 
-    constructor(indicatorConfig: any) {
-      this.indicatorId = indicatorConfig.id;
-      if (indicatorConfig.alias) {
-        this.alias = indicatorConfig.alias;
-      } else { this.alias = indicatorConfig.name; }
+    constructor(indicatorConfig: IndicatorConfig) {
+      this.indicatorId = indicatorConfig.indicatorId;
       this.isVisible = indicatorConfig.isVisible;
-      this.position = indicatorConfig.position;
+      this.position = (indicatorConfig.position) ? indicatorConfig.position : 0;
+      this.alias = indicatorConfig.alias;
     }
 
-    setPosition(position: number){
+    setPosition(position: number) {
       this.position = position;
     }
 
