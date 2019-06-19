@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import { User, Indicator } from 'src/models';
 import { UserService, AuthService } from 'src/services';
-import { IndicatorConfig } from 'src/models/indicatorConfig';
 import { MatDialog } from '@angular/material';
 import { DialogComponent } from '../dialog/dialog.component';
 import { IndicatorService } from 'src/services/indicator.service';
+
+const helpMessage = 'In this section you will see:' +
+ '<ul style="list-style: none;">' +
+ '<li><span>&#10003;</span> <strong>Active</strong> indicators with current configuration</li>' +
+ '<li><span>&#10003;</span> <strong>Colour</strong> of the condition which activate the indicator</li>' +
+ '<li><span>&#10003;</span> <strong>Condition</strong> evaluated in plain text</li>' +
+ '</ul>';
 
 @Component({
   selector: 'app-user-indicator-active',
@@ -51,6 +55,7 @@ export class UserIndicatorActiveComponent implements OnInit {
   }
 
   openInformation(item: any) {
+    debugger
     let message = '';
     this.indicatorService.getIndicator(item.id).subscribe(
       response => {
@@ -73,8 +78,14 @@ export class UserIndicatorActiveComponent implements OnInit {
     });
   }
 
-
+  openHelp() {
+    this.dialog.open(DialogComponent, {
+      width: '500px',
+      height: '300px',
+      data: {
+        message: helpMessage,
+        currentUser: this.authService.getCurrentUser(),
+      }
+    });
+  }
 }
-
-
-

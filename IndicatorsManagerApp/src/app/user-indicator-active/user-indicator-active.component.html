@@ -9,15 +9,22 @@
     </div>
   </ng-container>
   <ng-template #elseTemplate>
-    <div class="row wrapper">
-        <h2 class="mt-4 title">My Active Indicators</h2>
-        <div class="col-2">
-            <button mat-icon-button (click)="openInformation(item)">
-                <mat-icon matTooltip="Information about indicator">info</mat-icon>
-            </button>
+    <div class="container">
+        <div class="row pl-5 mt-4">
+          <div class="col-9">
+              <h2 class="title pt-1 pl-5">My Active Indicators</h2>
+          </div>
+          <div class="col-2 m-0 p-0">
+              <button class="icon" mat-icon-button (click)="openHelp()">
+                  <mat-icon class="mb-3" matTooltip="Click here to see configuration features">help</mat-icon>
+              </button>
+          </div>
         </div>
-        <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
-    </div>
+      </div>
+      <div class="row wrapper">
+          <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
+      </div>
+
     <div class="container">
       <div class="example-container wrapper">  
           <div class="example-list">
@@ -26,13 +33,13 @@
                 <span>{{getName(item)}}</span>
               </div>
               <div class="col-2">
-                  <button mat-icon-button (click)="openInformation(item)">
-                      <mat-icon matTooltip="Information about indicator">info</mat-icon>
+                  <button class="icon-hover" mat-icon-button (click)="openInformation(item)">
+                      <mat-icon class="mb-3" matTooltip="Information about indicator">info</mat-icon>
                   </button>
               </div>
               <div class="col-2">
                 <button mat-icon-button >
-                  <mat-icon matTooltip="Colour of your active condition"
+                  <mat-icon class="mb-3" matTooltip="Colour of your active condition"
                     [ngStyle]="{'color': getColour(item)}" 
 
                     >notifications</mat-icon>
