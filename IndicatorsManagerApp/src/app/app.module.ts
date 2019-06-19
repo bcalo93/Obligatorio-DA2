@@ -51,6 +51,7 @@ import { ConditionListComponent } from './condition-list/condition-list.componen
 import { AreaListComponent } from './area-list/area-list.component';
 import { ManagerAssignmentListComponent } from './manager-assignment-list/manager-assignment-list.component';
 import { DialogComponent } from './dialog/dialog.component';
+import { NoDataComponent } from './no-data/no-data.component';
 
 @NgModule({
   declarations: [
@@ -72,6 +73,7 @@ import { DialogComponent } from './dialog/dialog.component';
     AreaListComponent,
     ManagerAssignmentListComponent,
     DialogComponent,
+    NoDataComponent,
   ],
   imports: [
     BrowserModule,
