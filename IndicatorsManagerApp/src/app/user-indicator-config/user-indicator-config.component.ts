@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import { User } from 'src/models';
+import { UserService } from 'src/services';
 
 @Component({
   selector: 'app-user-indicator-config',
@@ -8,41 +10,26 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag
 })
 export class UserIndicatorConfigComponent implements OnInit {
 
-  todo = [
-    'Get to work',
-    'Pick up groceries',
-    'Go home',
-    'Fall asleep'
-  ];
+  indicators = new Array<User>();
+  errorMessage = '';
 
-  done = [
-    'Get up',
-    'Brush teeth',
-    'Take a shower',
-    'Check e-mail',
-    'Walk dog'
-  ];
-
-  constructor() { }
+  constructor(private userService: UserService) { }
 
   ngOnInit() {
+    this.userService.getManagerIndicators().subscribe(
+      response => {
+        console.log(response);
+        if (response.length === 0) {
+          this.errorMessage = 'Currently you are not assigned to any area, or the area to which you are assigned does not have any associated information yet. Please contact with your administrator for more information.'
+        }
+      },
+      error => this.errorMessage = error
+    );
   }
-
 
 
   drop(event: CdkDragDrop<string[]>) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else {
-      transferArrayItem(event.previousContainer.data,
-                        event.container.data,
-                        event.previousIndex,
-                        event.currentIndex);
-    }
-  }
-
-  showList(done: any) {
-    console.log(done);
+    moveItemInArray(this.indicators, event.previousIndex, event.currentIndex);
   }
 
 }

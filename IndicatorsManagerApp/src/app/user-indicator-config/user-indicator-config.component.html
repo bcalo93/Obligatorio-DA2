@@ -1,28 +1,23 @@
-<div cdkDropListGroup>
-  <div class="example-container">
-    <h2>To do</h2>
-
-    <div
-      cdkDropList
-      [cdkDropListData]="todo"
-      class="example-list"
-      (cdkDropListDropped)="drop($event)">
-      <div class="example-box" *ngFor="let item of todo" cdkDrag>{{item}}</div>
+<ng-container *ngIf="indicators.length === 0; else elseTemplate">
+  <div class="row wrapper">
+    <div class="row wrapper">
+      <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
     </div>
   </div>
-
-  <div class="example-container">
-    <h2>Done</h2>
-
-    <div
-      cdkDropList
-      [cdkDropListData]="done"
-      class="example-list"
-      (cdkDropListDropped)="drop($event)">
-      <div class="example-box" *ngFor="let item of done" cdkDrag>{{item}}</div>
+  <div class="img-container">
+    <img src="../assets/no-data.png">
+  </div>
+</ng-container>
+<ng-template #elseTemplate>
+  <div class="row wrapper">
+      <h2 class="title">My Indicators</h2>
+      <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
+  </div>
+  <div class="example-container">  
+    <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+      <div class="example-box" *ngFor="let movie of movies" cdkDrag>{{movie}}</div>
     </div>
   </div>
+</ng-template>
 
-  <button mat-raised-button color="primary" (click)="showList(done)">Show Done List</button>
-
-</div>
+  
