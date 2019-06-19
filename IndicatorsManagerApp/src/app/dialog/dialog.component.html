@@ -15,13 +15,13 @@
  
   <div mat-dialog-actions>
       <button mat-button (click)="onNoClick()">Cancel</button>
-      <button mat-button [mat-dialog-close]="name.value" [disabled]="name.invalid" cdkFocusInitial>Save</button>
+      <button mat-button [mat-dialog-close]="name.value" [disabled]="name.invalid">Save</button>
   </div>
 </ng-container>
 <ng-template #confirmationOnly>
     <div mat-dialog-actions align="center">
         <button mat-button (click)="onNoClick()">Back</button>
-        <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Yes</button>
+        <button mat-button [mat-dialog-close]="true">Yes</button>
     </div>
 </ng-template>
 
