@@ -5,6 +5,7 @@ import { UserService, AuthService } from 'src/services';
 import { IndicatorConfig } from 'src/models/indicatorConfig';
 import { MatDialog } from '@angular/material';
 import { DialogComponent } from '../dialog/dialog.component';
+import { IndicatorService } from 'src/services/indicator.service';
 
 @Component({
   selector: 'app-user-indicator-active',
@@ -20,16 +21,16 @@ export class UserIndicatorActiveComponent implements OnInit {
   constructor(
     private userService: UserService,
     private authService: AuthService,
+    private indicatorService: IndicatorService,
     public dialog: MatDialog) { }
 
   ngOnInit() {
-    this.userService.getManagerIndicators().subscribe(
+    this.userService.getManagerActiveIndicators().subscribe(
       response => {
         console.log(response);
         if (response.length === 0) {
           this.errorMessage =
-          'Currently you are not assigned to any area, ' +
-          'or the area to which you are assigned does not have any associated information yet. ' +
+          'Currently you do not have active indicators.' +
           'Please contact with your administrator for more information.';
         } else {
           this.indicators = response;
@@ -49,18 +50,31 @@ export class UserIndicatorActiveComponent implements OnInit {
     return item.items[0].name;
   }
 
-  openInformation(){
-    const dialogRef = this.dialog.open(DialogComponent, {
+  openInformation(item: any) {
+    let message = '';
+    this.indicatorService.getIndicator(item.id).subscribe(
+      response => {
+        const itemId = item.items[0].id;
+        message = (response.itemsResult as Array<any>)
+                  .find(x => x.id === itemId).result.conditionToString;
+      },
+      () => this.openDialog('Currently the condition result is unavailable.')
+    );
+  }
+
+  openDialog(message: string) {
+    this.dialog.open(DialogComponent, {
       width: '500px',
       height: '500px',
       data: {
         header: 'The actual condition detail: ',
-        message: 'The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:The actual condition detail:',
-        currentUser: this.authService.getCurrentUser()
+        message,
       }
     });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {}});
   }
+
+
 }
+
+
+

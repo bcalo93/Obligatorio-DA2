@@ -11,15 +11,22 @@
   <ng-template #elseTemplate>
     <div class="row wrapper">
         <h2 class="mt-4 title">My Active Indicators</h2>
+        <div class="col-2">
+            <button mat-icon-button (click)="openInformation(item)">
+                <mat-icon matTooltip="Information about indicator">info</mat-icon>
+            </button>
+        </div>
         <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
     </div>
     <div class="container">
       <div class="example-container wrapper">  
           <div class="example-list">
             <div class="example-box pl-5 pr-5" *ngFor="let item of indicators">
-              <div class="col" [ngStyle]="{'color': getColour(item)}" >{{getName(item)}}</div>
+              <div class="col" [ngStyle]="{'color': getColour(item)}">
+                <span>{{getName(item)}}</span>
+              </div>
               <div class="col-2">
-                  <button mat-icon-button (click)="openInformation()">
+                  <button mat-icon-button (click)="openInformation(item)">
                       <mat-icon matTooltip="Information about indicator">info</mat-icon>
                   </button>
               </div>
