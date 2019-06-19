@@ -25,7 +25,7 @@ namespace IndicatorsManager.BusinessLogic.Visitors
 
         public string VisitItemDate(ItemDate date)
         {
-            return date.Date.ToString();
+            return date.Date.ToString("dd/MM/yyyy");
         }
 
         public string VisitItemNumeric(ItemNumeric numeric)
