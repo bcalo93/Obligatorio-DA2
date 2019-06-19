@@ -32,3 +32,13 @@ button:focus {
     font-weight: bold !important;
     color: #fafafa;
 }
+
+.img-container{
+    width: 68% !important;
+    margin: auto !important;
+  }
+  
+  .img-container img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
