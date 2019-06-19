@@ -66,7 +66,7 @@ export class UserService {
   }
 
   updateIndicatorConfiguration(indicatorsConfig: Array<IndicatorConfig> ): Observable<User> {
-    const url = `${environment.apiEndpoint}/indicators/indicatorconfig`;
+    const url = `${environment.apiEndpoint}/users/indicatorconfig`;
     const options = this.utilsService.getOptions();
     return this.http.post<User>(url, indicatorsConfig, options)
     .pipe(catchError((error: HttpErrorResponse) => throwError(error.error || 'Server Error')));
