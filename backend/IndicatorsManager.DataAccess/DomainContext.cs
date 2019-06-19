@@ -15,7 +15,6 @@ namespace IndicatorsManager.DataAccess
         public DbSet<Component> Components { get; set; }
         public DbSet<Condition> Conditions { get; set; }
         public DbSet<AuthenticationToken> AuthTokens { get; set; }
-        public DbSet<Log> Logger { get; set; }
 
         public DomainContext(DbContextOptions options) : base(options) { }
 
@@ -35,6 +34,9 @@ namespace IndicatorsManager.DataAccess
             modelBuilder.Entity<UserIndicator>().HasOne(ua => ua.Indicator).WithMany(a => a.UserIndicators).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<UserIndicator>().HasOne(ua => ua.User).WithMany(u => u.UserIndicators).OnDelete(DeleteBehavior.Cascade);
 
+            // Area model
+            modelBuilder.Entity<Indicator>().HasOne(i => i.Area).WithMany(a => a.Indicators).OnDelete(DeleteBehavior.Cascade);
+            
             // Indicator Item model
            modelBuilder.Entity<IndicatorItem>().HasOne(ii => ii.Indicator).WithMany(i => i.IndicatorItems).OnDelete(DeleteBehavior.Cascade);
 

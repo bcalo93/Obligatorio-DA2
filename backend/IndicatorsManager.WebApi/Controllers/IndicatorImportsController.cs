@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using IndicatorsManager.BusinessLogic.Interface;
 using IndicatorsManager.WebApi.Models;
@@ -25,13 +26,13 @@ namespace IndicatorsManager.WebApi.Controllers
             return Ok(this.importLogic.GetIndicatorImporters());
         }
 
-        [ProtectFilter(Role.Admin)]
         [HttpPost]
         public IActionResult Post([FromBody] ImportModel model)
         {
             try
             {
-                return Ok(this.importLogic.ImportIndicators(model.AreaId, model.ImporterName, model.Parameters));
+                Guid token = ParseAuthorizationHeader();
+                return Ok(this.importLogic.ImportIndicators(token, model.AreaId, model.ImporterName, model.Parameters));
             }
             catch(EntityNotExistException ee)
             {
@@ -41,6 +42,21 @@ namespace IndicatorsManager.WebApi.Controllers
             {
                 return BadRequest(ie.Message);
             }
+            catch(UnauthorizedException ae)
+            {
+                return Unauthorized(ae);
+            }
+        }
+
+        private Guid ParseAuthorizationHeader()
+        {
+            Guid token;
+            bool isValid = Guid.TryParse(HttpContext.Request.Headers["Authorization"], out token);
+            if(!isValid)
+            {
+                throw new UnauthorizedException("The token format is invalid");
+            }
+            return token;
         }
     }
 }

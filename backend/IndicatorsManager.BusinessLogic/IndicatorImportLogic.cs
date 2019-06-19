@@ -9,6 +9,8 @@ using IndicatorsManager.Domain;
 using IndicatorsManager.BusinessLogic.Interface.Exceptions;
 using IndicatorsManager.IndicatorImporter.Interface.Exceptions;
 using IndicatorsManager.BusinessLogic.Visitors;
+using IndicatorsManager.Logger.Interface;
+using IndicatorsManager.Logger.Interface.Exceptions;
 
 namespace IndicatorsManager.BusinessLogic
 {
@@ -16,10 +18,15 @@ namespace IndicatorsManager.BusinessLogic
     {
         private IEnumerable<IIndicatorImporter> importers;
         private IRepository<Area> areaRepository;
+        private ITokenRepository tokenRepository;
+        private ILogger logger;
         
-        public IndicatorImportLogic(IRepository<Area> areaRepository)
+        public IndicatorImportLogic(IRepository<Area> areaRepository, ITokenRepository tokenRepository,
+            ILogger logger)
         {
             this.areaRepository = areaRepository;
+            this.tokenRepository = tokenRepository;
+            this.logger = logger;
             this.importers = LoadLibraries.LoadImporters();
         }
 
@@ -29,8 +36,9 @@ namespace IndicatorsManager.BusinessLogic
                 Parameters = i.GetParameters() });
         }
 
-        public ImportResult ImportIndicators(Guid areaId, string importerName, Dictionary<string, string> parameters)
+        public ImportResult ImportIndicators(Guid token, Guid areaId, string importerName, Dictionary<string, string> parameters)
         {
+            User authUser = GetUserByToken(token, Role.Admin);
             ImportResult result = new ImportResult();
             Area area = this.areaRepository.Get(areaId);
             if(area == null)
@@ -51,6 +59,7 @@ namespace IndicatorsManager.BusinessLogic
                 result.IndicatorsImported = validIndicators.Count();
                 area.Indicators.AddRange(validIndicators);
                 areaRepository.Save();
+                logger.LogAction(authUser.Username, "import");
             }
             catch(ImporterException ie)
             {
@@ -64,6 +73,7 @@ namespace IndicatorsManager.BusinessLogic
             {
                 result.Error = de.Message;
             }
+            catch(LoggerException) { }
             return result;
         }
 
@@ -89,6 +99,20 @@ namespace IndicatorsManager.BusinessLogic
         private bool ValidName(string name)
         {
             return !String.IsNullOrEmpty(name) && name.Trim() != "";
+        }
+
+        private User GetUserByToken(Guid authToken, Role aRole)
+        {
+            AuthenticationToken token = this.tokenRepository.GetByToken(authToken);
+            if(token == null || token.User == null || token.User.IsDeleted)
+            {
+                throw new UnauthorizedException("The token is invalid.");
+            }
+            if(token.User.Role != aRole)
+            {
+                throw new UnauthorizedException(string.Format("The user isn't {0}", aRole.ToString()));
+            }
+            return token.User;
         }
     }
 }

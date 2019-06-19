@@ -19,7 +19,7 @@ namespace IndicatorsManager.WebApi.Test
         public void GetUsersMostLogsTest()
         {
             Mock<IReportLogic> mock = new Mock<IReportLogic>(MockBehavior.Strict);
-            mock.Setup(m => m.GetUsersMostLogs(It.IsAny<int>())).Returns(CreateUserData(10));
+            mock.Setup(m => m.GetMostLoggedInManagers(It.IsAny<int>())).Returns(CreateUserData(10));
 
             ReportsController controller = new ReportsController(mock.Object);
 

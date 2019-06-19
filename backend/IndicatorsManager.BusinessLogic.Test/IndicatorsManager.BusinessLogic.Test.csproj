@@ -17,6 +17,7 @@
     <ProjectReference Include="..\IndicatorsManager.Domain\IndicatorsManager.Domain.csproj" />
     <ProjectReference Include="..\IndicatorsManager.BusinessLogic\IndicatorsManager.BusinessLogic.csproj" />
     <ProjectReference Include="..\IndicatorsManager.BusinessLogic.Interface\IndicatorsManager.BusinessLogic.Interface.csproj" />
+    <ProjectReference Include="..\IndicatorsManager.Logger.Interface\IndicatorsManager.Logger.Interface.csproj" />
   </ItemGroup>
 
 </Project>

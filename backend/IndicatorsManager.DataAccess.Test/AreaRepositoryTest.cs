@@ -146,7 +146,7 @@ namespace IndicatorsManager.DataAccess.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof(DataAccessException))]
         public void RemoveNullAreaTest()
         {
             IRepository<Area> repository = new AreaRepository(Context);

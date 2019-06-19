@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using IndicatorsManager.BusinessLogic.Interface;
 using IndicatorsManager.DataAccess.Interface.Exceptions;
 using IndicatorsManager.Domain;
+using IndicatorsManager.Logger.Interface;
+using IndicatorsManager.Logger.Interface.Exceptions;
 using IndicatorsManager.WebApi.Filters;
 using IndicatorsManager.WebApi.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace IndicatorsManager.WebApi.Controllers
 {
@@ -29,12 +31,12 @@ namespace IndicatorsManager.WebApi.Controllers
         {
             try
             {
-                IEnumerable<User> result = this.report.GetUsersMostLogs(limit);
+                IEnumerable<User> result = this.report.GetMostLoggedInManagers(limit);
                 return Ok(result.Select(u => new UserGetModel(u)));
             }
-            catch(DataAccessException de)
+            catch(LoggerException le)
             {
-                return StatusCode(503, de.Message);
+                return StatusCode(503, le.Message);
             }
         }
 
@@ -50,6 +52,21 @@ namespace IndicatorsManager.WebApi.Controllers
             catch(DataAccessException de)
             {
                 return StatusCode(503, de.Message);
+            }
+        }
+
+        [ProtectFilter(Role.Admin)]
+        [HttpGet("systemactions")]
+        public IActionResult GetSystemActions([FromQuery]DateTime start, [FromQuery]DateTime end)
+        {
+            try
+            {
+                IEnumerable<Log> result = this.report.GetSystemActivity(start, end);
+                return Ok(result.Select(l => new LogModel(l)));
+            }
+            catch(LoggerException le)
+            {
+                return StatusCode(503, le.Message);
             }
         }
     }
