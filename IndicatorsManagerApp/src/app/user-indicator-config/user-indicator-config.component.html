@@ -9,27 +9,39 @@
   </div>
 </ng-container>
 <ng-template #elseTemplate>
+  <div class="container">
+    <div class="row pl-5 mt-4">
+      <div class="col-9">
+          <h2 class="title pt-1 pl-5">My Indicators Configurations</h2>
+      </div>
+      <div class="col-2 m-0 p-0">
+          <button class="icon" mat-icon-button (click)="openHelp()">
+              <mat-icon matTooltip="Click here to see configuration features">help</mat-icon>
+          </button>
+      </div>
+    </div>
+  </div>
   <div class="row wrapper">
-      <h2 class="mt-4 title">My Indicators Configurations</h2>
       <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
   </div>
+
   <div class="container">
     <div class="example-container wrapper">  
         <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
           <div class="example-box pl-5 pr-5" *ngFor="let item of indicators" cdkDrag>
-            <div class="col">{{getName(item)}}</div>
+            <div class="col"><span>{{getName(item)}}</span></div>
             <div class="col-2">
-              <button mat-icon-button 
+                <button class="icon-hover" mat-mini-fab color="primary"
                 matTooltip="Customize indicator name"
                 (click)="updateIndicatorAlias(item)">
                   <mat-icon>edit</mat-icon>
-              </button>
+                </button>
             </div>
             <div class="col-2">
-              <button mat-icon-button 
+              <button class="icon" mat-icon-button 
                 matTooltip="Currently your indicator is {{item.isVisible ? 'visible' : 'hidden'}}. Click me to {{item.isVisible ? 'hide it' : 'show it up'}}."
                 (click)="changeIndicatorVisibility(item)">
-                  <mat-icon>{{item.isVisible ? 'visibility_off' : 'visibility'}}</mat-icon>
+                  <mat-icon>{{!item.isVisible ? 'visibility_off' : 'visibility'}}</mat-icon>
               </button>
             </div>
           </div>

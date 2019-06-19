@@ -6,6 +6,14 @@ import { IndicatorConfig } from 'src/models/indicatorConfig';
 import { MatDialog } from '@angular/material';
 import { DialogComponent } from '../dialog/dialog.component';
 
+
+const helpMessage = 'In this section you will be able to:' +
+ '<ul style="list-style: none;">' +
+ '<li><span>&#10003;</span> <strong>Drag and drop</strong> indicators to alter the order of them in main page</li>' +
+ '<li><span>&#10003;</span> <strong>Edit</strong> indicator current name</li>' +
+ '<li><span>&#10003;</span> <strong>Toggle</strong> indicator visibility</li>' +
+ '</ul>';
+
 @Component({
   selector: 'app-user-indicator-config',
   templateUrl: './user-indicator-config.component.html',
@@ -65,26 +73,20 @@ export class UserIndicatorConfigComponent implements OnInit {
   }
 
   changeIndicatorVisibility(indicatorConfig: any) {
-    const currentPosition = (indicatorConfig.position) ? indicatorConfig.position : 0;
     const newIndicatorConfig = {
         indicatorId: indicatorConfig.id,
-        // position: currentPosition,
+        position: indicatorConfig.position,
         isVisible: indicatorConfig.isVisible,
-        // alias: indicatorConfig.name
+        alias: (indicatorConfig.alias) ? indicatorConfig.alias : indicatorConfig.name
       };
     const updateConfig = new IndicatorConfig(newIndicatorConfig as IndicatorConfig);
-    console.log('ANTES', updateConfig);
-
     updateConfig.toggleVisibility();
-    console.log('DESPUES', updateConfig);
     const aux = new Array<IndicatorConfig>();
     aux.push(updateConfig);
-    console.log('changeIndicatorVisibility BODY', aux);
     this.userService.updateIndicatorConfiguration(aux)
     .subscribe(
       () => {
         indicatorConfig.isVisible = !indicatorConfig.isVisible;
-        console.log('Indicator visibility config updated')
       },
       error => this.errorMessage = error
     );
@@ -128,4 +130,17 @@ export class UserIndicatorConfigComponent implements OnInit {
       }
     });
   }
+
+
+  openHelp(){
+    this.dialog.open(DialogComponent, {
+      width: '400px',
+      height: '300px',
+      data: {
+        message: helpMessage,
+        currentUser: this.authService.getCurrentUser(),
+      }
+    });
+  }
 }
+
