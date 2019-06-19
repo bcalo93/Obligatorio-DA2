@@ -47,7 +47,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             ItemDate date = new ItemDate { Date = testDate };
             
             string result = date.Accept(visitor);
-            Assert.AreEqual(testDate.ToString(), result);
+            Assert.AreEqual("15/03/2015", result);
         }
         
 
