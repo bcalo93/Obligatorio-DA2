@@ -60,3 +60,7 @@
 button.icon-button { 
     width: 56px !important;
 }
+
+button.icon-button-delete {
+  width: 24px !important;
+}

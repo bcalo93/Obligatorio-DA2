@@ -14,14 +14,14 @@
 
     <div class="row">
         <div class="col example-container p-0 m-0 mt-2">
-            <h2 class="title ">All Managers</h2>
+            <h3 class="title ">All Managers</h3>
         </div>
         <div class="col example-container p-0 m-0 ml-2 mt-2">
           <div class="row">
             <div class="col-9">
-                <h2 class="title">Assigned Managers</h2>
+                <h3 class="title">Assigned Managers</h3>
             </div>
-            <div class="col">
+            <div class="col-2">
                 <button mat-fab class="icon-button" color="warn"
                 [disabled]="currentAssignedManagers.length === 0"                   
                   (click)="removeAll()">
@@ -33,10 +33,10 @@
         </div>
     </div>
 
-    <div class="box row" cdkDropListGroup>
+    <div class="row" cdkDropListGroup>
         <div class="col example-container mt-1 ml-5 mr-5">
         <div
-          style="height: 80%"
+          style="height: 100%"
           cdkDropList
           [cdkDropListData]="allManagers"
           class="example-list"
@@ -53,8 +53,17 @@
           [cdkDropListData]="assignedManagers"
           class="example-list"
           (cdkDropListDropped)="drop($event)">
-          <div class="col example-box title" *ngFor="let item of assignedManagers">
-              {{item.name}} {{item.lastName}} - ({{item.username}})
+          <div class="col" *ngFor="let item of assignedManagers">
+            <div class="row">
+              <div class="col example-box title">
+                  {{item.name}} {{item.lastName}} - ({{item.username}})
+              </div>
+              <div class="col-2 m-0 p-0 example-box title">
+                <button mat-icon-button class="icon-button-delete" (click)="removeManager(item)">
+                  <mat-icon matTooltip="Click here to unassign this manager from '{{areaSelected.name}}' area">delete</mat-icon>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>  

@@ -41,18 +41,19 @@ export class ManagerAssignmentListComponent implements OnInit {
         this.assignedManagers = [...area.users];
         this.currentAssignedManagers = [...area.users];
         console.log('CURRENT ASSIGNED MANAGERS', this.currentAssignedManagers)
-        this.userService.getAllUsers().subscribe(
-        users => {
-          const managers = users.filter(user => user.role === UserRole.MANAGER);
-          if (this.currentAssignedManagers.length > 0) {
-            const unassignedManagers = managers.filter(manager => !this.userIsAlreadyAssigned(manager));
-            console.log('UNASSIGNED MANAGERS',unassignedManagers);
-            this.allManagers = [...unassignedManagers];
-          } else {
-            this.allManagers = [...managers];
-          }
-        },
-        error => this.errorMessage = error
+        this.userService.getAllUsers()
+        .subscribe(
+          users => {
+            const managers = users.filter(user => user.role === UserRole.MANAGER);
+            if (this.currentAssignedManagers.length > 0) {
+              const unassignedManagers = managers.filter(manager => !this.userIsAlreadyAssigned(manager));
+              this.allManagers = [...unassignedManagers];
+            } else {
+              this.allManagers = [...managers];
+            }
+            console.log('ALL MANAGERS',this.allManagers);
+          },
+          error => this.errorMessage = error
         );
       },
       error => this.errorMessage = error
@@ -96,15 +97,31 @@ export class ManagerAssignmentListComponent implements OnInit {
       if (result) {
           this.allManagers.push(...this.assignedManagers);
           this.assignedManagers.forEach(item =>
-            this.areaService.deleteManagerFromArea(this.areaId, item.id).subscribe()
+            this.areaService.deleteManagerFromArea(this.areaId, item.id).subscribe(
+              () => {
+                this.assignedManagers = [];
+                this.currentAssignedManagers = [];
+              },
+              error => this.errorMessage = error
+            )
           );
-          this.assignedManagers = [];
-          this.currentAssignedManagers = [];
       }
     });
   }
 
-  removeManager(){}
+  removeManager(manager: User) {
+    this.areaService.deleteManagerFromArea(this.areaId, manager.id).subscribe(
+      () => {
+        this.allManagers.push(manager);
+        const aux = [...this.currentAssignedManagers];
+        const indexDeletedManager = aux.findIndex(x => x.id === manager.id);
+        aux.splice(indexDeletedManager, 1);
+        this.assignedManagers = [...aux];
+        this.currentAssignedManagers = [...aux];
+      },
+      error => this.errorMessage = error
+    );
+  }
 
 
   goBack() {
