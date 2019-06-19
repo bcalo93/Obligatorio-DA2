@@ -1,0 +1,71 @@
+<mat-card>
+    <div class="row mt-4">
+      <div class="col-10">
+          <h3 class="ml-5 mt-1 title">Selected Area: {{areaSelected.name}}</h3>
+      </div>
+      <div class="col-2">
+          <button mat-raised-button (click)="goBack()">Back</button>
+      </div>
+    </div>
+      <div class="row wrapper">
+          <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
+      </div>
+</mat-card>
+
+    <div class="row">
+        <div class="col example-container p-0 m-0 mt-2">
+            <mat-card-title class="mt-2 title">All Managers</mat-card-title>
+        </div>
+        <div class="col example-container p-0 m-0 ml-2 mt-2">
+          <div class="row">
+            <div class="col-9">
+                <mat-card-title class="mt-2 title">Assigned Managers</mat-card-title>
+            </div>
+            <div class="col-2">
+                <button mat-fab class="icon-button" color="warn"
+                [disabled]="currentAssignedManagers.length === 0"                   
+                  (click)="removeAll()">
+                    <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+
+          </div>
+        </div>
+    </div>
+
+    <div class="row" cdkDropListGroup>
+        <div class="col example-container mt-1 ml-5 mr-5">
+        <div
+          style="height: 100%"
+          cdkDropList
+          [cdkDropListData]="allManagers"
+          class="example-list"
+          (cdkDropListDropped)="drop($event)">
+          <div class="col example-box title" *ngFor="let item of allManagers" cdkDrag>
+            {{item.name}} {{item.lastName}} - ({{item.username}})
+          </div>
+        </div>
+      </div>
+      <div class="col example-container mt-1 ml-5 mr-5">
+        <div
+          style="height: 100%"
+          cdkDropList
+          [cdkDropListData]="assignedManagers"
+          class="example-list"
+          (cdkDropListDropped)="drop($event)">
+          <div class="col" *ngFor="let item of assignedManagers">
+            <div class="row">
+              <div class="col example-box title">
+                  {{item.name}} {{item.lastName}} - ({{item.username}})
+              </div>
+              <div class="col-2 m-0 p-0 example-box title">
+                <button mat-icon-button class="icon-button-delete" (click)="removeManager(item)">
+                  <mat-icon matTooltip="Click here to unassign this manager from '{{areaSelected.name}}' area">delete</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>  
+    </div>
+

@@ -45,4 +45,11 @@ export class ConditionListComponent implements OnInit {
     this.router.navigate([actualUrl + '/condition/add']);
   }
 
+  getValue(conditionResult: any) {
+    if (typeof conditionResult === 'string') {
+      return 'string';
+    } else {
+      return conditionResult ? 'true' :  'false';
+    }
+  }
 }

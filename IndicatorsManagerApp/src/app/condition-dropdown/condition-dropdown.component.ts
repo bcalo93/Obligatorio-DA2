@@ -72,7 +72,6 @@ export class ConditionDropdownComponent implements OnInit {
 
   onChangeInt(event: any) {
     const value = parseInt(event.target.value);
-    console.log(value);
     if (isNaN(value)) {
       this.inputInt.setErrors({incorrect: true});
     } else { this.inputValue.emit( { node: this.node, value }); }
@@ -96,7 +95,6 @@ export class ConditionDropdownComponent implements OnInit {
   }
 
   onChangeBoolean(event: any) {
-    console.log(event);
     const isTrue = event === 'true';
     this.inputValue.emit( { node: this.node, value: isTrue });
   }

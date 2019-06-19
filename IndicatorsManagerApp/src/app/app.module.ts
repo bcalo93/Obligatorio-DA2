@@ -25,7 +25,9 @@ import {
   MatTableModule,
   MatTreeModule,
   MatDatepickerModule,
-  MatNativeDateModule
+  MatNativeDateModule,
+  MatTooltipModule,
+  MatDialogModule
 
 } from '@angular/material';
 
@@ -46,6 +48,9 @@ import { ManagerAssignmentComponent } from './manager-assignment/manager-assignm
 import { IndicatorListComponent } from './indicator-list/indicator-list.component';
 import { IndicatorEditComponent } from './indicator-edit/indicator-edit.component';
 import { ConditionListComponent } from './condition-list/condition-list.component';
+import { AreaListComponent } from './area-list/area-list.component';
+import { ManagerAssignmentListComponent } from './manager-assignment-list/manager-assignment-list.component';
+import { DialogComponent } from './dialog/dialog.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +68,10 @@ import { ConditionListComponent } from './condition-list/condition-list.componen
     ManagerAssignmentComponent,
     IndicatorListComponent,
     IndicatorEditComponent,
-    ConditionListComponent
+    ConditionListComponent,
+    AreaListComponent,
+    ManagerAssignmentListComponent,
+    DialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -90,9 +98,12 @@ import { ConditionListComponent } from './condition-list/condition-list.componen
     MatTreeModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatTooltipModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent],
+  entryComponents: [DialogComponent]
 
 })
 export class AppModule { }

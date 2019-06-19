@@ -9,8 +9,6 @@ button.icon-button {
     height: 75px;
     padding: auto;
     align-content: center;
-    font-weight: bold;
-
 }
 
 .item-row{
@@ -26,22 +24,25 @@ button.icon-button {
 .action-row { display: none; }
 
 .item-row > .col {
-    margin: auto;
+    margin: auto !important;
+    padding: auto;
+    align-content: center;
+}
+.item-row span {
+    margin: 10px;
+}
+
+.header-row > .col {
+    margin: auto !important;
     padding: auto;
     align-content: center;
 }
 
-.item-row span {
-    margin: auto;
-}
 .header-row span {
-    margin: 10px;
+    margin: auto !important;
+    font-weight: bold;
 }
-.header-row > .col {
-    margin: auto;
-    padding: auto;
-    align-content: center;
-}
+
 .box {
     height: 50vh;
     overflow-y: auto;
@@ -51,5 +52,4 @@ button.icon-button {
 .input-indicator {
     width: 100%;
 }
-
 
