@@ -1,0 +1,38 @@
+<ng-container *ngIf="indicators.length === 0; else elseTemplate">
+    <div class="row wrapper">
+      <div class="row wrapper">
+        <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
+      </div>
+    </div>
+    <div class="img-container">
+      <img src="../assets/no-data.png">
+    </div>
+  </ng-container>
+  <ng-template #elseTemplate>
+    <div class="row wrapper">
+        <h2 class="mt-4 title">My Active Indicators</h2>
+        <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
+    </div>
+    <div class="container">
+      <div class="example-container wrapper">  
+          <div class="example-list">
+            <div class="example-box pl-5 pr-5" *ngFor="let item of indicators">
+              <div class="col" [ngStyle]="{'color': getColour(item)}" >{{getName(item)}}</div>
+              <div class="col-2">
+                  <button mat-icon-button (click)="openInformation()">
+                      <mat-icon matTooltip="Information about indicator">info</mat-icon>
+                  </button>
+              </div>
+              <div class="col-2">
+                <button mat-icon-button >
+                  <mat-icon matTooltip="Colour of your active condition"
+                    [ngStyle]="{'color': getColour(item)}" 
+
+                    >notifications</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </ng-template>
