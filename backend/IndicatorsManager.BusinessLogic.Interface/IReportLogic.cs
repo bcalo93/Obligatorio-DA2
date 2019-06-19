@@ -6,7 +6,7 @@ namespace IndicatorsManager.BusinessLogic.Interface
 {
     public interface IReportLogic
     { 
-       IEnumerable<User> GetUsersMostLogs(int limit);
+       IEnumerable<User> GetMostLoggedInManagers(int limit);
 
        IEnumerable<Indicator> GetMostHiddenIndicators(int limit);
 

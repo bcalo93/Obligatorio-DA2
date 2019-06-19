@@ -1,15 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using IndicatorsManager.DataAccess;
 using IndicatorsManager.DataAccess.Interface;
 using IndicatorsManager.BusinessLogic;
@@ -17,6 +11,8 @@ using IndicatorsManager.BusinessLogic.Interface;
 using IndicatorsManager.Domain;
 using Newtonsoft.Json.Converters;
 using Swashbuckle.AspNetCore.Swagger;
+using IndicatorsManager.Logger.Database;
+using IndicatorsManager.Logger.Interface;
 
 namespace IndicatorsManager.WebApi
 {
@@ -52,6 +48,8 @@ namespace IndicatorsManager.WebApi
                 o => o.UseSqlServer(Configuration.GetConnectionString("IndicatorsManagerDbMac"))
             );
 
+            ConnectionStringHandler.Instance.ConnectionString = Configuration.GetConnectionString("LogDb");
+
             services.AddScoped<ILogic<User>, UserLogic>();
             services.AddScoped<IRepository<User>, UserRepository>();
             services.AddScoped<IUserQuery, UserRepository>();
@@ -71,7 +69,7 @@ namespace IndicatorsManager.WebApi
             services.AddScoped<IQueryRunner, QueryRunner>();
             services.AddScoped<ITokenRepository, TokenRepository>();
             services.AddScoped<ISessionLogic, SessionLogic>();
-            services.AddScoped<IRepository<Log>, LogRepository>();
+            services.AddScoped<ILogger, LoggerDatabase>();
 
             
             services.AddScoped<IReportLogic, ReportLogic>();

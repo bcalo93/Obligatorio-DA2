@@ -1,67 +1,91 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using IndicatorsManager.BusinessLogic.Interface;
-using IndicatorsManager.BusinessLogic;
 using IndicatorsManager.Domain;
 using IndicatorsManager.DataAccess.Interface;
-using IndicatorsManager.BusinessLogic.Interface.Exceptions;
-using IndicatorsManager.DataAccess.Interface.Exceptions;
-using System.Linq;
+using IndicatorsManager.Logger.Interface;
 
 namespace IndicatorsManager.BusinessLogic.Test
 {
     [TestClass]
     public class ReportLogicTest 
     {
-        [TestMethod]
-        public void GetUsersMostLogsTest()
+        private Mock<ILogger> mockLogger;
+        private Mock<IIndicatorQuery> mockIndicators;
+        private Mock<IRepository<User>> mockUserRepository;
+        private IReportLogic logic;
+
+        [TestInitialize]
+        public void InitMocks()
         {
-            var mockLog = new Mock<ILogQuery>(MockBehavior.Strict);
-            mockLog.Setup(m => m.GetUsersMostLogs(It.IsAny<int>())).Returns(CreateUserData(10));
+            mockLogger = new Mock<ILogger>();
+            mockIndicators = new Mock<IIndicatorQuery>();
+            mockUserRepository = new Mock<IRepository<User>>();
+            logic = new ReportLogic(mockLogger.Object, mockIndicators.Object, mockUserRepository.Object);
+        }
 
-            var mockInd = new Mock<IIndicatorQuery>(MockBehavior.Strict);
-            
-            IReportLogic logic = new ReportLogic(mockLog.Object, mockInd.Object);
-            IEnumerable<User> result = logic.GetUsersMostLogs(10);
+        [TestCleanup]
+        public void VerifyAll()
+        {
+            mockLogger.VerifyAll();
+            mockIndicators.VerifyAll();
+        }
+        
+        
+        [TestMethod]
+        public void GetMostLoggedInManagerTest()
+        {
+            List<User> allUsers = new List<User>(CreateUserData(10, 0, Role.Manager));
+            allUsers.AddRange(CreateUserData(10, 10, Role.Admin));
 
-            mockLog.VerifyAll();
+            mockUserRepository.Setup(m => m.GetAll()).Returns(allUsers);
+            mockLogger.Setup(m => m.GetMostLoggedInUsers())
+                .Returns(CreateUsernameList(20));
+            IEnumerable<User> result = logic.GetMostLoggedInManagers(10);
             Assert.AreEqual(10, result.Count());
+            Assert.IsTrue(result.All(u => u.Role == Role.Manager));
         }
 
         [TestMethod]
         public void GetMostHiddenIndicators()
         {
-            var mockLog = new Mock<ILogQuery>(MockBehavior.Strict);            
-
-            var mockInd = new Mock<IIndicatorQuery>(MockBehavior.Strict);
-            mockInd.Setup(m => m.GetMostHiddenIndicators(It.IsAny<int>())).Returns(CreateIndicators(10));
-            
-            IReportLogic logic = new ReportLogic(mockLog.Object, mockInd.Object);
+            mockIndicators.Setup(m => m.GetMostHiddenIndicators(It.IsAny<int>()))
+                .Returns(CreateIndicators(10));
             IEnumerable<Indicator> result = logic.GetMostHiddenIndicators(10);
-
-            mockLog.VerifyAll();
             Assert.AreEqual(10, result.Count());
         }
 
+        private IEnumerable<string> CreateUsernameList(int amount)
+        {
+            List<string> result = new List<string>();
+            for(int i = 0; i < amount; i++)
+            {
+                result.Add("username " + i);
+            }
+            return result;
+        }
 
-
-        private IEnumerable<User> CreateUserData(int amount)
+        private List<User> CreateUserData(int amount, int offset, Role role)
         {
             List<User> result = new List<User>();
             for(int i = 0; i < amount; i++)
             {
-                User create = new User
+                int dif = i + offset;
+                result.Add(new User 
                 {
-                    Name = "Name " + i,
-                    LastName = "LastName " + i,
-                    Username = "Username " + i,
-                    Password = "Password " + i,
-                    Email = "test" + i + "@email.com",
-                    Role = Role.Manager
-                };
-                result.Add(create);
+                    Id = Guid.NewGuid(),
+                    Name = "Name " + dif,
+                    LastName = "Lastname" + dif,
+                    Username = "username " + dif,
+                    Password = "password " + dif,
+                    Email = "mail" + dif + "@mail.com",
+                    Role = role,
+                    IsDeleted = false
+
+                });
             }
             return result;
         }

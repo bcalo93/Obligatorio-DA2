@@ -29,7 +29,7 @@ namespace IndicatorsManager.WebApi.Controllers
         {
             try
             {
-                IEnumerable<User> result = this.report.GetUsersMostLogs(limit);
+                IEnumerable<User> result = this.report.GetMostLoggedInManagers(limit);
                 return Ok(result.Select(u => new UserGetModel(u)));
             }
             catch(DataAccessException de)

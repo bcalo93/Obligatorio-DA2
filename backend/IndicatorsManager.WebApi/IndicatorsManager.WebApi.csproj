@@ -18,6 +18,8 @@
     <ProjectReference Include="..\IndicatorsManager.DataAccess\IndicatorsManager.DataAccess.csproj" />
     <ProjectReference Include="..\IndicatorsManager.BusinessLogic.Interface\IndicatorsManager.BusinessLogic.Interface.csproj" />
     <ProjectReference Include="..\IndicatorsManager.BusinessLogic\IndicatorsManager.BusinessLogic.csproj" />
+    <ProjectReference Include="..\IndicatorsManager.Logger.Interface\IndicatorsManager.Logger.Interface.csproj" />
+    <ProjectReference Include="..\IndicatorsManager.Logger.Database\IndicatorsManager.Logger.Database.csproj" />
   </ItemGroup>
 
 </Project>

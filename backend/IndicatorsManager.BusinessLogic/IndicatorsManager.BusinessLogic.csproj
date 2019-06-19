@@ -5,6 +5,7 @@
     <ProjectReference Include="..\IndicatorsManager.BusinessLogic.Interface\IndicatorsManager.BusinessLogic.Interface.csproj" />
     <ProjectReference Include="..\IndicatorsManager.DataAccess.Interface\IndicatorsManager.DataAccess.Interface.csproj" />
     <ProjectReference Include="..\IndicatorsManager.IndicatorImporter.Interface\IndicatorsManager.IndicatorImporter.Interface.csproj" />
+    <ProjectReference Include="..\IndicatorsManager.Logger.Interface\IndicatorsManager.Logger.Interface.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

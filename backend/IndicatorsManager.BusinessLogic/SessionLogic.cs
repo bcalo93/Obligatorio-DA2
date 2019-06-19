@@ -5,6 +5,7 @@ using IndicatorsManager.DataAccess.Interface;
 using IndicatorsManager.BusinessLogic.Interface;
 using IndicatorsManager.Domain;
 using IndicatorsManager.BusinessLogic.Interface.Exceptions;
+using IndicatorsManager.Logger.Interface;
 
 namespace IndicatorsManager.BusinessLogic
 {
@@ -14,10 +15,10 @@ namespace IndicatorsManager.BusinessLogic
 
         private IRepository<User> userRepo;
 
-        private IRepository<Log> logger;
+        private ILogger logger;
 
 
-        public SessionLogic(ITokenRepository repository, IRepository<User> userRepo, IRepository<Log> logger)
+        public SessionLogic(ITokenRepository repository, IRepository<User> userRepo, ILogger logger)
         {
             this.repository = repository;
             this.userRepo = userRepo;
@@ -46,13 +47,7 @@ namespace IndicatorsManager.BusinessLogic
                 repository.Add(authToken);
             }
             repository.Save();
-            Log log = new Log()
-            {
-                DateTime = DateTime.Now,
-                User = user
-            };
-            logger.Add(log);
-            logger.Save();
+            logger.LogAction(username, "login");
             return authToken;
         }
 

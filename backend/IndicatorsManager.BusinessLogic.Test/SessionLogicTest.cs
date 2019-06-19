@@ -9,13 +9,14 @@ using IndicatorsManager.DataAccess.Interface;
 using IndicatorsManager.BusinessLogic.Interface.Exceptions;
 using IndicatorsManager.DataAccess.Interface.Exceptions;
 using System.Linq;
+using IndicatorsManager.Logger.Interface;
 
 namespace IndicatorsManager.BusinessLogic.Test
 {
     [TestClass]
     public class SessionLogicTest 
     {
-        private Mock<IRepository<Log>> mockLogger;
+        private Mock<ILogger> mockLogger;
         private Mock<IRepository<User>> mockUserRepo;
         private Mock<ITokenRepository> mockTokenRepo;
         private ISessionLogic session;
@@ -23,7 +24,7 @@ namespace IndicatorsManager.BusinessLogic.Test
         [TestInitialize]
         public void InitMocks()
         {
-            mockLogger = new Mock<IRepository<Log>>(MockBehavior.Strict);
+            mockLogger = new Mock<ILogger>(MockBehavior.Strict);
             mockUserRepo = new Mock<IRepository<User>>(MockBehavior.Strict);
             mockTokenRepo = new Mock<ITokenRepository>(MockBehavior.Strict);
             session = new SessionLogic(mockTokenRepo.Object, mockUserRepo.Object, mockLogger.Object);
@@ -43,8 +44,7 @@ namespace IndicatorsManager.BusinessLogic.Test
             var users = CreateUsers(10);
             var user = users.ElementAt(5);
 
-            mockLogger.Setup(m => m.Add(It.IsAny<Log>()));
-            mockLogger.Setup(m => m.Save());
+            mockLogger.Setup(m => m.LogAction(user.Username, "login"));
                     
             mockUserRepo.Setup(m => m.GetAll()).Returns(users);
 
@@ -72,8 +72,7 @@ namespace IndicatorsManager.BusinessLogic.Test
                 User = user
             };
             
-            mockLogger.Setup(m => m.Add(It.IsAny<Log>()));
-            mockLogger.Setup(m => m.Save());
+            mockLogger.Setup(m => m.LogAction(user.Username, "login"));
                       
             mockUserRepo.Setup(m => m.GetAll()).Returns(users);
 
