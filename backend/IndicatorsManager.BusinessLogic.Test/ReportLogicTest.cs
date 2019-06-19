@@ -30,6 +30,7 @@ namespace IndicatorsManager.BusinessLogic.Test
         [TestCleanup]
         public void VerifyAll()
         {
+            mockUserRepository.VerifyAll();
             mockLogger.VerifyAll();
             mockIndicators.VerifyAll();
         }
@@ -50,12 +51,24 @@ namespace IndicatorsManager.BusinessLogic.Test
         }
 
         [TestMethod]
-        public void GetMostHiddenIndicators()
+        public void GetMostHiddenIndicatorsTest()
         {
             mockIndicators.Setup(m => m.GetMostHiddenIndicators(It.IsAny<int>()))
                 .Returns(CreateIndicators(10));
             IEnumerable<Indicator> result = logic.GetMostHiddenIndicators(10);
             Assert.AreEqual(10, result.Count());
+        }
+
+        [TestMethod]
+        public void GetSystemActivityTest()
+        {
+            mockLogger.Setup(m => m.GetLogActions(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                .Returns(CreateLogData(10));
+
+            IEnumerable<Log> result = logic.GetSystemActivity(DateTime.Now, DateTime.Now);
+
+            Assert.AreEqual(10, result.Count());
+
         }
 
         private IEnumerable<string> CreateUsernameList(int amount)
@@ -85,6 +98,22 @@ namespace IndicatorsManager.BusinessLogic.Test
                     Role = role,
                     IsDeleted = false
 
+                });
+            }
+            return result;
+        }
+
+        private List<Log> CreateLogData(int amount)
+        {
+            List<Log> result = new List<Log>();
+            for(int i = 0; i < amount; i++)
+            {
+                result.Add(new Log 
+                {
+                    Id = Guid.NewGuid(),
+                    Username = "username " + i,
+                    LogDate = DateTime.Now,
+                    LogType = i % 2 == 0 ? "login" : "importacion"
                 });
             }
             return result;

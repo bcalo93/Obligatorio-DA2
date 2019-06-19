@@ -15,14 +15,16 @@ namespace IndicatorsManager.Logger.Database
 
         public IEnumerable<Log> GetLogActions(DateTime start, DateTime end)
         {
+            List<Log> result = new List<Log>();
             using(var context = new LogContext(CreateOptionContext()))
             {
                 try
                 {
-                    return context.Logs
+                    result = context.Logs
                         .Where(l => l.LogDate >= start && l.LogDate <= end)
                         .OrderBy(l => l.LogDate)
                         .ToList();
+                    return result;
                 }
                 catch(SqlException se)
                 {
@@ -33,21 +35,23 @@ namespace IndicatorsManager.Logger.Database
 
         public IEnumerable<string> GetMostLoggedInUsers()
         {
+            List<string> result = new List<string>();
             using(var context = new LogContext(CreateOptionContext()))
             {
                 try
                 {
-                    return context.Logs
+                    result = context.Logs
                         .Where(l => l.LogType == "login")
                         .GroupBy(l => l.Username)
                         .OrderByDescending(l => l.Count())
-                        .Select(i => i.Key);
+                        .Select(i => i.Key).ToList();
                 }
                 catch(SqlException se)
                 {
                     throw new LoggerException(ERROR_CONNECTION, se);
                 }
             }
+            return result;
         }
 
         public void LogAction(string username, string actionType)

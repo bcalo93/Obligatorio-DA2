@@ -47,6 +47,10 @@ namespace IndicatorsManager.BusinessLogic
             return indicatorQuery.GetMostHiddenIndicators(limit);
         }
 
+        public IEnumerable<Log> GetSystemActivity(DateTime start, DateTime end)
+        {
+            return logger.GetLogActions(start, end);
+        }
     }
 
 }

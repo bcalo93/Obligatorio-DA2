@@ -6,6 +6,7 @@ using IndicatorsManager.BusinessLogic.Interface;
 using IndicatorsManager.Domain;
 using IndicatorsManager.BusinessLogic.Interface.Exceptions;
 using IndicatorsManager.Logger.Interface;
+using IndicatorsManager.Logger.Interface.Exceptions;
 
 namespace IndicatorsManager.BusinessLogic
 {
@@ -47,7 +48,11 @@ namespace IndicatorsManager.BusinessLogic
                 repository.Add(authToken);
             }
             repository.Save();
-            logger.LogAction(username, "login");
+            try
+            {
+                logger.LogAction(username, "login");
+            }
+            catch(LoggerException) { }
             return authToken;
         }
 
