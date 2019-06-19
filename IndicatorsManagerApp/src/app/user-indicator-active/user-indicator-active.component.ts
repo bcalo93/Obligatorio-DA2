@@ -31,7 +31,6 @@ export class UserIndicatorActiveComponent implements OnInit {
   ngOnInit() {
     this.userService.getManagerActiveIndicators().subscribe(
       response => {
-        console.log(response);
         if (response.length === 0) {
           this.errorMessage =
           'Currently you do not have active indicators.' +
@@ -55,13 +54,13 @@ export class UserIndicatorActiveComponent implements OnInit {
   }
 
   openInformation(item: any) {
-    debugger
     let message = '';
     this.indicatorService.getIndicator(item.id).subscribe(
       response => {
         const itemId = item.items[0].id;
-        message = (response.itemsResult as Array<any>)
-                  .find(x => x.id === itemId).result.conditionToString;
+        const aux: Array<any> = response.itemsResult.map( x => x);
+        message = aux.find(x => x.id === itemId).result.conditionToString;
+        this.openDialog(message);
       },
       () => this.openDialog('Currently the condition result is unavailable.')
     );
@@ -69,8 +68,9 @@ export class UserIndicatorActiveComponent implements OnInit {
 
   openDialog(message: string) {
     this.dialog.open(DialogComponent, {
-      width: '500px',
-      height: '500px',
+      width: 'fit-content',
+      maxWidth: '80%',
+      height: 'auto',
       data: {
         header: 'The actual condition detail: ',
         message,
