@@ -12,25 +12,28 @@ import { ManagerAssignmentComponent } from './manager-assignment/manager-assignm
 import { IndicatorEditComponent } from './indicator-edit/indicator-edit.component';
 import { AreaListComponent } from './area-list/area-list.component';
 import { ManagerAssignmentListComponent } from './manager-assignment-list/manager-assignment-list.component';
+import { UserIndicatorConfigComponent } from './user-indicator-config/user-indicator-config.component';
 
 const routes: Routes = [
   { path: '', component: HomeManagerComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
 
-  { path: 'users', component: UsersListComponent },
-  { path: 'users/add', component: UserEditComponent },
-  { path: 'users/:id', component: UserEditComponent },
+  { path: 'users', component: UsersListComponent, canActivate: [AuthGuard] },
+  { path: 'users/add', component: UserEditComponent, canActivate: [AuthGuard] },
+  { path: 'users/:id', component: UserEditComponent, canActivate: [AuthGuard] },
 
-  { path: 'areas', component: AreaListComponent },
-  { path: 'areas/add', component: AreaEditComponent },
-  { path: 'areas/managers', component: ManagerAssignmentComponent },
-  { path: 'areas/managers/:id', component: ManagerAssignmentListComponent },
+  { path: 'areas', component: AreaListComponent, canActivate: [AuthGuard] },
+  { path: 'areas/add', component: AreaEditComponent, canActivate: [AuthGuard] },
+  { path: 'areas/managers', component: ManagerAssignmentComponent, canActivate: [AuthGuard] },
+  { path: 'areas/managers/:id', component: ManagerAssignmentListComponent, canActivate: [AuthGuard] },
 
 
-  { path: 'areas/:id', component: AreaEditComponent },
+  { path: 'areas/:id', component: AreaEditComponent, canActivate: [AuthGuard] },
 
-  { path: 'indicator/:id', component: IndicatorEditComponent },
-  { path: 'indicator/:id/condition/add', component: ConditionEditComponent },
+  { path: 'indicator/config', component: UserIndicatorConfigComponent, canActivate: [AuthGuard] },
+
+  { path: 'indicator/:id', component: IndicatorEditComponent, canActivate: [AuthGuard] },
+  { path: 'indicator/:id/condition/add', component: ConditionEditComponent, canActivate: [AuthGuard] },
 
   { path: '**', redirectTo: '' }
 ];
