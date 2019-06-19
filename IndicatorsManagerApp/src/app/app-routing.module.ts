@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { HomeManagerComponent } from './home-manager/home-manager.component';
+import { HomeComponent } from './home/home.component';
 import { AuthGuard } from '../guards/auth.guard';
 import { LoginComponent } from './login/login.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
@@ -15,7 +15,7 @@ import { ManagerAssignmentListComponent } from './manager-assignment-list/manage
 import { UserIndicatorConfigComponent } from './user-indicator-config/user-indicator-config.component';
 
 const routes: Routes = [
-  { path: '', component: HomeManagerComponent, canActivate: [AuthGuard] },
+  { path: '', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
 
   { path: 'users', component: UsersListComponent, canActivate: [AuthGuard] },
