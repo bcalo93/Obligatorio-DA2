@@ -10,20 +10,23 @@
   </ng-container>
   <ng-template #elseTemplate>
     <div class="container">
-        <div class="row pl-5 mt-4">
-          <div class="col-9">
-              <h2 class="title pt-1 pl-5">My Active Indicators</h2>
-          </div>
-          <div class="col-2 m-0 p-0">
-              <button class="icon" mat-icon-button (click)="openHelp()">
-                  <mat-icon class="mb-3" matTooltip="Click here to see configuration features">help</mat-icon>
-              </button>
-          </div>
+      <div class="row pl-5 mt-4">
+        <div class="col-9">
+            <h2 class="title pt-1 pl-5">My Active Indicators</h2>
+        </div>
+        <div class="col-2 m-0 p-0">
+            <button class="icon" mat-icon-button (click)="openHelp()">
+                <mat-icon class="mb-3" matTooltip="Click here to see configuration features">help</mat-icon>
+            </button>
         </div>
       </div>
-      <div class="row wrapper">
-          <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
-      </div>
+    <div style="width: 50%;margin: auto;" class="row">
+      <app-indicator-board style="width: 100%" [indicatorsList]="indicators"></app-indicator-board>
+    </div>
+    </div>
+    <div class="row wrapper">
+        <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
+    </div>
 
     <div class="container">
       <div class="example-container wrapper">  

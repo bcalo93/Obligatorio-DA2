@@ -50,7 +50,8 @@ export class UserIndicatorActiveComponent implements OnInit {
   }
 
   getColour(item: any) {
-    return item.items[0].name;
+    const name = item.items[0].name;
+    return name === 'YELLOW' ? 'ORANGE' : name;
   }
 
   openInformation(item: any) {
