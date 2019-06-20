@@ -15,6 +15,7 @@ import { ManagerAssignmentListComponent } from './manager-assignment-list/manage
 import { UserIndicatorConfigComponent } from './user-indicator-config/user-indicator-config.component';
 import { ImporterComponent } from './importer/importer.component';
 import { ReportsFrequentUserComponent } from './reports-frequent-user/reports-frequent-user.component';
+import { ReportsTopHiddenIndicatorsComponent } from './reports-top-hidden-indicators/reports-top-hidden-indicators.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, canActivate: [AuthGuard] },
@@ -40,6 +41,8 @@ const routes: Routes = [
   { path: 'importer', component: ImporterComponent, canActivate: [AuthGuard]},
 
   { path: 'reports/frequent-users', component: ReportsFrequentUserComponent, canActivate: [AuthGuard]},
+  { path: 'reports/hidden-indicators', component: ReportsTopHiddenIndicatorsComponent, canActivate: [AuthGuard]},
+  { path: 'reports/log', component: ReportsFrequentUserComponent, canActivate: [AuthGuard]},
 
   { path: '**', redirectTo: '' }
 ];

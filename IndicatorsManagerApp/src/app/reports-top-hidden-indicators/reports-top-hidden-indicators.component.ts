@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Indicator } from 'src/models';
+import { ReportsService } from 'src/services';
 
 @Component({
   selector: 'app-reports-top-hidden-indicators',
@@ -7,9 +9,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ReportsTopHiddenIndicatorsComponent implements OnInit {
 
-  constructor() { }
+  indicators: Array<Indicator> = [];
+  errorMessage = '';
+
+  constructor(private reportsService: ReportsService) { }
 
   ngOnInit() {
+    this.reportsService.getTopHiddenReports().subscribe(
+      response => {
+        this.indicators = response;
+      },
+      error => this.errorMessage = error
+    );
   }
 
 }
