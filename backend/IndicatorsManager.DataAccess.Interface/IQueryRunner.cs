@@ -1,4 +1,3 @@
-using System;
 
 namespace IndicatorsManager.DataAccess.Interface
 {

@@ -1,5 +1,4 @@
 using System;
-using IndicatorsManager.Domain;
 using IndicatorsManager.BusinessLogic.Interface;
 using IndicatorsManager.WebApi.Visitors;
 

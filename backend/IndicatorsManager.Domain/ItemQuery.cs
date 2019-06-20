@@ -1,4 +1,3 @@
-using System;
 using IndicatorsManager.Domain.Visitors;
 
 namespace IndicatorsManager.Domain

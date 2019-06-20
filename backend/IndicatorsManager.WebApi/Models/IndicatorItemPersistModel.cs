@@ -1,4 +1,3 @@
-using System;
 using IndicatorsManager.Domain;
 using IndicatorsManager.WebApi.Visitors;
 

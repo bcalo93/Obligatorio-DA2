@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using IndicatorsManager.DataAccess.Interface;
 using IndicatorsManager.DataAccess.Interface.Exceptions;
 using IndicatorsManager.DataAccess.Visitors;
 using IndicatorsManager.Domain;

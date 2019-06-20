@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using IndicatorsManager.Domain;
 using IndicatorsManager.BusinessLogic.Interface;
 
 namespace IndicatorsManager.WebApi.Models

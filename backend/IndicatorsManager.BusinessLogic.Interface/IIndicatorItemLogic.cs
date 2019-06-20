@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using IndicatorsManager.Domain;
 
 namespace IndicatorsManager.BusinessLogic.Interface

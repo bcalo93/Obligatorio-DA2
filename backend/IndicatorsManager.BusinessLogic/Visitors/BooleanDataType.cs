@@ -1,4 +1,3 @@
-using System;
 using IndicatorsManager.BusinessLogic.Interface.Exceptions;
 
 namespace IndicatorsManager.BusinessLogic.Visitors

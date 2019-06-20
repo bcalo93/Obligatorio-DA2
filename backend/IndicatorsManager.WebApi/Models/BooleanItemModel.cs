@@ -1,4 +1,3 @@
-using System;
 using IndicatorsManager.Domain;
 
 namespace IndicatorsManager.WebApi.Models

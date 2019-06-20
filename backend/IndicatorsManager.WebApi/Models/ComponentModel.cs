@@ -1,4 +1,3 @@
-using System;
 using IndicatorsManager.Domain;
 using IndicatorsManager.WebApi.Parsers;
 using Newtonsoft.Json;

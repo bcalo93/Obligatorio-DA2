@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using IndicatorsManager.Domain;
 
 namespace IndicatorsManager.BusinessLogic.Interface

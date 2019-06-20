@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using IndicatorsManager.Domain;
 using IndicatorsManager.Domain.Visitors;

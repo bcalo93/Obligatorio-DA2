@@ -1,9 +1,7 @@
 using System;
-using System.Data;
 using System.Data.SqlClient;
 using IndicatorsManager.DataAccess.Interface;
 using IndicatorsManager.DataAccess.Interface.Exceptions;
-using Microsoft.EntityFrameworkCore;
 
 namespace IndicatorsManager.DataAccess
 {

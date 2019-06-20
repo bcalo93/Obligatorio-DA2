@@ -3,7 +3,6 @@ using System.Linq;
 using System.Collections.Generic;
 using IndicatorsManager.Domain;
 using IndicatorsManager.Domain.Visitors;
-using IndicatorsManager.BusinessLogic.Interface;
 using IndicatorsManager.DataAccess.Interface;
 using IndicatorsManager.DataAccess.Interface.Exceptions;
 using IndicatorsManager.BusinessLogic.Interface.Exceptions;
