@@ -1,0 +1,77 @@
+<mat-card>
+    <div class="row mt-4">
+      <div class="col">
+          <mat-card-title class="title">Indicator Importer</mat-card-title>
+      </div>
+    </div>
+    <div class="row wrapper">
+        <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
+    </div>
+  
+    <div class="wrapper">
+        <mat-form-field>
+            <mat-label>Select an area to import indicators in ........</mat-label>
+            <mat-select [(value)]="selectedAreaId" (selectionChange)="areaSelection()">
+              <mat-option *ngFor="let area of allAreas" value="{{area.id}}">{{area.name}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        
+        <mat-form-field [ngStyle]="{'display': selectedAreaId === '' ? 'none' : 'block'}">
+            <mat-label>Select an importer format ........</mat-label>
+            <mat-select (selectionChange)="importerSelection($event.value)">
+              <mat-option *ngFor="let importer of availableImporters" value="{{importer.name}}">{{importer.name}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="wrapper">
+      <div class="col">
+        <mat-card-title class="title">{{selectedImporter}}</mat-card-title>
+      </div>
+
+      <div class="row wrapper">
+          <app-error-message 
+            *ngIf="errorImporterMessage"
+            [message]="errorImporterMessage">
+          </app-error-message>
+      </div>
+      <div class="row wrapper">
+        <div 
+        class="success-msg" 
+        [ngStyle]="{'display': successImporterMessage === '' ? 'none' : 'block'}">
+            <span style="color: green">{{successImporterMessage}}</span>
+        </div>
+      </div>
+      <form [formGroup]="myFormGroup">
+        <div *ngFor="let parameter of importerParameters">    
+          <div class="wrapper" [ngSwitch]="parameter.type">
+            <div *ngSwitchCase="'Date'">
+              <mat-form-field class="example-full-width col-12 p-0 m-0">
+                  <input matInput [matDatepicker]="picker" placeholder="{{parameter.name}}" formControlName="{{parameter.name}}" (dateChange)="onChangeDate($event, parameter.name)">
+                  <mat-error *ngIf="myFormGroup.get(parameter.name).hasError('required') || myFormGroup.get(parameter.name).hasError('incorrect')">Enter a <strong>valid</strong> date</mat-error>
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div *ngSwitchCase="'Text'">
+                  <mat-form-field class="example-full-width col-12 p-0 m-0" >     
+                      <input matInput placeholder="{{parameter.name}}" formControlName="{{parameter.name}}">
+                      <mat-error *ngIf="myFormGroup.get(parameter.name).hasError('required')">Field is <strong>required</strong></mat-error>
+                  </mat-form-field>
+            </div>
+            <div *ngSwitchCase="'Int'">
+                  <mat-form-field class="example-full-width col-12 p-0 m-0" >        
+                    <input type="number" matInput placeholder="{{parameter.name}}" formControlName="{{parameter.name}}" (change)="onChangeInt($event, parameter.name)">
+                    <mat-error *ngIf="myFormGroup.get(parameter.name).hasError('required')">Field is <strong>required</strong></mat-error>
+                    <mat-error *ngIf="!myFormGroup.get(parameter.name).hasError('required') && myFormGroup.get(parameter.name).hasError('incorrect')">The input must be <strong>numeric</strong></mat-error>
+                  </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="wrapper">
+          <button mat-raised-button color="primary" 
+            [disabled]="isFormInvalid()" (click)="sumbit()">Import</button>
+        </div>
+      </div>
+  </mat-card>
