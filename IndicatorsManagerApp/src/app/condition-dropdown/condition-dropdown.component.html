@@ -30,7 +30,7 @@
       <div *ngSwitchCase="'Date'">
         <mat-form-field class="example-full-width col-6 p-0 m-0" >
             <input matInput [matDatepicker]="picker" placeholder="Choose a date" [formControl]="inputDate" (dateChange)="onChangeDate($event)">
-            <mat-error *ngIf="inputQuery.hasError('required')">Enter a <strong>valid</strong> date</mat-error>
+            <mat-error *ngIf="inputDate.hasError('required') || inputDate.hasError('incorrect')">Enter a <strong>valid</strong> date</mat-error>           
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>

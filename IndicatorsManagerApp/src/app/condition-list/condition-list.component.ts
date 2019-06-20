@@ -11,7 +11,7 @@ import { IndicatorService } from 'src/services/indicator.service';
 export class ConditionListComponent implements OnInit {
 
   @Input() indicatorId: string;
-  conditions: Array<IndicatorItem>;
+  conditions: Array<IndicatorItem> = [];
   errorMessage: string;
 
   constructor(

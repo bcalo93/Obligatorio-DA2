@@ -362,3 +362,4 @@ MigrationBackup/
 .history
 
 # End of https://www.gitignore.io/api/csharp,visualstudiocode
+backend/IndicatorsManager.WebApi/appsettings.Development.json
