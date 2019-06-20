@@ -45,7 +45,7 @@ namespace IndicatorsManager.WebApi
             });
             
             services.AddDbContext<DbContext, DomainContext>(
-                o => o.UseSqlServer(Configuration.GetConnectionString("IndicatorsManagerDbMac"))
+                o => o.UseSqlServer(Configuration.GetConnectionString("IndicatorsManagerDb"))
             );
 
             ConnectionStringHandler.Instance.ConnectionString = Configuration.GetConnectionString("LogDb");
