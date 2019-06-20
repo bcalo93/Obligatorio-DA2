@@ -134,9 +134,8 @@ export class ImporterComponent implements OnInit {
           this.successImporterMessage = '';
         } else {
           this.successImporterMessage =
-            response.indicatorsImported +
-            ' Indicators imported of  ' +
-            response.totalIndicators ;
+            response.indicatorsImported + ' / ' +
+            response.totalIndicators + ' INDICATORS IMPORTED';
           this.errorImporterMessage = '';
         }
       },
