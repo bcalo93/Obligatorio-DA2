@@ -48,17 +48,13 @@ export class ReportsLogComponent implements OnInit {
     return this.endDate.valid && this.startDate.valid;
   }
 
-  showLog(){
-
-    // console.log(this.startDate)
-    // console.log(this.endDate)
+  showLog() {
     this.reportsService.getSystemActions(
       this.transformDate(this.startDate.value),
       this.transformDate(this.endDate.value)
     ).subscribe(
       response => {
         this.logs = response;
-        console.log(this.logs);
       },
       error => this.errorMessage = error
     );
