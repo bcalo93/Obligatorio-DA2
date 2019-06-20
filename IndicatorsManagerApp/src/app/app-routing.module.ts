@@ -13,6 +13,7 @@ import { IndicatorEditComponent } from './indicator-edit/indicator-edit.componen
 import { AreaListComponent } from './area-list/area-list.component';
 import { ManagerAssignmentListComponent } from './manager-assignment-list/manager-assignment-list.component';
 import { UserIndicatorConfigComponent } from './user-indicator-config/user-indicator-config.component';
+import { ImporterComponent } from './importer/importer.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, canActivate: [AuthGuard] },
@@ -35,6 +36,9 @@ const routes: Routes = [
   { path: 'indicator/:id', component: IndicatorEditComponent, canActivate: [AuthGuard] },
   { path: 'indicator/:id/condition/add', component: ConditionEditComponent, canActivate: [AuthGuard] },
 
+  { path: 'importer', component: ImporterComponent, canActivate: [AuthGuard]},
+
+  
   { path: '**', redirectTo: '' }
 ];
 
