@@ -16,6 +16,7 @@ import { UserIndicatorConfigComponent } from './user-indicator-config/user-indic
 import { ImporterComponent } from './importer/importer.component';
 import { ReportsFrequentUserComponent } from './reports-frequent-user/reports-frequent-user.component';
 import { ReportsTopHiddenIndicatorsComponent } from './reports-top-hidden-indicators/reports-top-hidden-indicators.component';
+import { ReportsLogComponent } from './reports-log/reports-log.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, canActivate: [AuthGuard] },
@@ -42,7 +43,7 @@ const routes: Routes = [
 
   { path: 'reports/frequent-users', component: ReportsFrequentUserComponent, canActivate: [AuthGuard]},
   { path: 'reports/hidden-indicators', component: ReportsTopHiddenIndicatorsComponent, canActivate: [AuthGuard]},
-  { path: 'reports/log', component: ReportsFrequentUserComponent, canActivate: [AuthGuard]},
+  { path: 'reports/log', component: ReportsLogComponent, canActivate: [AuthGuard]},
 
   { path: '**', redirectTo: '' }
 ];
