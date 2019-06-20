@@ -52,6 +52,7 @@ import { DialogComponent } from './dialog/dialog.component';
 import { NoDataComponent } from './no-data/no-data.component';
 import { HomeComponent } from './home/home.component';
 import { UserIndicatorActiveComponent } from './user-indicator-active/user-indicator-active.component';
+import { IndicatorBoardComponent } from './indicator-board/indicator-board.component';
 
 @NgModule({
   declarations: [
@@ -75,6 +76,7 @@ import { UserIndicatorActiveComponent } from './user-indicator-active/user-indic
     NoDataComponent,
     HomeComponent,
     UserIndicatorActiveComponent,
+    IndicatorBoardComponent,
   ],
   imports: [
     BrowserModule,
