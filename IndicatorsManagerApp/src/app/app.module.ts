@@ -55,6 +55,7 @@ import { UserIndicatorActiveComponent } from './user-indicator-active/user-indic
 import { IndicatorBoardComponent } from './indicator-board/indicator-board.component';
 import { ImporterComponent } from './importer/importer.component';
 import { ReportsFrequentUserComponent } from './reports-frequent-user/reports-frequent-user.component';
+import { ReportsTopHiddenIndicatorsComponent } from './reports-top-hidden-indicators/reports-top-hidden-indicators.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +82,7 @@ import { ReportsFrequentUserComponent } from './reports-frequent-user/reports-fr
     IndicatorBoardComponent,
     ImporterComponent,
     ReportsFrequentUserComponent,
+    ReportsTopHiddenIndicatorsComponent,
   ],
   imports: [
     BrowserModule,
