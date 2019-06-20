@@ -73,7 +73,6 @@ namespace IndicatorsManager.WebApi
 
             
             services.AddScoped<IReportLogic, ReportLogic>();
-            services.AddScoped<ILogQuery, LogRepository>();
 
             services.AddScoped<IIndicatorImportLogic, IndicatorImportLogic>();
 
