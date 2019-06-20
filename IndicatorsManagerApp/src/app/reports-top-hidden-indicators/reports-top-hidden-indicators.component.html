@@ -1,0 +1,31 @@
+<div class="mt-5 container">
+    <div class="row mt-5">
+      <div class="col">
+          <h2 class="title">Top hidden indicators</h2>
+      </div>
+    </div>
+  </div>
+  <div class="row wrapper">
+      <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
+  </div>
+
+  <div class="container">
+    <div class="example-container wrapper">  
+      <div  class="example-list" >
+        <div class="pl-5 pr-5 header">
+            <div class="col-1 m-0 p-0">
+              <mat-icon class="m-0 p-0">visibility_off</mat-icon>    
+            </div>
+            <div class="col-8 title"><span>Indicator Name</span></div>
+            <div class="col-1 m-0 p-0">
+                <mat-icon class="m-0 p-0"></mat-icon>    
+              </div>
+        </div>
+        <div class="example-box pl-5 pr-5 no-header" *ngFor="let item of indicators" >
+            <div class="col-1 m-0 p-0"></div>
+            <div class="col-8 title"><span>{{item.name}}</span></div>
+            <div class="col-1 m-0 p-0"></div>
+        </div>
+      </div>
+    </div>
+  </div>

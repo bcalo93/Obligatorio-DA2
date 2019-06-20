@@ -54,6 +54,9 @@ import { HomeComponent } from './home/home.component';
 import { UserIndicatorActiveComponent } from './user-indicator-active/user-indicator-active.component';
 import { IndicatorBoardComponent } from './indicator-board/indicator-board.component';
 import { ImporterComponent } from './importer/importer.component';
+import { ReportsFrequentUserComponent } from './reports-frequent-user/reports-frequent-user.component';
+import { ReportsTopHiddenIndicatorsComponent } from './reports-top-hidden-indicators/reports-top-hidden-indicators.component';
+import { ReportsLogComponent } from './reports-log/reports-log.component';
 
 @NgModule({
   declarations: [
@@ -79,6 +82,9 @@ import { ImporterComponent } from './importer/importer.component';
     UserIndicatorActiveComponent,
     IndicatorBoardComponent,
     ImporterComponent,
+    ReportsFrequentUserComponent,
+    ReportsTopHiddenIndicatorsComponent,
+    ReportsLogComponent,
   ],
   imports: [
     BrowserModule,
