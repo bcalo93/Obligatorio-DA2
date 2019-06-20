@@ -32,7 +32,6 @@ export class UserIndicatorConfigComponent implements OnInit {
   ngOnInit() {
     this.userService.getManagerIndicators().subscribe(
       response => {
-        console.log(response);
         if (response.length === 0) {
           this.errorMessage =
           'Currently you are not assigned to any area, ' +
@@ -63,7 +62,7 @@ export class UserIndicatorConfigComponent implements OnInit {
       this.userService.updateIndicatorConfiguration(aux as Array<IndicatorConfig>)
       .subscribe(
         () => {
-          console.log('newList', newList);
+          console.log('Indicator config updated');
         },
         error => {
           moveItemInArray(this.indicators, event.currentIndex, event.previousIndex);
@@ -100,7 +99,6 @@ export class UserIndicatorConfigComponent implements OnInit {
   }
 
   updateIndicatorAlias(indicatorConfig: any) {
-    console.log('updateIndicatorAlias', indicatorConfig);
     const dialogRef = this.dialog.open(DialogComponent, {
       width: '400px',
       height: '250px',
@@ -114,7 +112,6 @@ export class UserIndicatorConfigComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log('indicatorConfig', indicatorConfig)
         const currentPosition = (indicatorConfig.position) ? indicatorConfig.position : 0;
         const newIndicatorConfig = {
           indicatorId: indicatorConfig.id,
@@ -123,15 +120,12 @@ export class UserIndicatorConfigComponent implements OnInit {
           alias: result
         };
         const updateConfig = new IndicatorConfig(newIndicatorConfig as IndicatorConfig);
-        debugger
         const aux = new Array<IndicatorConfig>();
         aux.push(updateConfig);
-        console.log(aux);
         this.userService.updateIndicatorConfiguration(aux)
         .subscribe(
           () => {
             indicatorConfig.alias = result;
-            console.log('Indicator alias config updated ');
           },
           error => this.errorMessage = error
         );

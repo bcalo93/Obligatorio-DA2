@@ -32,8 +32,6 @@ export class IndicatorEditComponent implements OnInit {
   }
 
   updateIndicator() {
-    console.log(this.indicatorId);
-    console.log(this.name.value);
     const indicator = new Indicator();
     indicator.id = this.indicatorId;
     indicator.name = this.name.value;
@@ -44,7 +42,6 @@ export class IndicatorEditComponent implements OnInit {
         console.log('Indicator Updated', data);
       },
       (error: any) => {
-        console.log(error);
         this.errorMessage = error;
       }
     );
@@ -53,7 +50,6 @@ export class IndicatorEditComponent implements OnInit {
   loadIndicatorDetails(id: string) {
     this.indicatorService.getIndicator(id)
       .subscribe(indicator => {
-        console.log(indicator)
         this.name.setValue(indicator.name);
         this.clearErrorMsg();
     });

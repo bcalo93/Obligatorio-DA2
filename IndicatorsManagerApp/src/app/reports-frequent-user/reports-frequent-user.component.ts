@@ -18,7 +18,6 @@ export class ReportsFrequentUserComponent implements OnInit {
     this.reportsService.getTopFrequentUsers().subscribe(
       response => {
         this.users = response;
-        console.log(this.users);
       },
       error => this.errorMessage = error
     );

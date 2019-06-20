@@ -44,7 +44,6 @@ export class AuthService {
   login(credentials: Credentials): Observable<string> {
     const url = `${environment.apiEndpoint}/login`;
     const body = JSON.stringify(credentials);
-    console.log(credentials);
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const options = { headers };
 

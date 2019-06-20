@@ -71,7 +71,7 @@ export class ManagerAssignmentListComponent implements OnInit {
             event.previousIndex,
             event.currentIndex);
         },
-        error => console.log(error)
+        error => this.errorMessage = error
       );
     }
   }

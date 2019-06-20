@@ -16,8 +16,6 @@ export class IndicatorBoardComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('ngOnInit', this.indicatorsList);
-    console.log('ngOnInit', this.indicatorsList.length);
     this.indicatorsList.forEach(item => this.addCount(item.activeItems[0]));
   }
 

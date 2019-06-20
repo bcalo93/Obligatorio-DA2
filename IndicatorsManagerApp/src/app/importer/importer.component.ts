@@ -36,23 +36,17 @@ export class ImporterComponent implements OnInit {
     );
     this.importerService.getImporterInfo().subscribe(
       response => {
-        console.log(response);
         this.availableImporters = response;
       },
       error => this.errorMessage = error
     );
 
-    console.log('selectedImporter', this.selectedImporter);
-    console.log('selectedAreaId', this.selectedAreaId);
-
   }
 
   areaSelection() {
-    console.log('selectedAreaId', this.selectedAreaId);
   }
 
   importerSelection(event: any) {
-    console.log('event', event);
     this.selectedImporter = event;
     this.importerParameters = this.getActualImporter().parameters;
     let group = { };
@@ -60,7 +54,6 @@ export class ImporterComponent implements OnInit {
       item => group[item.name] = new FormControl('', [Validators.required])
     );
     this.myFormGroup = new FormGroup(group);
-    console.log(this.importerParameters);
   }
 
   getActualImporter() {
@@ -85,11 +78,8 @@ export class ImporterComponent implements OnInit {
       importerName: actualImporter.name,
       parameters
     };
-    console.log(body);
-    console.log(JSON.stringify(body));
     this.importerService.importData(body).subscribe(
       response => {
-        console.log('RESPONSE: ', response);
         if (response.error) {
           this.errorImporterMessage = response.error;
           this.successImporterMessage = '';
@@ -108,7 +98,7 @@ export class ImporterComponent implements OnInit {
     );
   }
 
-  tranformDate(date: any){
+  tranformDate(date: any) {
 
     return date.toISOString().split('T')[0];
   }

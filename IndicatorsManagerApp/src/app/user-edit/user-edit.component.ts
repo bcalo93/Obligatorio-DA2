@@ -82,26 +82,21 @@ export class UserEditComponent implements OnInit {
     .subscribe(
       (data: User) => {
         this.clearErrorMsg();
-        console.log(data);
       },
       (error: any) => {
         this.errorMessage = error;
-        console.log(this.errorMessage);
       }
     );
   }
 
   updateUser(user: User) {
-    console.log(user)
     this.userService.updateUser(user)
     .subscribe(
       (data: User) => {
         this.clearErrorMsg();
-        console.log(data);
       },
       (error: any) => {
         this.errorMessage = error;
-        console.log(this.errorMessage);
       }
     );
   }
