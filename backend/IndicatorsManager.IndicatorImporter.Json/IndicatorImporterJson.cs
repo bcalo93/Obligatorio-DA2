@@ -16,7 +16,7 @@ namespace IndicatorsManager.IndicatorImporter.Json
 
         public IEnumerable<Parameter> GetParameters()
         {
-            return new List<Parameter> { new Parameter { Name = "Path", Type = "string", KeyName = "filePath" } };
+            return new List<Parameter> { new Parameter { Name = "Path", Type = "Text", KeyName = "filePath" } };
         }
 
         public IEnumerable<IndicatorImport> ImportIndicators(Dictionary<string, string> parameters)
