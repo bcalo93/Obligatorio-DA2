@@ -52,4 +52,8 @@ export class ConditionListComponent implements OnInit {
       return conditionResult ? 'true' :  'false';
     }
   }
+
+  getColour(name: string) {
+    return name === 'YELLOW' ? 'ORANGE' : name;
+  }
 }

@@ -162,7 +162,7 @@ namespace IndicatorsManager.WebApi.Controllers
         }
 
         [HttpPost("indicatorconfig")]
-        public IActionResult Post(Guid id, [FromBody] IEnumerable<IndicatorConfigPersistModel> config)
+        public IActionResult Post([FromBody] IEnumerable<IndicatorConfigPersistModel> config)
         {
             try
             {

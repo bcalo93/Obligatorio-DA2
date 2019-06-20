@@ -30,7 +30,7 @@
       <div *ngSwitchCase="'Date'">
         <mat-form-field class="example-full-width col-6 p-0 m-0" >
             <input matInput [matDatepicker]="picker" placeholder="Choose a date" [formControl]="inputDate" (dateChange)="onChangeDate($event)">
-            <mat-error *ngIf="inputQuery.hasError('required')">Field is <strong>required</strong></mat-error>
+            <mat-error *ngIf="inputQuery.hasError('required')">Enter a <strong>valid</strong> date</mat-error>
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
@@ -58,7 +58,7 @@
       </div>
       <div *ngSwitchCase="'Int'">
         <mat-form-field class="example-full-width" >        
-          <input matInput placeholder="Enter a number...." [formControl]="inputInt" (change)="onChangeInt($event)">
+          <input type="number" matInput placeholder="Enter a number...." [formControl]="inputInt" (change)="onChangeInt($event)">
           <mat-error *ngIf="inputInt.hasError('required')">Field is <strong>required</strong></mat-error>
           <mat-error *ngIf="!inputInt.hasError('required') && inputInt.hasError('incorrect')">The input must be <strong>numeric</strong></mat-error>
         </mat-form-field>

@@ -6,7 +6,7 @@
     <div class="row wrapper">
       <mat-form-field>
         <input matInput placeholder="First Name" [formControl]="name" (keyup.enter)="keyEnter()">
-        <mat-error *ngIf="this.lastName.hasError('required')">First Name is <strong>required</strong></mat-error>
+        <mat-error *ngIf="this.name.hasError('required')">First Name is <strong>required</strong></mat-error>
       </mat-form-field>
     </div>
     <div class="row wrapper">

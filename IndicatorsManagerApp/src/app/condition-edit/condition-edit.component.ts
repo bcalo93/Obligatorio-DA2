@@ -1,5 +1,5 @@
 import {FlatTreeControl} from '@angular/cdk/tree';
-import {Component, Injectable, AfterViewInit} from '@angular/core';
+import {Component, Injectable, AfterViewInit, OnInit} from '@angular/core';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 import {BehaviorSubject} from 'rxjs';
 import { Operators } from 'src/enums';
@@ -166,7 +166,7 @@ export class ChecklistDatabase {
   styleUrls: ['condition-edit.component.css'],
   providers: [ChecklistDatabase],
 })
-export class ConditionEditComponent implements AfterViewInit{
+export class ConditionEditComponent implements AfterViewInit, OnInit{
   /** Map from flat node to nested node. This helps us finding the nested node to be modified */
   flatNodeMap = new Map<TodoItemFlatNode, TodoItemNode>();
 
@@ -190,8 +190,10 @@ export class ConditionEditComponent implements AfterViewInit{
 
   errorMessage: string;
 
-  conditionName = new FormControl('', [Validators.required]);
+  conditionName = '';
 
+  currentConditionNamesUsed = [];
+  availableColours = ['RED', 'YELLOW', 'GREEN'];
 
   constructor(
     private _database: ChecklistDatabase,
@@ -208,6 +210,17 @@ export class ConditionEditComponent implements AfterViewInit{
       this.currentExpression = this._database.buildCurrentState(this.findRootNode());
     });
 
+  }
+
+  ngOnInit() {
+    const indicatorId = this.router.url.split('/')[2];
+    this.indicatorService.getIndicator(indicatorId).subscribe(
+      response => {
+        response.itemsResult.map(item => this.currentConditionNamesUsed.push(item.name));
+        this.availableColours = this.availableColours.filter((item) => !this.currentConditionNamesUsed.some(x => x === item));
+      },
+      error => this.errorMessage = error
+    );
   }
 
   ngAfterViewInit() {
@@ -333,7 +346,7 @@ export class ConditionEditComponent implements AfterViewInit{
   createItemIndicator() {
     const condition = this._database.buildModel(this._database.data[0], 0);
     const itemIndicator = new IndicatorItem();
-    itemIndicator.name = this.conditionName.value;
+    itemIndicator.name = this.conditionName;
     itemIndicator.condition = condition;
     const indicatorId = this.router.url.split('/')[2];
     this.indicatorService.addIndicatorItem(indicatorId, itemIndicator)
@@ -348,7 +361,7 @@ export class ConditionEditComponent implements AfterViewInit{
   }
 
   isValidCondition(): boolean {
-    return !this.conditionName.invalid;
+    return this.conditionName !== '';
   }
 
   goBack(): void {

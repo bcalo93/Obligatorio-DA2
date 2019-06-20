@@ -33,8 +33,6 @@ import {
 
 import {DragDropModule} from '@angular/cdk/drag-drop';
 
-
-import { HomeManagerComponent } from './home-manager/home-manager.component';
 import { LoginComponent } from './login/login.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { ErrorMessageComponent } from './error-message/error-message.component';
@@ -51,11 +49,14 @@ import { ConditionListComponent } from './condition-list/condition-list.componen
 import { AreaListComponent } from './area-list/area-list.component';
 import { ManagerAssignmentListComponent } from './manager-assignment-list/manager-assignment-list.component';
 import { DialogComponent } from './dialog/dialog.component';
+import { NoDataComponent } from './no-data/no-data.component';
+import { HomeComponent } from './home/home.component';
+import { UserIndicatorActiveComponent } from './user-indicator-active/user-indicator-active.component';
+import { IndicatorBoardComponent } from './indicator-board/indicator-board.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeManagerComponent,
     LoginComponent,
     UserEditComponent,
     ErrorMessageComponent,
@@ -72,6 +73,10 @@ import { DialogComponent } from './dialog/dialog.component';
     AreaListComponent,
     ManagerAssignmentListComponent,
     DialogComponent,
+    NoDataComponent,
+    HomeComponent,
+    UserIndicatorActiveComponent,
+    IndicatorBoardComponent,
   ],
   imports: [
     BrowserModule,

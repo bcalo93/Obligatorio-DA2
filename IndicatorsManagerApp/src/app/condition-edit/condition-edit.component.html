@@ -15,10 +15,13 @@
   </div>
   <div class="row">
     <div class="col">
-        <mat-form-field class="example-full-width inputName" >     
-          <input matInput placeholder="Enter condition colour....." [formControl]="conditionName">
-          <mat-error *ngIf="conditionName.hasError('required')">Field is <strong>required</strong></mat-error>
+        <mat-form-field class="example-full-width inputName">
+            <mat-label>Select Condition Colour</mat-label>
+            <mat-select [(value)]="conditionName">  
+              <mat-option *ngFor="let item of availableColours" value="{{item}}">{{item}}</mat-option>
+            </mat-select>
         </mat-form-field>
+        
     </div>
     <div class="col-2">
       <button mat-raised-button color="primary" 

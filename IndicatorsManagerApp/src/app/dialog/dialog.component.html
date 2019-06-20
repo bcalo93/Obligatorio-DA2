@@ -1,8 +1,28 @@
-<h1 mat-dialog-title>Hi {{data.currentUser.username}}, </h1>
+<ng-container *ngIf="data.currentUser; else elseTemplate">
+    <h1 mat-dialog-title>Hi {{data.currentUser.username}},</h1>
+</ng-container>
+<ng-template #elseTemplate>
+    <h1 mat-dialog-title>{{data.header}}</h1>
+</ng-template>
 <div mat-dialog-content>
-  <p>{{data.message}}</p>
+  <p [innerHTML]="data.message"></p>
 </div>
-<div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">No</button>
-  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Yes</button>
-</div>
+<ng-container *ngIf="data.showInput; else confirmationOnly">
+  <mat-form-field style="width: 100% !important">
+    <input matInput placeholder="New indicator name" [formControl]="name">
+    <mat-error *ngIf="this.name.hasError('required')">Indicator name <strong>cannot be empty</strong></mat-error>
+  </mat-form-field>
+ 
+  <div mat-dialog-actions>
+      <button mat-button (click)="onNoClick()">Cancel</button>
+      <button mat-button [mat-dialog-close]="name.value" [disabled]="name.invalid">Save</button>
+  </div>
+</ng-container>
+<ng-template #confirmationOnly>
+    <div mat-dialog-actions align="center">
+        <button mat-button (click)="onNoClick()">Back</button>
+        <button mat-button [mat-dialog-close]="true">Yes</button>
+    </div>
+</ng-template>
+
+

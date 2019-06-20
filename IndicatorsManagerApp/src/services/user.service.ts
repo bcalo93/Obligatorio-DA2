@@ -6,6 +6,7 @@ import { environment } from '../environments/environment';
 import { Observable, throwError } from 'rxjs';
 import { UtilsService } from './utils.service';
 import { catchError } from 'rxjs/operators';
+import { IndicatorConfig } from 'src/models/indicatorConfig';
 
 @Injectable({
   providedIn: 'root'
@@ -53,30 +54,21 @@ export class UserService {
   getManagerIndicators(): Observable<Array<Indicator>> {
     const url = `${environment.apiEndpoint}/users/indicators`;
     const options = this.utilsService.getOptions();
-    return this.http.get<Array<Indicator>>(url, options);
+    return this.http.get<Array<Indicator>>(url, options)
+    .pipe(catchError((error: HttpErrorResponse) => throwError(error.error || 'Server Error')));
   }
 
   getManagerActiveIndicators(): Observable<Array<Indicator>> {
     const url = `${environment.apiEndpoint}/users/activeindicators`;
     const options = this.utilsService.getOptions();
-    return this.http.get<Array<Indicator>>(url, options);
+    return this.http.get<Array<Indicator>>(url, options)
+    .pipe(catchError((error: HttpErrorResponse) => throwError(error.error || 'Server Error')));
   }
 
-  addManagerIndicatorConfiguration(indicatorId: string, indicators: Array<Indicator> ): Observable<User> {
-    const url = `${environment.apiEndpoint}/indicators/${indicatorId}/userindicator`;
+  updateIndicatorConfiguration(indicatorsConfig: Array<IndicatorConfig> ): Observable<User> {
+    const url = `${environment.apiEndpoint}/users/indicatorconfig`;
     const options = this.utilsService.getOptions();
-    return this.http.post<User>(url, indicators, options);
-  }
-
-  updateIndicatorConfiguration(indicatorId: string, indicators: Indicator): Observable<User> {
-    const url = `${environment.apiEndpoint}/indicators/${indicatorId}/userindicator`;
-    const options = this.utilsService.getOptions();
-    return this.http.post<User>(url, indicators, options);
-  }
-
-  deleteIndicatorConfiguration(indicatorId: string, userId: string): Observable<any> {
-    const url = `${environment.apiEndpoint}/indicators/${indicatorId}/userindicator/${userId}`;
-    const options = this.utilsService.getOptions();
-    return this.http.delete(url, options);
+    return this.http.post<User>(url, indicatorsConfig, options)
+    .pipe(catchError((error: HttpErrorResponse) => throwError(error.error || 'Server Error')));
   }
 }

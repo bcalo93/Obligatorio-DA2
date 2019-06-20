@@ -1,0 +1,24 @@
+<div class="container">
+  <div class="example-container">  
+    <div class="example-list">
+      <div class="example-box">
+        <div class="col board">
+          <mat-icon matTooltip="Visible active indicators">visibility</mat-icon>
+          <span>{{ indicatorsList.length }}</span>
+        </div>
+        <div class="col board">
+          <mat-icon style="color: green" matTooltip="Indicators activated with GREEN color">notifications</mat-icon>
+          <span>{{ greenCount }}</span>
+        </div>
+        <div class="col board">
+          <mat-icon style="color: orange" matTooltip="Indicators activated with YELLOW color">notifications</mat-icon>
+          <span>{{ yellowCount }}</span>
+        </div>
+        <div class="col board">
+          <mat-icon style="color: red" matTooltip="Indicators v with RED color">notifications</mat-icon>
+          <span>{{ redCount }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

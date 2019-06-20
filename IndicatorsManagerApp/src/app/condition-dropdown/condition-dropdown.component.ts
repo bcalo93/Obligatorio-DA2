@@ -80,7 +80,7 @@ export class ConditionDropdownComponent implements OnInit {
   onChangeDate(event: any) {
     let value = event.target.value;
     if (value instanceof Date) {
-      value = value.toISOString();
+      value = value.toISOString().split('T')[0];
       if (value !== '') {
         this.inputValue.emit( { node: this.node, value });
       }
