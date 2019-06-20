@@ -4,45 +4,6 @@ import { AreaService } from 'src/services';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ImporterIndicatorService } from 'src/services/importer-indicator.service';
 
-const fakeResponse = [
-  {
-      name: 'XML Importer',
-      parameters: [
-          {
-              name: 'File path',
-              type: 'Text',
-              keyName: 'filePath'
-          },
-          {
-            name: 'Number of retries',
-            type: 'Int',
-            keyName: 'numberRetries'
-          },
-          {
-            name: 'Excecute in date',
-            type: 'Date',
-            keyName: 'excecutedDate'
-          }
-      ]
-  },
-
-  {
-    name: 'JSON Importer',
-    parameters: [
-        {
-            name: 'File path',
-            type: 'Text',
-            keyName: ''
-        },
-        {
-          name: 'Number of retries',
-          type: 'Int',
-          keyName: ''
-        }
-    ]
-}
-];
-
 
 @Component({
   selector: 'app-importer',
