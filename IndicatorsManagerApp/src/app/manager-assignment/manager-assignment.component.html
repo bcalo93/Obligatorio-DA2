@@ -1,0 +1,16 @@
+<mat-card>
+  <div class="mt-4">
+    <mat-card-title class="title">Area Manager Assignment</mat-card-title>
+    <div class="row wrapper">
+        <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
+    </div>
+  </div>
+  <div class="wrapper">
+      <mat-form-field>
+          <mat-label>Select an area to assign managers in ........</mat-label>
+          <mat-select [(value)]="selectedArea" (selectionChange)="areaSelection()">
+            <mat-option *ngFor="let area of allAreas" value="{{area.id}}">{{area.name}}</mat-option>
+          </mat-select>
+      </mat-form-field>
+  </div>
+</mat-card>

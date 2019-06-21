@@ -1,0 +1,38 @@
+
+<mat-card>
+    <mat-card-title class="title">Condition List</mat-card-title>
+    <div class="row wrapper">
+        <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
+    </div>
+    <div class="row header-row">
+      <div class="col"><span>Condition Colour</span></div>
+      <div class="col-2">
+          <button mat-fab class="icon-button" color="accent" (click)="addCondition()" [disabled]="conditions.length===3">
+            <mat-icon>add</mat-icon>
+          </button>
+      </div>  
+    </div>
+    <div class="box p-0 m-0">
+      <div class="row item-row item-row-created p-0 m-0" *ngFor="let item of conditions">
+            <div class="col">
+              <span [ngStyle]="{'color': getColour(item.name)}">{{item.name}}</span>
+            </div>
+            <div class="col-4" [ngSwitch]="getValue(item.result.conditionResult)">
+              <mat-icon class="ml-4 mt-4" matTooltip="{{item.result.conditionToString}}">visibility</mat-icon>
+              <mat-icon *ngSwitchCase="'string'" class="ml-4 mt-4" style="color:orange" 
+                  matTooltip="Your condition will never be active due to this error: {{item.result.conditionResult}}">warning</mat-icon>
+              <mat-icon *ngSwitchCase="'true'" class="ml-4 mt-4" style="color:#3f51b5;" 
+                  matTooltip="The condition is active">notifications_active</mat-icon>
+              <mat-icon *ngSwitchCase="'false'" class="ml-4 mt-4" style="color:#3f51b5;"
+                  matTooltip="The condition is momentarily deactivated">notifications_none</mat-icon>
+            </div>
+            <div class="col-2">
+                <div class="row action-row p-0 m-0">
+                    <button mat-fab class="icon-button" color="warn" (click)="deleteCondition(item.id)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div> 
+            </div>
+        </div>
+    </div>
+</mat-card>

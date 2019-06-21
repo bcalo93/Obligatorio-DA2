@@ -1,0 +1,34 @@
+<mat-card>
+  <mat-card-title class="title">{{title}}</mat-card-title>
+</mat-card>
+<mat-card>
+  <div class="row">
+    <div class="col">
+      <div class="row wrapper">
+        <mat-card-title class="title mb-5" *ngIf="isEdit">Edit area information</mat-card-title>
+        <mat-form-field>
+          <input matInput placeholder="Area name" [formControl]="name" (keyup.enter)="!isFormValid() ? null : save()">
+          <mat-error *ngIf="name.invalid">Area name is <strong>required</strong></mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Data Source" [formControl]="dataSource" (keyup.enter)="!isFormValid() ? null : save()">
+          <mat-error *ngIf="dataSource.invalid">Data Source is <strong>required</strong></mat-error>
+        </mat-form-field>
+      </div>
+      <div class="row wrapper">
+        <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
+      </div>
+      <div class="row wrapper">
+        <button mat-raised-button color="primary" [disabled]="!isFormValid()" (click)="save()">{{buttonTitle}}</button>
+        <button mat-raised-button class="m-1" (click)="goBack()">Back</button>
+      </div>
+    </div>
+    <div class="col" *ngIf="isEdit">
+      <div class="row">
+        <div class="col">
+          <app-indicator-list [areaId]="areaId"></app-indicator-list>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-card>

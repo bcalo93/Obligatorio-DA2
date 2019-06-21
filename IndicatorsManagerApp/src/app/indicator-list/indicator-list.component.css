@@ -1,0 +1,42 @@
+button.icon-button { 
+    width: 56px !important;
+}
+
+.header-row{
+    border-top: 1px solid #b6b6b6;
+    background-color: #3f51b5;
+    color: #fafafa;
+    height: 75px;
+    padding: auto;
+    align-content: center;
+    font-weight: bold;
+}
+
+.item-row{
+    border-bottom: 1px solid #b6b6b6;
+    height: 75px;
+}
+
+.item-row-created:hover .action-row, .item-row-created:hover{
+    display: flex !important;
+    background-color: #dadada;
+}
+
+.action-row { display: none; }
+
+.item-row > .col {
+    margin: auto;
+    padding: auto;
+    align-content: center;
+}
+
+.box {
+    height: 50vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.input-indicator {
+    width: 100%;
+}
+

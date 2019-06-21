@@ -1,0 +1,59 @@
+<mat-card>
+  <div class="row">
+      <div class="col">  
+        <mat-card-title>Add New Condition</mat-card-title>
+      </div>
+      <div class="col-2">
+          <button mat-raised-button class="" (click)="goBack()">Back</button>
+      </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <label *ngIf="currentExpression">Current Expression: {{currentExpression}}</label>
+      <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+        <mat-form-field class="example-full-width inputName">
+            <mat-label>Select Condition Colour</mat-label>
+            <mat-select [(value)]="conditionName">  
+              <mat-option *ngFor="let item of availableColours" value="{{item}}">{{item}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        
+    </div>
+    <div class="col-2">
+      <button mat-raised-button color="primary" 
+        [disabled]="!isValidCondition()" 
+        (click)="createItemIndicator()">Save</button>
+    </div>
+</div>
+      
+  
+  
+<mat-card>
+  <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+  <mat-tree-node *matTreeNodeDef="let node">
+    <button id="node-{{node.item}}" mat-icon-button matTreeNodeToggle>
+      <mat-icon class="mat-icon-rtl-mirror">
+        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+      </mat-icon>
+    </button>
+    <div class="col-sm-2">
+      <label>{{node.item}}</label>
+    </div>
+    <div class="col-sm-8 dropdown">
+      <app-condition-dropdown 
+        [node]="node"
+        [nodeType]="getNodeSelectedConditionType(node)"
+        (updateNode)="updateNode($event)"
+        (operatorItemChange)="updateOperatorSelection($event, node)"
+        (inputValue)="updateInputNode($event)"
+        >
+      </app-condition-dropdown>
+    </div>
+    </mat-tree-node>  
+  </mat-tree>
+</mat-card>
+</mat-card>

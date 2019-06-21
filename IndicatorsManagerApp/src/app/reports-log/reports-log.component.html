@@ -1,0 +1,57 @@
+<div class="mt-5 container">
+    <div class="row mt-5">
+      <div class="col">
+          <h2 class="title">System Actions Log</h2>
+      </div>
+    </div>
+  </div>
+  <div class="row wrapper">
+      <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
+  </div>
+
+  <div class="wrapper date-picker">
+    <mat-form-field class="col p-0 m-0" >
+        <input matInput [matDatepicker]="pickerStart" placeholder="Choose a start date" [formControl]="startDate" (dateChange)="onChangeStartDate($event)">
+        <mat-error *ngIf="startDate.hasError('required') || startDate.hasError('incorrect')">Enter a <strong>valid</strong> date</mat-error>           
+        <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
+        <mat-datepicker #pickerStart></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field class="col p-0 m-0" >
+          <input matInput [matDatepicker]="pickerEnd" placeholder="Choose an end date" [formControl]="endDate" (dateChange)="onChangeEndDate($event)">
+          <mat-error *ngIf="endDate.hasError('required') || endDate.hasError('incorrect')">Enter a <strong>valid</strong> date</mat-error>           
+          <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+          <mat-datepicker #pickerEnd></mat-datepicker>
+        </mat-form-field>
+  </div>
+
+  <div class="row wrapper">
+      <button style="height: fit-content;width: fit-content;" 
+      mat-raised-button color="primary" 
+      [disabled]="!isValidDate()" 
+      (click)="showLog()">Show Log</button>      
+  </div>
+
+
+  <div class="container">
+    <div class="example-container wrapper">  
+      <div  class="example-list" >
+        <div class="pl-5 pr-5 header">
+            <div class="col title"><span>Username</span></div>
+            <div class="col title"><span>Type</span></div>
+            <div class="col title m-0 p-0">
+              <mat-icon class="m-0 p-0">insert_invitation</mat-icon>    
+            </div>            
+        </div>
+        <div class="example-box pl-5 pr-5 no-header" *ngFor="let item of logs" >
+            <div class="col title"><span>{{item.username}}</span></div>
+            <div class="col title">
+              <mat-icon 
+                matTooltip="{{item.logType === 'login' ? 'Managers logged in' : 'Imported indicators'}}"
+              >{{item.logType === 'login' ? 'account_circle' : 'move_to_inbox'}}</mat-icon>    
+            </div> 
+            <div class="col title"><span>{{transformDateByString(item.logDate)}}</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+

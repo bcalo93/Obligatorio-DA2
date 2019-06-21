@@ -1,0 +1,33 @@
+<mat-card class="container mt-2 mb-0 p-0">
+  <div>
+    <h2 class="p-3">User List</h2>
+  </div>
+  <div class="table-responsive">
+      <table class="table">
+          <thead class="thead-custom">
+            <tr>
+              <th>Name</th>
+              <th>Username</th>
+              <th class="action">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users">
+                <td>{{user.name}} {{user.lastName}}</td>
+                <td>({{user.username}})</td>
+                <td>
+                  <div class="action">
+                      <button mat-raised-button color="primary" routerLink="/users/{{user.id}}" class="mr-2">
+                        <mat-icon>create</mat-icon>
+                    </button>
+                    <button mat-raised-button color="warn" (click)="deleteUser(user.id)" class="mr-2">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                  
+                </td>
+            </tr>
+          </tbody>
+        </table>
+  </div>
+</mat-card>

@@ -1,0 +1,10 @@
+{
+    "array": [
+        {
+            "incorrectProperty": "wrong property"
+        },
+        {
+            "name": "Correct property"
+        }
+    ]
+}

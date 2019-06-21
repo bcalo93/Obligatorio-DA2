@@ -1,0 +1,154 @@
+<indicators>
+    <indicator>
+        <name>Indicator Import Test 1</name>
+        <items>
+            <item>
+                <name>Red</name>
+                <condition>
+                    <conditionType>Greater</conditionType>
+                    <position>1</position>
+                    <components>
+                        <component>
+                            <query>SELECT COUNT(*) FROM category;</query>
+                            <position>1</position>
+                        </component>
+                        <component>
+                            <number>6</number>
+                            <position>2</position>
+                        </component>
+                    </components>
+                </condition>
+            </item>
+            <item>
+                <name>Yellow</name>
+                <condition>
+                    <conditionType>And</conditionType>
+                    <position>1</position>
+                    <components>
+                        <component>
+                            <conditionType>MinorEquals</conditionType>
+                            <position>1</position>
+                            <components>
+                                <component>
+                                    <query>SELECT COUNT(*) FROM category;</query>
+                                    <position>1</position>
+                                </component>
+                                <component>
+                                    <number>5</number>
+                                    <position>2</position>
+                                </component>
+                            </components>
+                        </component>
+                        <component>
+                            <conditionType>GreaterEquals</conditionType>,
+                            <position>2</position>
+                            <components>
+                                <component>
+                                    <query>SELECT COUNT(*) FROM category;</query>
+                                    <position>1</position>
+                                </component>
+                                <component>
+                                    <number>3</number>
+                                    <position>2</position>
+                                </component>
+                            </components>
+                        </component>
+                    </components>
+                </condition>
+            </item>
+            <item>
+                <name>Green</name>
+                <condition>
+                    <conditionType>Minor</conditionType>
+                    <position>1</position>
+                    <components>
+                        <component>
+                            <query>SELECT COUNT(*) FROM category;</query>
+                            <position>1</position>
+                        </component>
+                        <component>
+                            <number>3</number>
+                            <position>2</position>
+                        </component>
+                    </components>
+                </condition>
+            </item>
+        </items>
+    </indicator>
+    <indicator>
+        <name>Indicator Import Test 2</name>
+        <items>
+            <item>
+                <name>Red</name>
+                <condition>
+                    <conditionType>Equals</conditionType>
+                    <position>1</position>
+                    <components>
+                        <component>
+                            <query>SELECT COUNT(*) As TotalInglesEspanol FROM Account WHERE LangPref ='Spanish' OR LangPref = 'English'</query>
+                            <position>1</position>
+                        </component>
+                        <component>
+                            <boolean>true</boolean>
+                            <position>2</position>
+                        </component>
+                    </components>
+                </condition>
+            </item>
+            <item>
+                <name>Yellow</name>
+                <condition>
+                    <conditionType>MinorEquals</conditionType>
+                    <position>1</position>
+                    <components>
+                        <component>
+                            <text>Test Text</text>
+                            <position>1</position>
+                        </component>
+                        <component>
+                            <query>SELECT COUNT(*) As TotalInglesEspanol FROM Account WHERE LangPref ='Spanish' OR LangPref = 'English'</query>
+                            <position>2</position>
+                        </component>
+                    </components>
+                </condition>
+            </item>
+            <item>
+                <name>Green</name>
+                <condition>
+                    <conditionType>Or</conditionType>
+                    <position>1</position>
+                    <components>
+                        <component>
+                            <conditionType>GreaterEquals</conditionType>
+                            <position>1</position>
+                            <components>
+                                <component>
+                                    <query>SELECT COUNT(*) As TotalInglesEspanol FROM Account WHERE LangPref = 'Spanish' OR LangPref = 'English'</query>
+                                    <position>1</position>
+                                </component>
+                                <component>
+                                    <date>2013-10-21T13:28:06</date>
+                                    <position>2</position>
+                                </component>
+                            </components>
+                        </component>
+                        <component>
+                            <conditionType>Greater</conditionType>
+                            <position>2</position>
+                            <components>
+                                <component>
+                                    <query>SELECT COUNT(*) As TotalEspanol FROM Account WHERE LangPref = 'Spanish'</query>
+                                    <position>1</position>
+                                </component>
+                                <component>
+                                    <query>SELECT COUNT(*) As TotalIngles FROM Account WHERE LangPref = 'English'</query>
+                                    <position>2</position>
+                                </component>
+                            </components>
+                        </component>
+                    </components>
+                </condition>
+            </item>
+        </items>
+    </indicator>
+</indicators>

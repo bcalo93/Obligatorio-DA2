@@ -1,0 +1,37 @@
+<mat-card>
+  <div class="row wrapper">
+      <mat-card-title class="title">Area List</mat-card-title>
+      <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
+  </div>
+  <div class="m-2">
+    <div class="row header-row title">
+      <div class="col-4 mt-3"><span>NAME</span></div>
+      <div class="col-6 mt-3"><span>DATA SOURCE</span></div>
+      <div class="col-2">
+        <button mat-fab class="icon-button" color="accent" routerLink="/areas/add">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="box">
+      <div class="row item-row item-row-created title" *ngFor="let item of areas">
+        <div class="col-4 mt-4"><span>{{item.name}}</span></div>
+        <div class="col-6 mt-4"><span>{{item.dataSource}}</span></div>
+        <div class="col-2">
+          <div class="row action-row">
+            <div class="col">
+              <button mat-fab class="icon-button" color="primary" (click)="editArea(item.id)">
+                <mat-icon>create</mat-icon>
+              </button>
+            </div>
+            <div class="col">
+              <button mat-fab class="icon-button" color="warn" (click)="deleteArea(item.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-card>

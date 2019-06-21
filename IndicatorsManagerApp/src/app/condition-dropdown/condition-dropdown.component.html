@@ -1,0 +1,68 @@
+
+  <div class="col-sm-6 p-0 m-0">
+    <mat-form-field [hideRequiredMarker]="isRoot()">
+        <mat-label>Select Condition Type</mat-label>
+        <mat-select [(value)]="selectedConditionType">
+          <mat-option *ngIf="!isRoot()" value="Sql">Query</mat-option>
+          <mat-option *ngIf="!isRoot()" value="Text">Text</mat-option>
+          <mat-option *ngIf="!isRoot()" value="Int">Number</mat-option>
+          <mat-option *ngIf="!isRoot()" value="Date">Date</mat-option>
+          <mat-option *ngIf="!isRoot()" value="Boolean">Boolean</mat-option>
+          <mat-option value="Compound">Compound</mat-option>
+        </mat-select>
+    </mat-form-field>
+  </div>
+
+
+<div class="col-sm-6 p-0 m-0" *ngIf="isCompound(); else conditionType">
+    <mat-form-field>
+        <mat-label>Select a Logical Operator</mat-label>
+        <mat-select [(value)]="selectedOperator" (selectionChange)="operatorChange($event.value); false">
+          <mat-option *ngFor="let operator of operators" value="{{operator.value}}">{{operator.label}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+
+
+<ng-template #conditionType>
+  <div *ngIf="selectedConditionType">
+    <div class="col-12 p-0 m-0" [ngSwitch]="selectedConditionType">
+      <div *ngSwitchCase="'Date'">
+        <mat-form-field class="example-full-width col-6 p-0 m-0" >
+            <input matInput [matDatepicker]="picker" placeholder="Choose a date" [formControl]="inputDate" (dateChange)="onChangeDate($event)">
+            <mat-error *ngIf="inputDate.hasError('required') || inputDate.hasError('incorrect')">Enter a <strong>valid</strong> date</mat-error>           
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+      </div>
+      <div *ngSwitchCase="'Boolean'">
+        <mat-form-field class="example-full-width col-6 p-0 m-0" >
+          <mat-label>Select an option</mat-label>
+          <mat-select [(value)]="selectedBoolean" (selectionChange)="onChangeBoolean($event.value); false">
+            <mat-option value="true">TRUE</mat-option>
+            <mat-option value="false">FALSE</mat-option>
+          </mat-select>        
+        </mat-form-field>
+      </div>
+      <div *ngSwitchCase="'Sql'">
+        <mat-form-field class="example-full-width" >     
+            <input matInput placeholder="Enter a query...." [formControl]="inputQuery" (change)="onChangeString($event)">
+            <mat-error *ngIf="inputQuery.hasError('required')">Field is <strong>required</strong></mat-error>
+        </mat-form-field>
+      </div>
+      <div *ngSwitchCase="'Text'">
+        <mat-form-field class="example-full-width" >     
+            <input matInput placeholder="Enter some text...." [formControl]="inputString" (change)="onChangeString($event)">
+            <mat-error *ngIf="inputString.hasError('required')">Field is <strong>required</strong></mat-error>
+        </mat-form-field>
+      </div>
+      <div *ngSwitchCase="'Int'">
+        <mat-form-field class="example-full-width" >        
+          <input type="number" matInput placeholder="Enter a number...." [formControl]="inputInt" (change)="onChangeInt($event)">
+          <mat-error *ngIf="inputInt.hasError('required')">Field is <strong>required</strong></mat-error>
+          <mat-error *ngIf="!inputInt.hasError('required') && inputInt.hasError('incorrect')">The input must be <strong>numeric</strong></mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,154 @@
+[
+    {
+        "name": "Indicator Import Test 1",
+        "items": [
+            {
+                "name": "Red",
+                "condition": {
+                    "components": [
+                        {
+                            "query": "SELECT COUNT(*) FROM category;",
+                            "position": 1
+                        },
+                        {
+                            "number": 6,
+                            "position": 2
+                        }
+                    ],
+                    "conditionType": "Greater",
+                    "position": 1
+                }
+            },
+            {
+                "name": "Yellow",
+                "condition": {
+                    "conditionType": "And",
+                    "position": 1,
+                    "components": [
+                        {
+                            "conditionType": "MinorEquals",
+                            "position": 1,
+                            "components": [
+                                {
+                                    "query": "SELECT COUNT(*) FROM category;",
+                                    "position": 1
+                                },
+                                {
+                                    "number": 5,
+                                    "position": 2
+                                }
+                            ]
+                        },
+                        {
+                            "conditionType": "GreaterEquals",
+                            "position": 2,
+                            "components": [
+                                {
+                                    "query": "SELECT COUNT(*) FROM category;",
+                                    "position": 1
+                                },
+                                {
+                                    "number": 3,
+                                    "position": 2
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "Green",
+                "condition": {
+                    "components": [
+                        {
+                            "query": "SELECT COUNT(*) FROM category;",
+                            "position": 1
+                        },
+                        {
+                            "number": 3,
+                            "position": 2
+                        }
+                    ],
+                    "conditionType": "Minor",
+                    "position": 1
+                }
+            }
+        ]
+    },
+    {
+        "name": "Indicator Import Test 2", 
+        "items": [
+            {
+                "name": "Red",
+                "condition": {
+                    "components": [
+                        {
+                            "query": "SELECT COUNT(*) As TotalInglesEspanol FROM Account WHERE LangPref ='Spanish' OR LangPref = 'English'",
+                            "position": 1
+                        },
+                        {
+                            "boolean": true,
+                            "position": 2
+                        }
+                    ],
+                    "conditionType": "Equals",
+                    "position": 1
+                }
+            },
+            {
+                "name": "Yellow",
+                "condition": {
+                    "components": [
+                        {
+                            "text": "Test Text",
+                            "position": 1
+                        },
+                        {
+                            "query": "SELECT COUNT(*) As TotalInglesEspanol FROM Account WHERE LangPref ='Spanish' OR LangPref = 'English'",
+                            "position": 2
+                        }
+                    ],
+                    "conditionType": "MinorEquals",
+                    "position": 1
+                }
+            },
+            {
+                "name": "Green",
+                "condition": {
+                    "conditionType": "Or",
+                    "position": 1,
+                    "components": [
+                        {
+                            "conditionType": "GreaterEquals",
+                            "position": 1,
+                            "components": [
+                                {
+                                    "query": "SELECT COUNT(*) As TotalInglesEspanol FROM Account WHERE LangPref = 'Spanish' OR LangPref = 'English'",
+                                    "position": 1
+                                },
+                                {
+                                    "date": "2013-10-21T13:28:06.000Z",
+                                    "position": 2
+                                }
+                            ]
+                        },
+                        {
+                            "conditionType": "Greater",
+                            "position": 2,
+                            "components": [
+                                {
+                                    "query": "SELECT COUNT(*) As TotalEspanol FROM Account WHERE LangPref = 'Spanish'",
+                                    "position": 1
+                                },
+                                {
+                                    "query": "SELECT COUNT(*) As TotalIngles FROM Account WHERE LangPref = 'English'",
+                                    "position": 2
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

@@ -1,0 +1,22 @@
+.btn-logout {
+    position: fixed;
+    right: 0;
+}
+
+button:focus {
+    outline:0;
+}
+
+button:disabled {
+    color:white !important;
+}
+
+.lbl-name {
+    font-size: 14px;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    z-index: 10;
+}

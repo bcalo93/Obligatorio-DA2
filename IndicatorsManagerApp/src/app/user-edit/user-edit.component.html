@@ -1,0 +1,51 @@
+<mat-card class="container mt-2 mb-2 p-0">
+    <div class="row wrapper">
+        <mat-card-title class="title mt-2">{{title}}</mat-card-title>
+        <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
+    </div>
+    <div class="row wrapper">
+      <mat-form-field>
+        <input matInput placeholder="First Name" [formControl]="name" (keyup.enter)="keyEnter()">
+        <mat-error *ngIf="this.name.hasError('required')">First Name is <strong>required</strong></mat-error>
+      </mat-form-field>
+    </div>
+    <div class="row wrapper">
+      <mat-form-field>
+        <input matInput placeholder="Last Name" [formControl]="lastName" (keyup.enter)="keyEnter()">
+        <mat-error *ngIf="this.lastName.hasError('required')">Last Name is <strong>required</strong></mat-error>
+      </mat-form-field>
+    </div>
+    <div class="row wrapper">
+      <mat-form-field>
+        <input matInput placeholder="Username" [formControl]="username" (keyup.enter)="keyEnter()">
+        <mat-error *ngIf="this.username.hasError('required')">Username is <strong>required</strong></mat-error>
+      </mat-form-field>
+    </div>
+    <div class="row wrapper">
+      <mat-form-field>
+        <input matInput placeholder="Enter your password" [type]="hide ? 'password' : 'text'"
+          [formControl]="password" (keyup.enter)="keyEnter()">
+        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+        <mat-error *ngIf="this.password.hasError('required')">Password is <strong>required</strong></mat-error>
+      </mat-form-field>
+    </div>
+    <div class="row wrapper">
+      <mat-form-field>
+        <input matInput placeholder="Email" [formControl]="email" (keyup.enter)="keyEnter()">
+        <mat-error *ngIf="this.email.hasError('email') && !this.email.hasError('required')">Not a valid email</mat-error>
+        <mat-error *ngIf="this.email.hasError('required')">Email is <strong>required</strong></mat-error>
+      </mat-form-field>
+    </div>
+    <div class="row wrapper">
+      <label>Select a role:</label>
+      <mat-radio-group [(ngModel)]="selectedRole">
+        <mat-radio-button class="pl-2 pr-2" *ngFor="let role of roles" [value]="role">{{role}}</mat-radio-button>
+      </mat-radio-group> 
+    </div>
+    <div class="row wrapper">
+        <button mat-raised-button color="primary" class="m-1" (click)="save()">Save</button>
+        <button mat-raised-button class="m-1" (click)="goBack()">Back</button>
+    </div>
+</mat-card>

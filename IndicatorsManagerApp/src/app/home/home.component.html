@@ -1,0 +1,15 @@
+
+
+<ng-container *ngIf="isManagerLoggedIn(); else adminTemplate">
+    <app-user-indicator-active></app-user-indicator-active>
+</ng-container>
+<ng-template #adminTemplate>
+    <div class="container">
+        <div class="row mt-4">
+            <div class="col">
+                <h2 class="title">Welcome {{currentUser.username}}</h2>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
