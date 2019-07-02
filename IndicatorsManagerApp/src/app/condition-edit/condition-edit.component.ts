@@ -152,6 +152,7 @@ export class ChecklistDatabase {
     } else {
       const parentComponent = new ConditionModel();
       parentComponent.conditionType = node.operator || 'And';
+      parentComponent.position = index;
       parentComponent.components = 
         node.children.map((item, pos) => this.buildModel(item, pos)).filter(x => x !== null);
       return parentComponent;
