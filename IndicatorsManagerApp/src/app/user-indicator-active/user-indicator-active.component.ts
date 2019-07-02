@@ -50,7 +50,7 @@ export class UserIndicatorActiveComponent implements OnInit {
   }
 
   getColour(item: any) {
-    const name = item.items[0].name;
+    const name = item.activeItems[0];
     return name === 'YELLOW' ? 'ORANGE' : name;
   }
 
@@ -58,9 +58,8 @@ export class UserIndicatorActiveComponent implements OnInit {
     let message = '';
     this.indicatorService.getIndicator(item.id).subscribe(
       response => {
-        const itemId = item.items[0].id;
-        const aux: Array<any> = response.itemsResult.map( x => x);
-        message = aux.find(x => x.id === itemId).result.conditionToString;
+        const activeItem = response.itemsResult.find(x => x.result && x.result.conditionResult);
+        message = activeItem.result.conditionToString || '';
         this.openDialog(message);
       },
       () => this.openDialog('Currently the condition result is unavailable.')
